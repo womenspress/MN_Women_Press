@@ -32,6 +32,26 @@ function Nav() {
               Info Page
             </Link>
 
+            <Link className="navLink" to="/StoriesPage">
+              Stories Page
+            </Link>
+
+            <Link className="navLink" to="/ArchivePage">
+              Archive Page
+            </Link>
+
+            <Link className="navLink" to="/ContactsPage">
+              Contacts Page
+            </Link>
+
+            <Link className="navLink" to="/ThemesPage">
+              Themes Page
+            </Link>
+
+            <Link className="navLink" to="/AdminPage">
+              Admin Page
+            </Link>
+
             <LogOutButton className="navLink" />
           </>
         )}

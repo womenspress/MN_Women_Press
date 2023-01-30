@@ -8,8 +8,8 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import Nav from '../Nav/Nav';
-import Footer from '../Footer/Footer';
+import Nav from '../../components/Nav/Nav';
+import Footer from '../../components/Footer/Footer';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
@@ -19,6 +19,14 @@ import InfoPage from '../InfoPage/InfoPage';
 import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
+
+// import and routes by Anthony Dampier based on Group Production
+import StoriesPage from '../StoriesPage/StoriesPage';
+import ArchivePage from '../ArchivePage/ArchivePage';
+import ContactsPage from '../ContactsPage/ContactsPage';
+import ThemesPage from '../ThemesPage/ThemePage';
+import AdminPage from '../AdminPage/AdminPage';
+
 
 import './App.css';
 
@@ -58,6 +66,46 @@ function App() {
             path="/user"
           >
             <UserPage />
+          </ProtectedRoute>
+          
+          <ProtectedRoute
+            // logged in shows StoriesPage else shows LoginPage
+            exact
+            path="/StoriesPage"
+          >
+            <StoriesPage />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            // logged in shows ArchivePage else shows LoginPage
+            exact
+            path="/ArchivePage"
+          >
+            <ArchivePage />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            // logged in shows ContactsPage else shows LoginPage
+            exact
+            path="/ContactsPage"
+          >
+            <ContactsPage />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            // logged in shows ThemesPage else shows LoginPage
+            exact
+            path="/ThemesPage"
+          >
+            <ThemesPage />
+          </ProtectedRoute>
+
+          <ProtectedRoute
+            // logged in shows AdminPage else shows LoginPage
+            exact
+            path="/AdminPage"
+          >
+            <AdminPage />
           </ProtectedRoute>
 
           <ProtectedRoute

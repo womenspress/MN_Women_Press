@@ -23,7 +23,7 @@ function* getAllStories() {
 }
 
 function* getCurrentStory(action) {
-  const currentStory = yield axios.get(`/api/stories/${action.payload}`);
+  const currentStory = yield axios.get(`/api/stories/current/${action.payload}`);
   yield put({type: 'SET_CURRENT_STORY', payload: currentStory.data});
 }
 

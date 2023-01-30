@@ -26,7 +26,7 @@ function* getAllThemes(action) {
 
 //action.payload = id
 function* getCurrentTheme(action) {
-  const currentTheme = yield axios.get(`/api/themes/${action.payload}`);
+  const currentTheme = yield axios.get(`/api/themes/current/${action.payload}`);
   yield put({type: 'SET_CURRENT_THEME', payload: currentTheme.data});
 }
 

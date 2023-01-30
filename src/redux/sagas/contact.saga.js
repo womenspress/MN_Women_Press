@@ -23,7 +23,7 @@ function* getAllContacts() {
 }
 
 function* getCurrentContact(action) {
-  const currentContact = yield axios.get(`/api/contacts/${action.payload}`);
+  const currentContact = yield axios.get(`/api/contacts/current/${action.payload}`);
   yield put({type: 'SET_CURRENT_CONTACT', payload: currentContact.data});
 }
 

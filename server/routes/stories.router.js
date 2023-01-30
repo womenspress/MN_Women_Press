@@ -19,14 +19,20 @@ router.get('/search', (req, res) => {
   res.sendStatus(200);
 });
 
-router.get('/archive', (req, res) => {
-  // GET route code here
-  console.log(
-    'In stories router GET archive, getting all archive stories. URL: /api/stories/archive'
-  );
-  res.sendStatus(200);
-});
-router.get('/id/:id', (req, res) => {
+
+
+// Commenting this out because current plan is to handle archive story separation on the front-end
+
+// router.get('/archive', (req, res) => {
+//   // GET route code here
+//   console.log(
+//     'In stories router GET archive, getting all archive stories. URL: /api/stories/archive'
+//   );
+//   res.sendStatus(200);
+// });
+
+
+router.get('/current/:id', (req, res) => {
   // GET route code here
   let id = req.params.id;
   console.log(

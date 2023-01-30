@@ -14,9 +14,19 @@ router.get('/', (req, res) => {
 
 router.get('/current/:id', (req, res) => {
   // GET route for contact detail
-  console.log('In themes router GET, getting all themes. URL: /api/themes');
+  console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id');
   res.sendStatus(200);
 });
+
+
+/**
+ * POST route template
+ */
+router.put('/edit/:id', (req, res) => {
+  // EDIT here (this will handle "create" "delete" and "edit", but actually just edit all of the rows we created)
+  res.sendStatus(200);
+});
+
 
 
 // router.get('/archive', (req, res) => {
@@ -38,11 +48,6 @@ router.get('/current/:id', (req, res) => {
 // });
 
 
-/**
- * POST route template
- */
-router.post('/', (req, res) => {
-  // POST route code here
-});
+
 
 module.exports = router;

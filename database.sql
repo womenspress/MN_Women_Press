@@ -77,6 +77,22 @@ CREATE TABLE "story" (
     "archived" BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE "" (
+CREATE TABLE "story_tag" (
     "id" SERIAL PRIMARY KEY,
+    "story_id" INT REFERENCES "story",
+    "tag_id" INT REFERENCES "tag"
+);
+
+CREATE TABLE "theme" (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL,
+    "description" VARCHAR(255),
+    "month" VARCHAR(10),
+    "year" INT
+);
+
+CREATE TABLE "theme_story" (
+    "id" SERIAL PRIMARY KEY,
+    "story_id" INT REFERENCES "story",
+    "theme_id" INT REFERENCES "theme"
 );

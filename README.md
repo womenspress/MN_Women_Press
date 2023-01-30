@@ -19,13 +19,14 @@ Before you get started, make sure you have the following software installed on y
 
 ## Create database and table
 
-Create a new database called `prime_app` and create a `user` table:
+Create a new database called `mn_women_press_app` and create a `user` table:
 
 ```SQL
 CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
-    "username" VARCHAR (80) UNIQUE NOT NULL,
-    "password" VARCHAR (1000) NOT NULL
+    "username" VARCHAR (50) UNIQUE NOT NULL,
+    "password" VARCHAR (150) NOT NULL,
+    "access" BOOLEAN NOT NULL
 );
 ```
 

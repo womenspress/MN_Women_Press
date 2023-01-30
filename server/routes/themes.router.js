@@ -9,6 +9,13 @@ router.get('/', (req, res) => {
   // GET route code here
 });
 
+router.get('/:id', (req, res) => {
+  // GET route code here
+});
+
+router.get('/search', (req, res) => {
+  // GET route code here
+});
 /**
  * POST route template
  */

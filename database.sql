@@ -44,16 +44,37 @@ CREATE TABLE "role" (
     "name" VARCHAR (50)
 );
 
-CREATE TABLE "" (
+CREATE TABLE "tag" (
     "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR (255),
+    "description" VARCHAR (255)
 );
 
-CREATE TABLE "" (
+CREATE TABLE "tag_contact" (
     "id" SERIAL PRIMARY KEY,
+    "tag_id" INT REFERENCES "tag",
+    "contact_id" INT REFERENCES "contact"
 );
 
-CREATE TABLE "" (
+CREATE TABLE "story" (
     "id" SERIAL PRIMARY KEY,
+    "title" VARCHAR (255) NOT NULL,
+    "subtitle" VARCHAR (255),
+    "article_text" VARCHAR,
+    "article_link" VARCHAR (350),
+    "notes" VARCHAR,
+    "type" VARCHAR,
+    "copies_sent" BOOLEAN DEFAULT FALSE,
+    "photo_uploaded" BOOLEAN DEFAULT FALSE,
+    "fact_checked" BOOLEAN DEFAULT FALSE,
+    "graphic_image_required" BOOLEAN DEFAULT FALSE,
+    "external_link" VARCHAR (350),
+    "word_count" INT,
+    "date_added" DATE,
+    "rough_draft_deadline" DATE,
+    "final_draft_deadline" DATE,
+    "publication_date" DATE,
+    "archived" BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE "" (

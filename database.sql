@@ -14,7 +14,7 @@ CREATE TABLE "user" (
     "access" BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE "" (
+CREATE TABLE "contact" (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR (255) NOT NULL,
     "pronouns" VARCHAR (50),
@@ -33,12 +33,15 @@ CREATE TABLE "" (
     "date_added" DATE
 );
 
-CREATE TABLE "" (
+CREATE TABLE "contact_role" (
     "id" SERIAL PRIMARY KEY,
+    "contact_id" INT REFERENCES "contact",
+    "role_id" INT REFERENCES "role"
 );
 
-CREATE TABLE "" (
+CREATE TABLE "role" (
     "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR (50)
 );
 
 CREATE TABLE "" (

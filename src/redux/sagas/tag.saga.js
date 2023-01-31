@@ -11,26 +11,42 @@ function* tagSaga() {
 
 
 function* getAllTags(action) {
-    const allTags = yield axios.get('/api/tags');
-    yield put({ type: 'SET_ALL_TAGS', payload: allTags.data });
+    try {
+        const allTags = yield axios.get('/api/tags');
+        yield put({ type: 'SET_ALL_TAGS', payload: allTags.data });
+    } catch (error) {
+        console.log('error in getAllTags:', error)
+    }
 }
 
 // action.payload is new tag object { name: 'tag name', description: 'tag description' }
 function* createNewTag(action) {
-    yield axios.post('/api/tags', action.payload);
-    yield put({ type: 'GET_ALL_TAGS'});
+    try {
+        yield axios.post('/api/tags', action.payload);
+        yield put({ type: 'GET_ALL_TAGS' });
+    } catch (error) {
+        console.log('error in createNewTag saga:', error)
+    }
 }
 
 // action.payload is tag ID
 function* deleteTag(action) {
-    yield axios.delete('/api/tags/' + action.payload);
-    yield put({ type: 'GET_ALL_TAGS'});
+    try {
+        yield axios.delete('/api/tags/' + action.payload);
+        yield put({ type: 'GET_ALL_TAGS' });
+    } catch (error) {
+        console.log('error in story deleteTag saga:', error);
+    }
 }
 
 // action.payload is complete tag object to be updated
 function* editTag(action) {
-    yield axios.put(`/api/tags/${action.payload.id}`, action.payload);
-    yield put({ type: 'GET_ALL_TAGS'});
+    try {
+        yield axios.put(`/api/tags/${action.payload.id}`, action.payload);
+        yield put({ type: 'GET_ALL_TAGS' });
+    } catch (error) {
+        console.log('error in story editTag saga:', error);
+    }
 }
 
 

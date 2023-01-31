@@ -96,3 +96,12 @@ CREATE TABLE "theme_story" (
     "story_id" INT REFERENCES "story",
     "theme_id" INT REFERENCES "theme"
 );
+
+CREATE TABLE "story_contact" (
+	"id" SERIAL PRIMARY KEY,
+    "story_id" INT REFERENCES "story",
+    "contact_id" INT REFERENCES "contact",
+    "project_association" VARCHAR (255),
+    "invoice_paid" BOOLEAN DEFAULT FALSE,
+    "invoice_total" DECIMAL (12,2)
+);

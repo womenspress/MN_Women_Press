@@ -5,6 +5,7 @@ import user from './user.reducer';
 import themes from './theme.reducer';
 import contacts from './contact.reducer';
 import stories from './story.reducer';
+import tags from './tag.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   user, // will have an id and username if someone is logged in
   themes,
   contacts,
-  stories
+  stories,
+  tags
 });
 
 export default rootReducer;

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import './LandingPage.css';
 
+
+// temporary for Paolo testing
+import StoryListItem from '../../components/StoryListItem/StoryListItem'
+import {story} from '../../sampleData';
+
 // CUSTOM COMPONENTS
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
 
@@ -16,7 +21,7 @@ function LandingPage() {
   return (
     <div className="container">
       <h2>{heading}</h2>
-
+      <StoryListItem story={story}/>
       <div className="grid">
         <div className="grid-col grid-col_8">
           <p>

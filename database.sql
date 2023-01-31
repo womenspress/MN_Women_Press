@@ -96,3 +96,20 @@ CREATE TABLE "theme_story" (
     "story_id" INT REFERENCES "story",
     "theme_id" INT REFERENCES "theme"
 );
+
+
+/* Dummy Data for project */ 
+
+/*Themes*/ 
+INSERT INTO "theme"
+("name", "description", "month", "year")  
+VALUES 
+('Mentors', '	
+An exploration of intergenerational relationships between people who support one another in work and life. Featuring the voices of those in farming, politics, education, and more. Special sections: Pets, Camp & Kids', 'January', 2023); 
+
+INSERT INTO "theme" 
+("name", "description", "month", "year") 
+VALUES 
+('Books', '	
+Excerpts and conversations with new and established Minnesota authors. Special sections: Money & Business, Education & Learning', 'February', 2023);
+

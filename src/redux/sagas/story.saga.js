@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {put, takeEvery} from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 
 /* contact saga needs to handle:
-- get all contaacts
+- get all contacts
 - get a specific contact
 - create a contact
 - edit a contact
@@ -20,44 +20,73 @@ function* storySaga() {
 };
 
 function* getAllStories() {
-  const allStories = yield axios.get('/api/stories');
-  yield put({type: 'SET_ALL_STORIES', payload: allStories.data});
+  try {
+    const allStories = yield axios.get('/api/stories');
+    yield put({ type: 'SET_ALL_STORIES', payload: allStories.data });
+  } catch (error) {
+    console.log('error in getAllStories saga:', error)
+  }
 }
 
 // action.payload is story ID
 function* getCurrentStory(action) {
-  const currentStory = yield axios.get(`/api/stories/current/${action.payload}`);
-  yield put({type: 'SET_CURRENT_STORY', payload: currentStory.data});
+  try {
+    const currentStory = yield axios.get(`/api/stories/current/${action.payload}`);
+    yield put({ type: 'SET_CURRENT_STORY', payload: currentStory.data });
+  } catch (error) {
+    console.log('error in getCurrentStory saga:', error);
+  }
+
 }
 
 // this function expects a contact object as action.payload
 function* createNewStory(action) {
-  yield axios.post('/api/stories', action.payload);
-  yield put({type: 'GET_ALL_STORIES'});
+  try {
+    yield axios.post('/api/stories', action.payload);
+    yield put({ type: 'GET_ALL_STORIES' });
+  } catch (error) {
+    console.log('error in createNewStory saga: ', error)
+  }
 }
 
 // receives entire story object
 function* editStory(action) {
-  yield axios.put(`/api/stories/${action.payload.id}`, action.payload);
-  yield put({type: 'GET_ALL_STORIES'});
+  try {
+    yield axios.put(`/api/stories/${action.payload.id}`, action.payload);
+    yield put({ type: 'GET_ALL_STORIES' });
+  } catch (error) {
+    console.log('error in editStory saga:', error)
+  }
 }
 
 // payload is only story ID
 function* deleteStory(action) {
-  yield axios.delete(`/api/stories/${action.payload}`);
-  yield put({type: 'GET_ALL_STORIES'});
+  try {
+    yield axios.delete(`/api/stories/${action.payload}`);
+    yield put({ type: 'GET_ALL_STORIES' });
+  } catch (error) {
+    console.log('error in deleteStory saga:', error);
+  }
 }
 
 // payload we are receiving will be: {story_id: 'story ID', tag_id: 'tag ID' }
 function* createStoryTag(action) {
-  yield axios.post(`/api/stories/tag/${action.payload.story_id}`, action.payload.tag_id);
-  yield put({ type:'GET_CURRENT_STORY', payload: action.payload})
+  try {
+    yield axios.post(`/api/stories/tag/${action.payload.story_id}`, action.payload.tag_id);
+    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload })
+  } catch (error) {
+    console.log('error in createStoryTag saga:', error)
+  }
 }
 
 // payload we are receiving will be: {story_id: 'story ID', tag_id: 'tag ID' }
 function* deleteStoryTag(action) {
-  yield axios.delete(`/api/stories/tag/${action.payload.story_id}`, action.payload.tag_id);
-  yield put({ type:'GET_CURRENT_STORY', payload: action.payload})
+  try {
+    yield axios.delete(`/api/stories/tag/${action.payload.story_id}`, action.payload.tag_id);
+    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload })
+  } catch (error) {
+    console.log('error in deleteStoryTag saga:', error)
+  }
 }
 
 export default storySaga;

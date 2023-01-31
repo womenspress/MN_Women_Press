@@ -14,6 +14,12 @@ router.get('/', rejectUnauthenticated, (req, res) => {
   res.send(req.user);
 });
 
+// gets all users for admin dashboard (we will filter unauthorized vs authorized on the front end so we can add/remove permissions for everyone)
+router.get('/all', rejectUnauthenticated, (req, res) => {
+  // GET request for all users goes here
+  res.sendStatus(200);
+})
+
 // Handles POST request with new user data
 // The only thing different from this and every other post we've seen
 // is that the password gets encrypted before being inserted

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import './LogOutButton.css';
 
 function LogOutButton(props) {
   const dispatch = useDispatch();

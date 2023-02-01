@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import './LandingPage.css';
 
+
+// temporary for Paolo testing
+
 // CUSTOM COMPONENTS
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
 
@@ -16,7 +19,6 @@ function LandingPage() {
   return (
     <div className="container">
       <h2>{heading}</h2>
-
       <div className="grid">
         <div className="grid-col grid-col_8">
           <p>

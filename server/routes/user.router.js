@@ -53,4 +53,14 @@ router.post('/logout', (req, res) => {
   res.sendStatus(200);
 });
 
+router.put('/access', rejectUnauthenticated, (req, res) => {
+  // need to update user access based on ID (req.body.userId and req.body.access)
+  res.sendStatus(200)
+})
+
+router.delete('/', rejectUnauthenticated, (req, res) => {
+  // need route to delete User by ID (req.body === user ID)
+  res.sendStatus(200);
+})
+
 module.exports = router;

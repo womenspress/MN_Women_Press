@@ -2,6 +2,19 @@
     background-color: #00acb0;
     padding-top: 10px;
     padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.header div button{
+    background-color: #00acb0;
+
+}
+
+.header div a {
+    list-style: none;
 }
 
 .title {

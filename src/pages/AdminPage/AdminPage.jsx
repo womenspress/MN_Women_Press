@@ -47,6 +47,12 @@ export default function AdminPage() {
 
     const handleAuthorizeClick = (user) => {
         dispatch({ type: 'SET_USER_ACCESS', payload: { userId: user.id, access: !user.access } });
+        console.log('in handleAuthorizeClick', user.id, !user.access);
+    }
+
+    const handleDeleteClick = (user) => {
+        dispatch({ type: 'DELETE_USER', payload: { userId: user.id } });
+        console.log('in handleDeleteClick', user.id)
     }
 
     return (
@@ -62,14 +68,15 @@ export default function AdminPage() {
                         {viewState === 'unauthorized' ?
                             unauthorizedTest.map(user => {
                                 return (
-                                    <Grid item xs={3} key={user.id} onClick={() => handleAuthorizeClick(user)} sx={{ border: 1, m: 1 }}>
+                                    <Grid item xs={3} key={user.id} sx={{ border: 1, m: 1 }}>
                                         <Card>
                                             <CardContent>
                                                 <Typography variant='h5'>{user.username}</Typography>
-                                                <Typography variant='h6'>Unauthorized</Typography>
+                                                <Typography variant='h6' mt={2}>Status: Pending</Typography>
                                             </CardContent>
                                             <CardActions>
-                                                <Button>Activate User</Button>
+                                                <Button variant='contained' color='success' onClick={() => handleAuthorizeClick(user)}>Activate</Button>
+                                                <Button variant='contained' color='error' onClick={() => handleDeleteClick(user)}>Delete</Button>
                                             </CardActions>
                                         </Card>
                                     </Grid>
@@ -82,10 +89,11 @@ export default function AdminPage() {
                                         <Card>
                                             <CardContent>
                                                 <Typography variant='h5'>{user.username}</Typography>
-                                                <Typography variant='h6'>Authorized</Typography>
+                                                <Typography variant='h6' mt={2}>Status: Authorized</Typography>
                                             </CardContent>
                                             <CardActions>
-                                                <Button>Deactivate User</Button>
+                                                <Button variant='contained' color='warning' onClick={() => handleAuthorizeClick(user)}>Deactivate</Button>
+                                                <Button variant='contained' color='error' onClick={() => handleDeleteClick(user)}>Delete</Button>
                                             </CardActions>
                                         </Card>
                                     </Grid>

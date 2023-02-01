@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, } from 'react-router-dom';
 import './LandingPage.css';
+
+
+// temporary for Paolo testing
 
 // CUSTOM COMPONENTS
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
+import {Box, Typography} from '@mui/material'
 
 function LandingPage() {
   const [heading, setHeading] = useState('Welcome');
@@ -14,9 +18,8 @@ function LandingPage() {
   };
 
   return (
-    <div className="container">
-      <h2>{heading}</h2>
-
+    <Box className="container">
+      <Typography variant = 'h2'>heading</Typography>
       <div className="grid">
         <div className="grid-col grid-col_8">
           <p>
@@ -62,7 +65,7 @@ function LandingPage() {
           </center>
         </div>
       </div>
-    </div>
+    </Box>
   );
 }
 

@@ -9,6 +9,10 @@ body {
   margin: 0px;
 }
 
+#body{
+  flex: none;
+}
+
 img {
   display: inline-block;
   max-width: 100%;

@@ -19,6 +19,7 @@ export default function StatusDropdown({ story }) {
   }
 
   const handleCheck = (event) => {
+    // console.log(event.target.id)
     let statusToChange
     switch (event.target.id) {
       case 'copies sent':
@@ -37,7 +38,7 @@ export default function StatusDropdown({ story }) {
         statusToChange = 'payment_completed';
         break;
     }
-    dispatch({ type: 'UPDATE_STORY_STATUS', payload: statusToChange })
+    dispatch({ type: 'UPDATE_STORY_STATUS', payload: {statusToChange: statusToChange, story_id: story.id} })
   }
 
   // get list of required elements to populate into the dropdown
@@ -98,7 +99,9 @@ export default function StatusDropdown({ story }) {
       {/* {JSON.stringify(piecesToTrack)} */}
       <Box>
         <Button
-          onClick={handleClick}>
+          onClick={handleClick}
+          sx = {{color: 'inherit', textTransform: 'none'}}
+          >
           status
         </Button>
       </Box>

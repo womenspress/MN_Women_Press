@@ -2,9 +2,11 @@ import React from 'react';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Box, Collapse, Button, Typography, Paper, Modal, IconButton } from '@mui/material';
+import { Box, Collapse, Button, Typography, Paper, Modal, IconButton, Tooltip } from '@mui/material';
 
 import StatusDropdown from '../../assets/StatusDropdown/StatusDropdown';
+import CreateStory from '../CreateStory/CreateStory';
+import ColorStatusHover from '../../assets/ColorStatusHover/ColorStatusHover';
 
 import { largeModal, smallModal } from '../../__style';
 import { makeStatusColor } from '../../modules/makeStatusColor';
@@ -21,7 +23,7 @@ elements to display in the
 
 */
 
-export default function StoryListItem({ story }) {
+export default function StoryListItem({ story, createMode, setCreateMode }) {
 
   const history = useHistory();
 
@@ -34,9 +36,10 @@ export default function StoryListItem({ story }) {
   /* 
    */
 
+  const statusColor = makeStatusColor(story)
 
   const statusStyle = {
-    bgcolor: makeStatusColor(story),
+    bgcolor: statusColor.color,
     width: 16,
     height: 16,
     borderRadius: '50%'
@@ -69,7 +72,9 @@ export default function StoryListItem({ story }) {
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Tooltip title = {statusColor.notes}>
           <Box sx={statusStyle}></Box>
+          </Tooltip>
           <IconButton
             size='small'
             onClick={() => setCollapseOpen(!collapseOpen)}>
@@ -107,10 +112,15 @@ export default function StoryListItem({ story }) {
       <Modal
 
         open={editOpen}
-        onClose={() => setEditOpen(false)}
+        onClose={() => {
+          setCreateMode(false)
+          setEditOpen(false)
+        }}
       >
         <Box
-          sx={largeModal}>edit</Box>
+          sx={largeModal}>
+            <CreateStory createMode = {createMode}/>
+            </Box>
       </Modal>
       <Modal
         open={deleteOpen}

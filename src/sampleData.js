@@ -27,8 +27,8 @@ export const story = {
   word_count: 0,
   date_added: '',
   rough_draft_deadline: '',
-  final_draft_deadline: '',
-  publication_date: Date('1/25/2023'),
+  final_draft_deadline: new Date('1/1/2023').toISOString(),
+  publication_date: new Date('1/25/2023').toISOString(),
   archived: false,
   contacts: [
     {

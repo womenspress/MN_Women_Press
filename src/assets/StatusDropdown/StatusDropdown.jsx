@@ -100,7 +100,8 @@ export default function StatusDropdown({ story }) {
       <Box>
         <Button
           onClick={handleClick}
-          sx = {{color: 'inherit', textTransform: 'none'}}
+          sx = {{color: 'grey.700', textTransform: 'none'}}
+
           >
           status
         </Button>

@@ -4,6 +4,8 @@ import './LandingPage.css';
 
 
 // temporary for Paolo testing
+// import ContactListItem from '../../components/ContactListItem/ContactListItem';
+// import {contact} from '../../sampleData'
 
 // CUSTOM COMPONENTS
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
@@ -19,6 +21,7 @@ function LandingPage() {
 
   return (
     <Box className="container">
+      {/* <ContactListItem contact={contact}/> */}
       <Typography variant = 'h2'>heading</Typography>
       <div className="grid">
         <div className="grid-col grid-col_8">

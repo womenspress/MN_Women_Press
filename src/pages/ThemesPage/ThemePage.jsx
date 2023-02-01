@@ -50,11 +50,11 @@ export default function ThemesPage(){
 
 
     return(
-        <>
+        <div>
             <h1>themes</h1>
             <div>
                 <ThemeCalendar themeArray={themeArray}/>
             </div>
-        </>
+        </div>
     )
 }

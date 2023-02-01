@@ -1,10 +1,11 @@
 .nav {
   /* flex box layout */
+  position: relative;;
   margin: 0 0px 30px;
   overflow: hidden;
-  height:90vh;
+  margin-top: 200px;
+  margin-bottom:auto;
   width: fit-content;
-  z-index: -1;
   text-align: center;
   display: flex;
 }

@@ -7,10 +7,18 @@ body,
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0px;
+  display: fl;
 }
 
-#body{
-  flex: none;
+#main{
+  display: flex;
+}
+
+#pages {
+  padding: 20px;
+  max-width: 90vw;
+  width: 90vw;
+  min-height: 84vh;
 }
 
 img {

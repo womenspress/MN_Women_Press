@@ -10,10 +10,6 @@
   display: flex;
 }
 
-.nav a {
-  
-}
-
 .nav div{
   flex-flow: column nowrap;
 }

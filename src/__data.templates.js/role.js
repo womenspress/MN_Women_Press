@@ -1,0 +1,4 @@
+const role = {
+  id: '',
+  name: ''
+}

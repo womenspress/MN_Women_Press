@@ -14,7 +14,12 @@ const allThemes = (state = [], action) => {
 }
 
 const currentTheme = (state = {}, action) => {
-  if (action.type === 'SET_CURRENT_THEME') return action.payload
+  if (action.type === 'SET_CURRENT_THEME') {
+      return action.payload
+  }
+  if(action.type === 'EDIT_CURRENT_THEME'){
+    return action.payload
+  }
   return state
 }
 

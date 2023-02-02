@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 
 // sample data import
 import { contact } from '../../sampleData';
+import { padding } from '@mui/system';
 
 export default function ContactDetailsPage() {
 
@@ -20,6 +21,13 @@ export default function ContactDetailsPage() {
     { value: 'publication_date', label: 'publication date' },
     { value: 'type', label: 'type' },
   ]
+
+  const customSelectStyles = {
+    control: (provided) => ({
+      ...provided,
+      width: '150px',
+    })
+  };
 
   return (
     <Box>
@@ -47,16 +55,37 @@ export default function ContactDetailsPage() {
         </Grid>
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
         <Grid item xs={4}>
-          <Typography variant='h6' fontWeight='bold'>General Info</Typography>
+          <Typography variant='h5' fontWeight='bold'>General Info</Typography>
         </Grid>
         <Grid item xs={2}>
-          <Typography variant='h6' fontWeight='bold'>Contributions</Typography>
+          <Typography variant='h5' fontWeight='bold'>Contributions</Typography>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Box display='flex' flexDirection='row'>
-            <Typography variant='h6'>Sort by:</Typography>
-            <Select options={sortByOptions} sx={{ width: '100%'}}/>
+            <Typography variant='h6' sx={{ mr: 1 }}>Sort by:</Typography>
+            <Select
+              options={sortByOptions}
+              styles={customSelectStyles}
+            />
           </Box>
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            variant='outlined'
+            label='Search'
+            fullWidth
+          />
+        </Grid>
+        {/* this row has the two large sections of information, general info and contributions */}
+        <Grid container space={1}>
+          {/* general info section */}
+          <Grid item xs={4} sx={{ p: 1, backgroundColor: 'lightgrey' }}>
+            <Typography variant='h6' fontWeight='bold'>Bio:</Typography>
+            <Typography variant='body1'>{contact.bio}</Typography>
+            {contact.roles?.map((role) => {
+              return
+            })}
+          </Grid>
         </Grid>
       </Grid>
     </Box>

@@ -24,7 +24,6 @@ elements to display in the
 */
 
 export default function StoryListItem({ story, createMode, setCreateMode }) {
-
   const history = useHistory();
 
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -57,7 +56,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
     return 'translate(-5%,5%)'
   }
 
-  const author = story.contacts.filter(contact => contact.role === 'author');
+  const author = story.contacts?.filter(contact => contact.role === 'author');
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -82,7 +81,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
           </IconButton>
           <Typography>{story.title}</Typography>
         </Box>
-        <Typography>{author[0].name}</Typography>
+        <Typography>{author ? author[0].name : null}</Typography>
         <StatusDropdown story={story} />
       </Box>
 

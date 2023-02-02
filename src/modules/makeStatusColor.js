@@ -10,10 +10,10 @@ import { DateTime } from 'luxon'
 export function makeStatusColor(story) {
   console.log('publication date', story.publication_date)
 
-  const hasAuthor = !!story.contacts.filter(contact => contact.role === 'author').length
+  const hasAuthor = !!story.contacts?.filter(contact => contact.role === 'author').length
   console.log('author?', hasAuthor)
 
-  const paymentRequired = !!story.contacts.filter(contact=>contact.invoice_amount>0).length
+  const paymentRequired = !!story.contacts?.filter(contact=>contact.invoice_amount>0).length
   console.log('payment required?', paymentRequired)
 
   const piecesToTrack = [

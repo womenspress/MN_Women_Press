@@ -96,36 +96,68 @@ export const contact = {
   date_added: '',
   stories: [
     {
-      id: 1, 
+      id: 1,
       title: 'From Soil to Stars: A Conversation with Erin Sharkey',
-  subtitle: 'I wanted to stretch the boundaries of what nature writing was.',
-  article_text: '',
-  article_link: 'https://www.womenspress.com/from-soil-to-stars-a-conversation-with-erin-sharkey/',
-  notes: `Every time I get the chance to chat with writer and cultural worker Erin Sharkey, I find more ways that our interests and perspectives intersect, including those related to land stewardship, ancestry and collective memory, and the value of archives.
+      subtitle: 'I wanted to stretch the boundaries of what nature writing was.',
+      article_text: '',
+      article_link: 'https://www.womenspress.com/from-soil-to-stars-a-conversation-with-erin-sharkey/',
+      notes: `Every time I get the chance to chat with writer and cultural worker Erin Sharkey, I find more ways that our interests and perspectives intersect, including those related to land stewardship, ancestry and collective memory, and the value of archives.
 
   Sharkey edited the forthcoming collection of essays A Darker Wilderness: Black Nature Writing from Soil to Stars, which offers intimate and varied reflections on nature by contemporary Black writers and poets.
   
   Every piece in the collection uses an object from the writers’ personal archives or the larger historical archive — a grandfather’s fishing box, a property deed, a newspaper photograph — to reflect on how nature has influenced the lives of Black folks throughout time.
   
   Our conversation was edited for length and clarity.`,
-  photo: '',
-  type: '',
-  copies_required: 0,
-  copies_sent: false,
-  photo_required: true,
-  photo_uploaded: false,
-  fact_check_required: true,
-  fact_check_completed: true,
-  graphic_image_required: false,
-  graphic_image_completed: false,
-  payment_completed: true,
-  external_link: '',
-  word_count: 0,
-  date_added: '',
-  rough_draft_deadline: '',
-  final_draft_deadline: new Date('1/1/2023').toISOString(),
-  publication_date: new Date('1/25/2023').toISOString(),
-  archived: false,
+      photo: '',
+      type: '',
+      copies_required: 0,
+      copies_sent: false,
+      photo_required: true,
+      photo_uploaded: false,
+      fact_check_required: true,
+      fact_check_completed: true,
+      graphic_image_required: false,
+      graphic_image_completed: false,
+      payment_completed: true,
+      external_link: '',
+      word_count: 0,
+      date_added: '',
+      rough_draft_deadline: '',
+      final_draft_deadline: new Date('1/1/2023').toISOString(),
+      publication_date: new Date('1/25/2023').toISOString(),
+      archived: false,
+    },
+    {
+      id: 2,
+      title: 'From Soil to Stars: A Conversation with Erin Sharkey',
+      subtitle: 'I wanted to stretch the boundaries of what nature writing was.',
+      article_text: '',
+      article_link: 'https://www.womenspress.com/from-soil-to-stars-a-conversation-with-erin-sharkey/',
+      notes: `Every time I get the chance to chat with writer and cultural worker Erin Sharkey, I find more ways that our interests and perspectives intersect, including those related to land stewardship, ancestry and collective memory, and the value of archives.
+
+  Sharkey edited the forthcoming collection of essays A Darker Wilderness: Black Nature Writing from Soil to Stars, which offers intimate and varied reflections on nature by contemporary Black writers and poets.
+  
+  Every piece in the collection uses an object from the writers’ personal archives or the larger historical archive — a grandfather’s fishing box, a property deed, a newspaper photograph — to reflect on how nature has influenced the lives of Black folks throughout time.
+  
+  Our conversation was edited for length and clarity.`,
+      photo: '',
+      type: '',
+      copies_required: 10,
+      copies_sent: false,
+      photo_required: true,
+      photo_uploaded: false,
+      fact_check_required: true,
+      fact_check_completed: true,
+      graphic_image_required: false,
+      graphic_image_completed: false,
+      payment_completed: true,
+      external_link: '',
+      word_count: 0,
+      date_added: '',
+      rough_draft_deadline: '',
+      final_draft_deadline: new Date('1/1/2023').toISOString(),
+      publication_date: new Date('1/25/2023').toISOString(),
+      archived: false,
     }
   ],
   themes: [
@@ -138,5 +170,5 @@ export const contact = {
 
     }
   ],
-  roles: ['author', 'photographer']
+  roles: [{ id: 1, name: 'author' }, { id: 2, name: 'photographer' }]
 }

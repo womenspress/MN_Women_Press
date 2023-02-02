@@ -85,7 +85,7 @@ export default function SortFilterSearch(props) {
         open={filterOpen}
         onClose={() => setFilterAnchor(null)}
       >
-        {sortOptions.map(option => {
+        {filterOptions.map(option => {
           return (
             <MenuItem
               key={option}

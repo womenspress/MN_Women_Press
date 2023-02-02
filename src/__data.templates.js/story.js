@@ -1,0 +1,61 @@
+//* template for story objects
+
+//* story as a parent
+
+const parentStory = {
+  id: '',
+  title: '',
+  subtitle: '',
+  article_text: '',
+  article_link: '',
+  notes: '',
+  photo: '',
+  type: '',
+  copies_required: 0,
+  copies_sent: false,
+  photo_required: true,
+  photo_uploaded: false,
+  fact_check_required: true,
+  fact_check_completed: true,
+  graphic_image_required: false,
+  graphic_image_completed: false,
+  payment_required: false,
+  payment_completed: true,
+  external_link: '',
+  word_count: 0,
+  date_added: '',
+  rough_draft_deadline: '',
+  final_draft_deadline: '',
+  publication_date: '',
+  contacts: [{...childContact, story_association, invoice_amount, invoice_paid},{}],
+  theme: [{},{}],
+  tags: [{},{}]
+}
+
+const childStory = {
+  id: '',
+  title: '',
+  subtitle: '',
+  article_text: '',
+  article_link: '',
+  notes: '',
+  photo: '',
+  type: '',
+  copies_required: 0,
+  copies_sent: false,
+  photo_required: true,
+  photo_uploaded: false,
+  fact_check_required: true,
+  fact_check_completed: true,
+  graphic_image_required: false,
+  graphic_image_completed: false,
+  payment_required: false,
+  payment_completed: true,
+  external_link: '',
+  word_count: 0,
+  date_added: '',
+  rough_draft_deadline: '',
+  final_draft_deadline: '',
+  publication_date: '',
+}
+

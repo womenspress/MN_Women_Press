@@ -81,7 +81,7 @@ export default function StoriesPage() {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              {currentStory.contacts?.filter(e => e.role === 'author').map((contact) => {
+              {currentStory.contacts?.filter(e => e.story_association === 'author').map((contact) => {
                 return (
                   <Grid container spacing={1} key={contact.id}>
                     {/* The below portion can be swapped out with a contact card component once created */}
@@ -103,9 +103,9 @@ export default function StoriesPage() {
                     Photographer
                   </Typography>
                 </Grid>
-                {currentStory.contacts.filter(e => e.role === 'photographer').length > 0 ?
+                {currentStory.contacts.filter(e => e.story_association === 'photographer').length > 0 ?
                   <Grid item xs={9}>
-                    {currentStory.contacts.filter(e => e.role === 'photographer').map((contact) => {
+                    {currentStory.contacts.filter(e => e.story_association === 'photographer').map((contact) => {
                       return (
                         <Grid container spacing={1} key={contact.id}>
                           {/* The below portion can be swapped out with a contact card component once created */}
@@ -134,9 +134,9 @@ export default function StoriesPage() {
                     Fact Checker
                   </Typography>
                 </Grid>
-                {currentStory.contacts?.filter(e => e.role === 'fact checker').length > 0 ?
+                {currentStory.contacts?.filter(e => e.story_association === 'fact checker').length > 0 ?
                   <Grid item xs={9}>
-                    {currentStory.contacts.filter(e => e.role === 'fact checker').map((contact) => {
+                    {currentStory.contacts.filter(e => e.story_association === 'fact checker').map((contact) => {
                       return (
                         <Grid container spacing={1} key={contact.id}>
                           {/* The below portion can be swapped out with a contact card component once created */}
@@ -159,7 +159,7 @@ export default function StoriesPage() {
               null
             }
             {/* Other contacts that are not fact checker, author, photographer go here */}
-            {currentStory.contacts?.filter(e => e.role !== 'fact checker' && e.role !== 'author' && e.role !== 'photographer').length > 0 ?
+            {currentStory.contacts?.filter(e => e.story_association !== 'fact checker' && e.story_association !== 'author' && e.story_association !== 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -167,7 +167,7 @@ export default function StoriesPage() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9}>
-                  {currentStory.contacts.filter(e => e.role !== 'fact checker' && e.role !== 'author' && e.role !== 'photographer').map((contact) => {
+                  {currentStory.contacts.filter(e => e.story_association !== 'fact checker' && e.story_association !== 'author' && e.story_association !== 'photographer').map((contact) => {
                     return (
                       <Grid container spacing={1} key={contact.id}>
                         {/* The below portion can be swapped out with a contact card component once created */}

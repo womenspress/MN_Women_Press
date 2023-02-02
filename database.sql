@@ -122,3 +122,28 @@ VALUES
 ('Books', '	
 Excerpts and conversations with new and established Minnesota authors. Special sections: Money & Business, Education & Learning', 'February', 2023);
 
+
+
+/*Contacts*/ 
+
+INSERT INTO "contact" 
+("name", "email") 
+VALUES 
+('Mikki Morrissette', 'editor@womenspress.com'),
+('Sarah Whiting', 'sarah@womenspress.com'),
+('Lydia Moran', 'Lydia@womenspress.com');
+
+INSERT INTO "story_contact" 
+("story_id", "contact_id") 
+VALUES 
+(1, 1);
+
+/* Tags */ 
+
+INSERT INTO "tag" 
+("name", "description") 
+VALUES 
+('Education', 'All things learning and teaching in MN'),
+('Healthcare', 'Everything from the system, to experiences with it.'); 
+
+

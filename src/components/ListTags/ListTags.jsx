@@ -7,6 +7,9 @@ import Button from '@mui/material/Button';
 import Tag from '../Tag/Tag';
 
 export default function ListTags(props){
+
+    console.log('ListTags: ', props.   tags);
+
     let defaultTags = [
         {id: 0, name: 'tag0', description: 'first tag'},
         {id: 1, name: 'tag1', description: 'second tag'},
@@ -19,8 +22,6 @@ export default function ListTags(props){
     // props
     let tagsArray = props.tags || defaultTags;
     let numToDisplay = props.numOfDisplay || 3;
-
- 
 
     return(
         <div>

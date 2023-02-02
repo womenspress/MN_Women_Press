@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
   // GET route code here
   console.log('In stories router GET, getting all stories. URL: /api/stories');
-  res.sendStatus(200);
+  res.send([]);
 });
 
 

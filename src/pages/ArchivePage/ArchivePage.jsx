@@ -1,4 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+
+// style
+
+import {mainContentBox} from '../../__style'
 
 // libraries
 import {useDispatch, useSelector} from 'react-redux';
@@ -12,6 +16,13 @@ import ThemeArchive from '../../components/ThemeArchive/ThemeArchive';
 
 export default function ArchivePage(){
 
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch({type: 'GET_ALL_STORIES'});
+    dispatch({type: 'GET_ALL_THEMES'})
+  },[])
+
   const [tabValue, setTabValue] = useState('stories')
 
     return (
@@ -21,11 +32,11 @@ export default function ArchivePage(){
           <Button onClick = {()=>setTabValue('stories')}>stories</Button>
           <Button onClick = {()=>setTabValue('themes')}>themes</Button>
         </Box>
+
+        <Box sx = {{...mainContentBox, height: 600}}>
+
         {tabValue === 'stories' && <StoryArchive/>}
         {tabValue === 'themes' && <ThemeArchive/>}
-
-        <Box>
-
         </Box>
       </Box>
     )

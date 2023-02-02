@@ -1,4 +1,9 @@
-
+export const mainContentBox = {
+  bgcolor: 'grey.100',
+  padding: 1,
+  margin: 1,
+  borderRadius: 2
+}
 
 export const largeModal = {
   position: 'absolute',

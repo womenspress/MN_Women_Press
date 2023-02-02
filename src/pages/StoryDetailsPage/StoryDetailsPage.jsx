@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { story } from '../../sampleStoryData';
-import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, styled, TextField } from '@mui/material';
+import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, Link, TextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import ListTags from '../../components/ListTags/ListTags';

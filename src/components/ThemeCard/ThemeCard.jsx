@@ -6,6 +6,8 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
+import ThemeModal from '../ThemeModal/ThemeModal';
+
 const bull = (
     <Box
         component="span"
@@ -16,11 +18,14 @@ const bull = (
 );
 
 export default function BasicCard(props) {
+    let theme = props.theme;
     let id = props.id || -1;
-    let title = props.title || "undefined";
+    let name = props.name || "undefined";
     let description = props.description || "undefined description";
-    let month = props.month || "month undefined"
-    let year =props.year || -1
+    let month = props.month || "month undefined";
+    let year =props.year || -1;
+    let stories = props.stories || [{id: -1, title: "title not found"}];
+    let contacts = props.contacts || [{id: -1, name: "contact not found"}];
 
     const openThemeModule = (id) => {
         console.log('Open module for theme id: ', id);
@@ -33,14 +38,24 @@ export default function BasicCard(props) {
                     {month}, {year}
                 </Typography>
                 <Typography variant="h5" component="div">
-                    {title}
+                    {name}
                 </Typography>
                 <Typography variant="body2">
                     {description}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={() => openThemeModule(id)}>View More</Button>
+                <ThemeModal 
+                    theme={theme}
+                    id={id}
+                    name={name} 
+                    description={description} 
+                    month={month} 
+                    year={year} 
+                    stories={stories}
+                    contacts={contacts}
+                    
+                    />
             </CardActions>
         </Card>
     );

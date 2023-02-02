@@ -42,6 +42,7 @@ export default function ThemeCalendar(props){
                                 return (
                                     // <div>{theme.name}: Card #{index}</div>
                                     <ThemeCard 
+                                        theme={theme}
                                         name={theme.name} 
                                         description={theme.description} 
                                         month={theme.month} 

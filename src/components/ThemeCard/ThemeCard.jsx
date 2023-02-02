@@ -18,7 +18,8 @@ const bull = (
 );
 
 export default function BasicCard(props) {
-    let id = props.id ||  -1;
+    let theme = props.theme;
+    let id = props.id || -1;
     let name = props.name || "undefined";
     let description = props.description || "undefined description";
     let month = props.month || "month undefined";
@@ -45,6 +46,7 @@ export default function BasicCard(props) {
             </CardContent>
             <CardActions>
                 <ThemeModal 
+                    theme={theme}
                     id={id}
                     name={name} 
                     description={description} 

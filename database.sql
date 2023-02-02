@@ -114,14 +114,11 @@ INSERT INTO "theme"
 ("name", "description", "month", "year")  
 VALUES 
 ('Mentors', '	
-An exploration of intergenerational relationships between people who support one another in work and life. Featuring the voices of those in farming, politics, education, and more. Special sections: Pets, Camp & Kids', 'January', 2023); 
-
-INSERT INTO "theme" 
-("name", "description", "month", "year") 
-VALUES 
+An exploration of intergenerational relationships between people who support one another in work and life. Featuring the voices of those in farming, politics, education, and more. Special sections: Pets, Camp & Kids', 'January', 2023), 
 ('Books', '	
 Excerpts and conversations with new and established Minnesota authors. Special sections: Money & Business, Education & Learning', 'February', 2023);
 
+/*Stories */
 
 
 /*Contacts*/ 

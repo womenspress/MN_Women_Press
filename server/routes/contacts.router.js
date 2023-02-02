@@ -114,16 +114,6 @@ router.get('/current/:id', (req, res) => {
   res.sendStatus(200);
 });
 
-// search happening on front-end
-// router.get('/search', (req, res) => {
-//   // GET route code here
-//   console.log(
-//     'In contacts router search GET, getting all contacts by search. URL: /api/contacts/search'
-//   );
-//   res.sendStatus(200);
-// });
-
-
 /**
  * POST route template
  */
@@ -200,8 +190,6 @@ router.put('/:id', async (req, res) => {
   console.log('editing project. req.body: ', req.body)
   const client = await pool.connect();
 
-  // const bodyDatesPrepped = prepareDates.prepareDatesForDB(req.body)
-
   try {
     const {
       name,
@@ -275,12 +263,12 @@ router.delete('/:id', (req, res) => {
 
 // require ID for params and req.body to include tags
 router.post('/tag/:id', (req, res) => {
-  // CREATE tags for a contact
+  // CREATE tags for a contact. just insert one row into the junction table
   res.sendStatus(200);
 })
 
 router.delete('/tag/:id', (req, res) => {
-  // DELETE a tag from a contact
+  // DELETE a tag from a contact. delete a row from the junction table
   res.sendStatus(200);
 })
 

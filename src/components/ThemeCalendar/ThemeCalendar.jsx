@@ -7,7 +7,7 @@ import { Box } from "@mui/system";
 
 export default function ThemeCalendar(props){
     const [year, setYear] = useState(props.year || new Date().getFullYear());
-    const themeArray = props.themeArray || [ {title: "Theme Array Not Found", description: "Not Found", month: "January", year: year}];
+    const themeArray = props.themeArray || [ {name: "Theme Array Not Found", description: "Not Found", month: "January", year: year}];
 
     const displayPreviousYear = () => {
         setYear(year - 1);
@@ -40,8 +40,16 @@ export default function ThemeCalendar(props){
                             // filters by current year displayed and maps remaining theme cards
                             themeArray.filter(byYear).map((theme, index) => {
                                 return (
-                                    // <div>{theme.title}: Card #{index}</div>
-                                    <ThemeCard title={theme.title} description={theme.description} month={theme.month} year={theme.year} key={index}/>
+                                    // <div>{theme.name}: Card #{index}</div>
+                                    <ThemeCard 
+                                        theme={theme}
+                                        name={theme.name} 
+                                        description={theme.description} 
+                                        month={theme.month} 
+                                        year={theme.year} 
+                                        stories={theme.stories}
+                                        contacts={theme.contacts}
+                                        key={index}/>
                                 )
                             })
                         }

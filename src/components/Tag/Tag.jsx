@@ -25,7 +25,7 @@ export default function tag(props){
 
 
     return(
-        <Button key={tag.id} onClick={(event) => handleClick(event, tag)}>
+        <Button key={tag.id} variant='contained' sx={{backgroundColor: 'primary.main', color: '#FFFFFF', m: .5}} onClick={(event) => handleClick(event, tag)}>
         {tag.name}
         <Popover
             id={id}

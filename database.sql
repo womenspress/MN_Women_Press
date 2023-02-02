@@ -106,6 +106,14 @@ CREATE TABLE "story_contact" (
     "invoice_total" DECIMAL (12,2)
 );
 
+ALTER TABLE "story"
+DROP COLUMN "archived";
+
+ALTER TABLE "story"
+ADD "photo_required" BOOLEAN DEFAULT FALSE,
+ADD "fact_check_required" BOOLEAN DEFAULT FALSE,
+ADD "graphic_image_completed" BOOLEAN DEFAULT FALSE;
+
 
 /* Dummy Data for project */ 
 
@@ -142,5 +150,3 @@ INSERT INTO "tag"
 VALUES 
 ('Education', 'All things learning and teaching in MN'),
 ('Healthcare', 'Everything from the system, to experiences with it.'); 
-
-

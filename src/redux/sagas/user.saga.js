@@ -33,9 +33,29 @@ function* fetchAllUsers() {
   }
 }
 
+function* setUserAccess(action) {
+  try {
+    yield axios.put('/api/user/access', action.payload);
+    yield put({ type: 'FETCH_ALL_USERS'});
+  } catch (error) {
+    console.log('error in setUserAccess saga:', error)
+  }
+}
+
+function* deleteUser(action) {
+  try {
+    yield axios.delete('/api/user', action.payload);
+    yield put({type: 'FETCH_ALL_USERS'});
+  } catch (error) {
+    console.log('error in deleteUser saga:', error)
+  }
+}
+
 function* userSaga() {
   yield takeLatest('FETCH_USER', fetchUser);
-  yield takeLatest('FETCH_ALL_USERS', fetchAllUsers)
+  yield takeLatest('FETCH_ALL_USERS', fetchAllUsers);
+  yield takeLatest('SET_USER_ACCESS', setUserAccess);
+  yield takeLatest('DELETE_USER', deleteUser);
 }
 
 export default userSaga;

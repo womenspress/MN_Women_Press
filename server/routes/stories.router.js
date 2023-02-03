@@ -48,7 +48,7 @@ router.get('/current/:id', (req, res) => {
   ;`;
   pool
     .query(getDetailsQueryText, [id])
-    .then((response) => res.send(response))
+    .then((response) => res.send(response.rows[0]))
     .catch((err) => {
       res.sendStatus(200);
       console.log(err);

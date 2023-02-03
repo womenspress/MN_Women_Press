@@ -64,7 +64,6 @@ export default function StoriesPage() {
 
   return (
     <Box>
-      {/* {JSON.stringify(currentStory)} */}
       <Grid container space={1}>
         {/* This grid row contains story header and tags */}
         <Grid item xs={8}>

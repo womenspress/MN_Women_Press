@@ -65,16 +65,23 @@ router.put('/access', rejectUnauthenticated, (req, res) => {
   const queryText = 'UPDATE "user" set "access" = $1 WHERE "id" = $2;';
   const queryParams = [req.body.access, req.body.userId];
 
-  pool.query(queryText, queryParams).then(()=> {
+  pool.query(queryText, queryParams).then(() => {
     res.sendStatus(200);
   }).catch((err) => {
     console.log('error in update user access query:', err);
   });
 });
 
-router.delete('/', rejectUnauthenticated, (req, res) => {
-  // need route to delete User by ID (req.body === user ID)
-  res.sendStatus(200);
+// deletes user, initiated from admin page
+router.delete('/:id', rejectUnauthenticated, (req, res) => {
+  const id = req.params.id;
+  const queryText = `DELETE from "user" where "id"=$1;`;
+
+  pool.query(queryText, [id]).then(() => {
+    res.sendStatus(200);
+  }).catch(err => {
+    console.log('error deleting user in query:', err);
+  })
 })
 
 module.exports = router;

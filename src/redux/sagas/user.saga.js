@@ -45,7 +45,7 @@ function* setUserAccess(action) {
 
 function* deleteUser(action) {
   try {
-    yield axios.delete('/api/user', action.payload);
+    yield axios.delete('/api/user/' + action.payload.userId);
     yield put({ type: 'FETCH_ALL_USERS' });
   } catch (error) {
     console.log('error in deleteUser saga:', error)

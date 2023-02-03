@@ -8,6 +8,7 @@ export default function AdminPage() {
     const dispatch = useDispatch();
 
     const allUsers = useSelector(store => store.user.allUsers);
+    const currentUser = useSelector(store => store.user.currentUser);
     const [unauthorizedUsers, setUnauthorizedUsers] = useState([]);
     const [authorizedUsers, setAuthorizedUsers] = useState([]);
     const [viewState, setViewState] = useState('unauthorized')
@@ -17,7 +18,8 @@ export default function AdminPage() {
     }, [])
 
     useEffect(() => {
-            setAuthorizedUsers(allUsers.filter((e) => e.access === true));
+            // does not include logged in user in list (someone else would need to change their access or delete the user)
+            setAuthorizedUsers(allUsers.filter((e) => e.access === true && e.id !== currentUser.id));
             setUnauthorizedUsers(allUsers.filter((e) => e.access === false));
     }, [allUsers]);
 
@@ -27,9 +29,9 @@ export default function AdminPage() {
         console.log('in handleAuthorizeClick', user.id, !user.access);
     }
 
+    // TODO: add confirmation modal before deleting a user
     const handleDeleteClick = (user) => {
         dispatch({ type: 'DELETE_USER', payload: { userId: user.id } });
-        console.log('in handleDeleteClick', user.id)
     }
 
     return (
@@ -40,7 +42,7 @@ export default function AdminPage() {
                     <Button variant={(viewState === 'unauthorized' ? 'contained' : 'outlined')} color='warning' onClick={() => setViewState('unauthorized')}>Unauthorized Users</Button>
                     <Button variant={(viewState === 'authorized' ? 'contained' : 'outlined')} color='success' onClick={() => setViewState('authorized')}>Authorized Users</Button>
                 </Box>
-                <Box sx={{ backgroundColor: 'primary.light' }}>
+                <Box sx={{ backgroundColor: 'primary.light', minHeight: '60vh' }}>
                     <Grid container space={2}>
                         {viewState === 'unauthorized' ?
                             unauthorizedUsers.map(user => {
@@ -70,7 +72,6 @@ export default function AdminPage() {
                                             </CardContent>
                                             <CardActions>
                                                 <Button variant='contained' color='warning' onClick={() => handleAuthorizeClick(user)}>Deactivate</Button>
-                                                <Button variant='contained' color='error' onClick={() => handleDeleteClick(user)}>Delete</Button>
                                             </CardActions>
                                         </Card>
                                     </Grid>

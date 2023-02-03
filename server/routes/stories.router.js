@@ -167,21 +167,38 @@ router.put('/:id', (req, res) => {
 });
 
 // require ID for params and req.body to include tags
+//I am uncertain what the id is for in this process. Made with the information in the body of request.
 router.post('/tag/:id', (req, res) => {
   // CREATE tags for a story
-  let id = req.params.id;
-  let postTagQueryText = 'SQL';
-  pool.query(postTagQueryText, [id]).then().catch();
+  let tagId = req.params.id;
+  let name = req.body.name;
+  let description = req.body.description;
+  let postTagQueryText =
+    'INSERT INTO "tag" ("name","description") VALUES ($1, $2) RETURNING "id";';
+  pool
+    .query(postTagQueryText, [name, description])
+    .then((response) => {
+      let id = response.rows[0].id;
+      res.send(id);
+    })
+    .catch();
   res.sendStatus(200);
 });
 
+//Created with the idea that the tag id was params and story id is in the body of the request
 router.delete('/tag/:id', (req, res) => {
   // DELETE a tag from a story
   let tagId = req.params.id;
   let storyId = req.body.id;
   let deleteTagQueryText =
     'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
-  pool.query(deleteTagQueryText, [storyId, tagId]).then().catch();
+  pool
+    .query(deleteTagQueryText, [storyId, tagId])
+    .then(sendStatus(200))
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
   res.sendStatus(200);
 });
 

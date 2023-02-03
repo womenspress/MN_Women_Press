@@ -8,10 +8,25 @@ const router = express.Router();
 router.get('/', (req, res) => {
   // GET route code here
   console.log('In stories router GET, getting all stories. URL: /api/stories');
-  let getAllQueryText = 'SQL';
-  pool.query(getAllQueryText).then().catch();
+  let getAllQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
+  FROM "story"
+  LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
+  LEFT JOIN "tag" ON "tag"."id" = "story_tag"."tag_id"
+  LEFT JOIN "story_contact" ON "story"."id" = "story_contact"."story_id"
+  LEFT JOIN "contact" ON "contact"."id" = "story_contact"."contact_id"
+  LEFT JOIN "theme_story" ON "theme_story"."story_id" = "story"."id"
+  LEFT JOIN "theme" ON "theme_story"."theme_id" = "theme"."id"
+  GROUP BY "story"."id"
+  ORDER BY "story"."publication_date" ASC
+  ;`;
 
-  res.sendStatus(200);
+  pool
+    .query(getAllQueryText)
+    .then((response) => res.send(response))
+    .catch((err) => {
+      res.sendStatus(200);
+      console.log(err);
+    });
 });
 
 router.get('/current/:id', (req, res) => {
@@ -83,7 +98,7 @@ router.post('/', async (req, res) => {
       //story.payment_required,//will add when exisits in DB
       //story.payment_completed, will add when exisits in DB
     ]);
-    console.log('toryId:', storyResponse.rows[0].id);
+    console.log('StoryId:', storyResponse.rows[0].id);
     let storyId = storyResponse.rows[0].id;
     for (let tag of tags) {
       await connection.query(attachTagsQuery, [tag.id, storyId]);

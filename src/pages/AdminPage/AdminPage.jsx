@@ -42,7 +42,7 @@ export default function AdminPage() {
                     <Button variant={(viewState === 'unauthorized' ? 'contained' : 'outlined')} color='warning' onClick={() => setViewState('unauthorized')}>Unauthorized Users</Button>
                     <Button variant={(viewState === 'authorized' ? 'contained' : 'outlined')} color='success' onClick={() => setViewState('authorized')}>Authorized Users</Button>
                 </Box>
-                <Box sx={{ backgroundColor: 'primary.light', minHeight: '60vh' }}>
+                <Box sx={{ backgroundColor: 'secondary.main', minHeight: '60vh' }}>
                     <Grid container space={2}>
                         {viewState === 'unauthorized' ?
                             unauthorizedUsers.map(user => {

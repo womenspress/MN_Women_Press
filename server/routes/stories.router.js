@@ -35,9 +35,24 @@ router.get('/current/:id', (req, res) => {
   console.log(
     `In stories router GET by id, getting story details by id ${id}. URL: /api/stories/:id`
   );
-  let getDetailsQueryText = 'SQL';
-  pool.query(getDetailsQueryText, [id]).then().catch();
-  res.sendStatus(200);
+  let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
+  FROM "story"
+  LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
+  LEFT JOIN "tag" ON "tag"."id" = "story_tag"."tag_id"
+  LEFT JOIN "story_contact" ON "story"."id" = "story_contact"."story_id"
+  LEFT JOIN "contact" ON "contact"."id" = "story_contact"."contact_id"
+  LEFT JOIN "theme_story" ON "theme_story"."story_id" = "story"."id"
+  LEFT JOIN "theme" ON "theme_story"."theme_id" = "theme"."id"
+  WHERE "story"."id" = $1
+  GROUP BY "story"."id"
+  ;`;
+  pool
+    .query(getDetailsQueryText, [id])
+    .then((response) => res.send(response))
+    .catch((err) => {
+      res.sendStatus(200);
+      console.log(err);
+    });
 });
 
 /**

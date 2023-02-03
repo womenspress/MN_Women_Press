@@ -96,7 +96,7 @@ export default function ThemeStoryListItem({ story}) {
                     {story.notes}
                 </Typography>
             </Box>
-            <Link href={story.article_link}><Typography>{story.article_link}</Typography></Link>
+            <a href={story.article_link}><Typography>{story.article_link}</Typography></a>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Button
                 onClick={() => history.push(`/story/{story.id}`)}

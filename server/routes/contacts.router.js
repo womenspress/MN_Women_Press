@@ -117,70 +117,12 @@ router.get('/current/:id', (req, res) => {
 /**
  * POST route template
  */
-
-//* --------------- POST NEW CONTACT -------------------
-
-// note: this post will not be responsible for stories or themes: only tags and roles.
-
-router.post('/', async (req, res) => {
-  const client = await pool.connect();
-  console.log('req.body: ', req.body)
-
-  try {
-    const {
-      name,
-      pronouns,
-      expertise,
-      photo,
-      email,
-      phone,
-      billing_address,
-      mailing_address,
-      bio,
-      note,
-      linkedin,
-      twitter,
-      instagram,
-      facebook,
-      tags,
-      roles
-    } = req.body;
-
-    const date_added = new Date.toISOString()
-
-    await client.query('BEGIN')
-
-    //* create contact and get its id for future inserts
-    const contactInsertQuery = '~~~ SQL ~~~ returning id'
-    const contactInsertResults = await client.query(contactInsertQuery, [
-      name, pronouns, expertise, photo, email, phone, billing_address, mailing_address, bio, note, linkedin, twitter, instagram, facebook, date_added
-    ]);
-    const contactId = contactInsertResults[0].id;
-
-    //* insert tag relations into the tag_contact junction table
-
-    await Promise.all(tags.map(tag => {
-      const tagInsertQuery = '~~~ SQL query ~~~'
-      const tagInsertValues = [];
-      return client.query(tagInsertQuery, tagInsertValues);
-    }));
-
-    //* insert role relations into role_contact junction table
-    await Promise.all(roles.map(role => {
-      const roleInsertQuery = `~~~ SQL query ~~~`;
-      const roleInsertValues = [];
-      return client.query(roleInsertQuery, roleInsertValues);
-    }));
-
-    await client.query('COMMIT')
-    res.sendStatus(201);
-  } catch (error) {
-    await client.query('ROLLBACK')
-    console.log('Error POSTing new contact', error);
-    res.sendStatus(500);
-  } finally {
-    client.release()
-  }
+router.post('/', (req, res) => {
+  // POST route code here
+  console.log(
+    'In contacts router search POST, making contact. URL: /api/contacts'
+  );
+  res.sendStatus(200);
 });
 
 //* --------------- PUT - update contact -----------------

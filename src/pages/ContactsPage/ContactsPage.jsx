@@ -5,17 +5,15 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import CreateNewContactModal from '../../components/CreateNewContactModal/CreateNewContactModal';
 
-import './ContactsPage.css'
-
 export default function ContactsPage(){
     return(
     <>
-        <div id="page-header">
+        <Box sx={{display: 'flex'}}>
             <Typography variant="h3" component="h1">
-                contacts
+                Contacts
             </Typography>
             <CreateNewContactModal/>
-        </div>
+        </Box>
     </>
     )
 }

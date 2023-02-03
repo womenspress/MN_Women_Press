@@ -177,9 +177,11 @@ router.post('/tag/:id', (req, res) => {
 
 router.delete('/tag/:id', (req, res) => {
   // DELETE a tag from a story
-  let id = req.params.id;
-  let deleteTagQueryText = 'SQL';
-  pool.query(deleteTagQueryText, [id]).then().catch();
+  let tagId = req.params.id;
+  let storyId = req.body.id;
+  let deleteTagQueryText =
+    'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
+  pool.query(deleteTagQueryText, [storyId, tagId]).then().catch();
   res.sendStatus(200);
 });
 

@@ -18,7 +18,7 @@ export const largeModal = {
   padding: 2,
 }
 
-export const smallModal={
+export const smallModal = {
   position: 'absolute',
   transform: 'translate(-5%, 5%)',
   width: 180,

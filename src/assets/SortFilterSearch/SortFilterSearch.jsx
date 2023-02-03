@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
 // components
-import { Box, Typography, TextField, Button, Menu, MenuItem } from '@mui/material';
+import { Box, Typography, TextField, Button, Menu, MenuItem, IconButton, ButtonGroup } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import SortIcon from '@mui/icons-material/Sort';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 export default function SortFilterSearch(props) {
 
@@ -16,6 +17,9 @@ export default function SortFilterSearch(props) {
 
   sortMethod:
   setSortMethod
+
+  sortDirection
+  setSortDirection
 
   filterMethod
   setFilterMethod
@@ -38,6 +42,8 @@ export default function SortFilterSearch(props) {
     setSearchTerm,
     sortMethod,
     setSortMethod,
+    sortDirection,
+    setSortDirection,
     filterMethod,
     setFilterMethod
   } = props
@@ -52,17 +58,41 @@ export default function SortFilterSearch(props) {
     setSortAnchor(e.currentTarget)
   }
 
-  return (
-    <Box>
-      <Button
-        endIcon={<SortIcon />}
-        onClick={openSortMenu}
-      >{sortMethod}</Button>
-      <Button
-        endIcon={<FilterListIcon />}
-        onClick={openFilterMenu}
-      >{filterMethod}</Button>
+  const toggleSortDirection = () => {
+    if (sortDirection === 'ascending') setSortDirection('descending')
+    if (sortDirection === 'descending') setSortDirection('ascending')
+  }
 
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box sx={{ mr: 1 }}>
+        <ButtonGroup>
+          <Button
+            onClick={openSortMenu}
+            sx={{ textTransform: 'none' }}
+            variant = 'text'
+            size = 'small'
+          >{sortMethod}
+          </Button>
+          <Button
+            onClick={toggleSortDirection}
+            variant = 'text'
+            sx = {{paddingLeft: 0}}
+            size = 'small'
+          >
+            {sortDirection === 'ascending' && <ArrowDropDownIcon />}
+            {sortDirection === 'descending' && <ArrowDropUpIcon />}
+          </Button>
+        </ButtonGroup>
+
+
+        <Button
+          endIcon={<FilterListIcon />}
+          onClick={openFilterMenu}
+          sx={{ textTransform: 'none' }}
+          size = 'small'
+        >{filterMethod}</Button>
+      </Box>
       <Menu
         anchorEl={sortAnchor}
         open={sortOpen}

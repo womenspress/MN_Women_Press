@@ -28,15 +28,34 @@ router.get('/current/:id', (req, res) => {
 /**
  * POST route template
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // POST route code here
-  let theme = req.theme;
+  //themes aren't applicable to this process
+  //let theme = req.theme;
   let tags = req.tags;
   let contacts = req.contacts;
   let postStoryQuery = 'SQL'; //Return id of story
-  let postTagsQuery = 'SQL';
+  let attachTagsQuery = 'SQL';
+  //I am building this under the assumption that all tags and contacts that are attached are already in the tags table.
   let postContactsQuery = 'SQL';
-  pool.query().then().catch();
+  const connection = await pool.connect();
+  try {
+    await connection.query('BEGIN;');
+    let storyId = await connection.query(postStoryQuery);
+    for (let tag of tags) {
+      await connection.query(attachTagsQuery, tag.id, storyId);
+    }
+    for (let contact of contacts) {
+      await connection.query(postContactsQuery, contact.id, storyId);
+    }
+    await connection.query('COMMIT;');
+  } catch (err) {
+    await connection.query('ROLLBACK');
+    res.sendStatus(500);
+  } finally {
+    connection.release();
+  }
+
   res.sendStatus(200);
 });
 

@@ -16,7 +16,16 @@ router.get('/', async (req, res) => {
 
     //* 1. general info: all info in teh contact table
 
-    const generalInfoQuery = '~~~ enter SQL stuff here ~~~'
+    const generalInfoQuery = `SELECT "contact".*,  json_agg(DISTINCT "story") AS "stories", json_agg(DISTINCT "tag") AS "tags"
+    FROM "contact" 
+    LEFT JOIN "tag_contact" ON "tag_contact"."contact_id" = "contact"."id"
+    LEFT JOIN "tag" ON "tag"."id" = "tag_contact"."tag_id"
+    LEFT JOIN "story_tag" ON "tag"."id" = "story_tag"."tag_id"
+    LEFT JOIN "story_contact" ON "contact"."id" = "story_contact"."contact_id"
+    LEFT JOIN "story" ON "story_contact"."story_id" = "story"."id"
+    GROUP BY "contact"."id"
+    ORDER BY "contact"."date_added" ASC
+    ;`
     const generalInfoResults = await client.query(generalInfoQuery);
 
     allContacts = generalInfoResults.rows
@@ -29,17 +38,17 @@ router.get('/', async (req, res) => {
       }
     */
 
-    const storyQuery = '~~~ enter SQL stuff here ~~~'
-    const storyResults = await client.query(storyQuery);
+    // const storyQuery = '~~~ enter SQL stuff here ~~~'
+    // const storyResults = await client.query(storyQuery);
 
-    for (let contact of allContacts) {
-      for (let story of storyResults.rows) {
-        if (contact.id === story.id) {
-          contact.stories = story.stories
-        }
-      }
-      if (!contact.stories) contact.stories = []
-    }
+    // for (let contact of allContacts) {
+    //   for (let story of storyResults.rows) {
+    //     if (contact.id === story.id) {
+    //       contact.stories = story.stories
+    //     }
+    //   }
+    //   if (!contact.stories) contact.stories = []
+    // }
 
     //* 3. themes. query returns array of objects:
     /* 
@@ -49,43 +58,43 @@ router.get('/', async (req, res) => {
     }
     */
 
-    const themeQuery = '~~~ enter SQL stuff here ~~~'
-    const themeResults = await client.query(themeQuery)
-    for (let contact of allContacts) {
-      for (let theme of themeResults.rows) {
-        if (contact.id === theme.id) {
-          contact.themes = theme.themes
-        }
-      }
-      if (!contact.themes) contact.themes = []
-    }
+    // const themeQuery = '~~~ enter SQL stuff here ~~~'
+    // const themeResults = await client.query(themeQuery)
+    // for (let contact of allContacts) {
+    //   for (let theme of themeResults.rows) {
+    //     if (contact.id === theme.id) {
+    //       contact.themes = theme.themes
+    //     }
+    //   }
+    //   if (!contact.themes) contact.themes = []
+    // }
 
 
     //* 4. roles
 
-    const rolesQuery = '~~~ enter SQL stuff here ~~~'
-    const rolesResults = await client.query(rolesQuery)
-    for (let contact of allContacts) {
-      for (let roles of rolesResults.rows) {
-        if (contact.id === roles.id) {
-          contact.roles = roles.roles
-        }
-      }
-      if (!contact.roles) contact.roles = []
-    }
+    // const rolesQuery = '~~~ enter SQL stuff here ~~~'
+    // const rolesResults = await client.query(rolesQuery)
+    // for (let contact of allContacts) {
+    //   for (let roles of rolesResults.rows) {
+    //     if (contact.id === roles.id) {
+    //       contact.roles = roles.roles
+    //     }
+    //   }
+    //   if (!contact.roles) contact.roles = []
+    // }
 
     //* 5. tags
 
-    const tagsQuery = '~~~ enter SQL stuff here ~~~'
-    const tagsResults = await client.query(tagsQuery)
-    for (let contact of allContacts) {
-      for (let tags of tagsResults.rows) {
-        if (contact.id === tags.id) {
-          contact.tags = tags.tags
-        }
-      }
-      if (!contact.tags) contact.tags = []
-    }
+    // const tagsQuery = '~~~ enter SQL stuff here ~~~'
+    // const tagsResults = await client.query(tagsQuery)
+    // for (let contact of allContacts) {
+    //   for (let tags of tagsResults.rows) {
+    //     if (contact.id === tags.id) {
+    //       contact.tags = tags.tags
+    //     }
+    //   }
+    //   if (!contact.tags) contact.tags = []
+    // }
 
 
     await client.query('COMMIT')
@@ -103,16 +112,16 @@ router.get('/', async (req, res) => {
   res.sendStatus(200);
 });
 
-//* ------------- GET BY ID --------------
+//* ------------- GET BY ID --------------**TENTATIVELY BEING MANAGED BY PULLING OUT OF STATE**
 
-router.get('/current/:id', (req, res) => {
-  // GET route code here. this can be done in one query.
-  let id = req.params.id;
-  console.log(
-    `In contacts :id router GET, getting contact by id ${id}. URL: /api/contacts/current/:id`
-  );
-  res.sendStatus(200);
-});
+// router.get('/current/:id', (req, res) => {
+//   // GET route code here. this can be done in one query.
+//   let id = req.params.id;
+//   console.log(
+//     `In contacts :id router GET, getting contact by id ${id}. URL: /api/contacts/current/:id`
+//   );
+//   res.sendStatus(200);
+// });
 
 /**
  * POST route template
@@ -226,28 +235,70 @@ router.put('/:id', async (req, res) => {
 
     //* 1. delete existing tags and roles
 
-    const deleteRolesQuery = client.query(`~~~ SQL ~~~`, [req.params.id])
+    const deleteRolesQuery = client.query(`DELETE FROM "contact_role" WHERE "contact_id" = $1;`, [req.params.id])
 
-    const deleteTagsQuery = client.query(`~~~ SQL ~~~`, [req.params.id])
+    const deleteTagsQuery = client.query(`DELETE FROM "tag_contact" WHERE "contact_id" = $1;`, [req.params.id])
 
     await Promise.all([deleteRolesQuery, deleteTagsQuery])
 
     //* 2. update general info (name, ensemble_name, description)
 
-    await client.query(`~~~ SQL ~~~`, [])
 
-    //* 3. insert tags and roles info
-    // 3a. tags
+    const contactUpdateQuery = `UPDATE "contact" SET
+    "name"=$1,
+    "pronouns"=$2,
+    "expertise"=$3,
+    "photo"=$4,
+    "email"=$5,
+    "phone"=$6,
+    "billing_address"=$7,
+    "mailing_address"=$8,
+    "bio"=$9,
+    "note"=$10,
+    "linkedIn"=$11,
+    "twitter"=$12,
+    "instagram"=$13,
+    "facebook"=$14
+    WHERE "id"=$15`
+
+
+
+    await client.query(contactUpdateQuery,
+      [name,
+      pronouns,
+      expertise,
+      photo,
+      email,
+      phone,
+      billing_address,
+      mailing_address,
+      bio,
+      note,
+      linkedin,
+      twitter,
+      instagram,
+      facebook,req.params.id])
+
+
+
+
+
+
+
+
+
+    // //* 3. insert tags and roles info WILL DO THIS NEXT
+    // // 3a. tags
     const tagsPromises = tags.map(tag => {
-      const insertTagText = `~~~ SQL ~~~`;
-      const insertTagValues = [];
+      const insertTagText = `UPDATE "tag_contact" SET "tag_id"=$1 WHERE "contact_id"=$2;`;
+      const insertTagValues = [tag.id, req.params.id];
       return client.query(insertTagText, insertTagValues)
     });
 
-    // 3b. roles
+    // // 3b. roles
     const rolesPromises =roles.map(role => {
-      const insertRoleText = `~~~ SQL ~~~`;
-      const insertRoleValues = [];
+      const insertRoleText = `UPDATE "contact_role" SET "role_id"=$1 WHERE "contact_id"=$2;`;
+      const insertRoleValues = [role.id, req.params.id];
       return client.query(insertRoleText, insertRoleValues);
     })
 

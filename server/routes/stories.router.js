@@ -62,9 +62,32 @@ router.post('/', async (req, res) => {
   console.log('In post route', req.body);
   console.log(req.body.tags);
   // POST route code here
-  let story = req.body;
-  let tags = req.body.tags;
-  let contacts = req.body.contacts;
+  const {
+    title,
+    subtitle,
+    article_text,
+    article_link,
+    notes,
+    type,
+    copies_sent,
+    photo_uploaded,
+    fact_check_completed /*9, same as fact_checked, different naming conventions in data*/,
+    graphic_image_required,
+    external_link,
+    word_count,
+    date_added,
+    rough_draft_deadline,
+    final_draft_deadline,
+    publication_date,
+    //story.photo, // will put in when exisits in DB
+    //copies_required, //will put in when exisits in DB
+    photo_required,
+    fact_check_required,
+    graphic_image_completed,
+    contacts,
+    tags,
+  } = req.body;
+
   let postStoryQuery = `
   INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
@@ -74,63 +97,66 @@ router.post('/', async (req, res) => {
   ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
   RETURNING "id";`; //Return id of story
 
-  //I am building this under the assumption that all tags and contacts that are attached are already in the tags table.
-  let attachTagsQuery = `
-  INSERT INTO "story_tag"
-  ( "tag_id","story_id")
-  VALUES 
-  ($1,$2);`;
-
-  let postContactsQuery = `
-  INSERT INTO "story_contact" 
-  ("contact_id","story_id","invoice_paid", "invoice_total", "project_association") 
-  VALUES 
-  ($1, $2, $3, $4, $5);`;
-
   //Query
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
     console.log('In query');
     let storyResponse = await connection.query(postStoryQuery, [
-      story.title, //1
-      story.subtitle, //2
-      story.article_text, //3
-      story.article_link, //4
-      story.notes, //5
-      story.type, //6
-      story.copies_sent, //7
-      story.photo_uploaded, //8
-      story.fact_check_completed, //9, same as fact_checked, different naming conventions in data
-      story.graphic_image_required, //10
-      story.external_link, //11
-      story.word_count, //12
-      story.date_added, //13
-      story.rough_draft_deadline, //14
-      story.final_draft_deadline, //15
-      story.publication_date, //16
-      //story.photo, // will put in when exisits in DB
-      //y.copies_required, //will put in when exisits in DB
-      story.photo_required, //17
-      story.fact_check_required, //18
-      story.graphic_image_completed, //19
+      title, //1
+      subtitle, //2
+      article_text, //3
+      article_link, //4
+      notes, //5
+      type, //6
+      copies_sent, //7
+      photo_uploaded, //8
+      fact_check_completed, //9, same as fact_checked, different naming conventions in data
+      graphic_image_required, //10
+      external_link, //11
+      word_count, //12
+      date_added, //13
+      rough_draft_deadline, //14
+      final_draft_deadline, //15
+      publication_date, //16
+      photo_required, //17
+      fact_check_required, //18
+      graphic_image_completed, //19
       //story.payment_required,//will add when exisits in DB
       //story.payment_completed, will add when exisits in DB
+      //photo, // will put in when exisits in DB
+      //copies_required, //will put in when exisits in DB
     ]);
     console.log('StoryId:', storyResponse.rows[0].id);
     let storyId = storyResponse.rows[0].id;
-    for (let tag of tags) {
-      await connection.query(attachTagsQuery, [tag.id, storyId]);
-    }
-    for (let contact of contacts) {
-      await connection.query(postContactsQuery, [
+
+    //I am building this under the assumption that all tags and contacts that are attached are already in the tags table.
+    const tagPromises = tags.map((tag) => {
+      const attachTagsQuery = `
+      INSERT INTO "story_tag"
+      ( "tag_id","story_id")
+      VALUES 
+      ($1,$2);`;
+      return connection.query(attachTagsQuery, [tag.id, storyId]);
+    });
+
+    const contactPromises = contacts.map((contact) => {
+      let postContactsQuery = `
+      INSERT INTO "story_contact" 
+      ("contact_id","story_id","invoice_paid", "invoice_total", "project_association") 
+      VALUES 
+      ($1, $2, $3, $4, $5);`;
+
+      return connection.query(postContactsQuery, [
         contact.id,
         storyId,
         contact.invoice_paid,
         contact.project_association,
         contact.invoice_amount,
       ]);
-    }
+    });
+
+    await Promise.all([...tagPromises, ...contactPromises]);
     await connection.query('COMMIT;');
     res.sendStatus(200);
   } catch (err) {

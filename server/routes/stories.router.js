@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 
   pool
     .query(getAllQueryText)
-    .then((response) => res.send(response))
+    .then((response) => res.send(response.rows))
     .catch((err) => {
       res.sendStatus(200);
       console.log(err);

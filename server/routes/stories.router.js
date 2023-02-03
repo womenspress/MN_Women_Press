@@ -1,4 +1,5 @@
 const express = require('express');
+const { CommandCompleteMessage } = require('pg-protocol/dist/messages');
 const pool = require('../modules/pool');
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/current/:id', (req, res) => {
+router.get('/current/:id', async (req, res) => {
   // GET route code here
   let id = req.params.id;
   console.log(
@@ -46,13 +47,47 @@ router.get('/current/:id', (req, res) => {
   WHERE "story"."id" = $1
   GROUP BY "story"."id"
   ;`;
-  pool
-    .query(getDetailsQueryText, [id])
-    .then((response) => res.send(response.rows))
-    .catch((err) => {
-      res.sendStatus(200);
-      console.log(err);
-    });
+
+  let getContactDetails = `SELECT * 
+  FROM "story_contact"
+  WHERE "story_id" = $1; `;
+
+  const connection = await pool.connect();
+  try {
+    await connection.query('BEGIN;');
+    let response = await connection.query(getDetailsQueryText, [id]);
+    let currentStoryDetails = response.rows;
+
+    let storyContactResponse = await connection.query(getContactDetails, [id]);
+    let contactPaymentDetails = storyContactResponse.rows;
+    // console.log('RES:', paymentDetail.contact_id);
+    for (let i = 0; i < currentStoryDetails[0].contacts.length; i++) {
+      for (let paymentDetail of contactPaymentDetails) {
+        console.log('RES:', paymentDetail.contact_id);
+        if (
+          paymentDetail.contact_id === currentStoryDetails[0].contacts[i].id
+        ) {
+          console.log('IM HERE');
+          const { project_association, invoice_total, invoice_paid } =
+            paymentDetail;
+          currentStoryDetails[0].contacts[i].project_association =
+            project_association;
+          currentStoryDetails[0].contacts[i].invoice_paid = invoice_paid;
+          currentStoryDetails[0].contacts[i].invoice_total = invoice_total;
+        }
+      }
+    }
+
+    console.log('TESTING', currentStoryDetails[0].contacts);
+    console.log('CONTACTS', contactPaymentDetails);
+    res.send(currentStoryDetails);
+  } catch (err) {
+    connection.query('ROLLBACK;');
+    console.log(err);
+    res.sendStatus(500);
+  } finally {
+    connection.release();
+  }
 });
 
 /**

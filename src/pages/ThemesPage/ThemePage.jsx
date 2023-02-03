@@ -1,5 +1,6 @@
 import React from 'react';
 import ThemeCalendar from '../../components/ThemeCalendar/ThemeCalendar';
+import { Typography } from '@mui/material';
 
 export default function ThemesPage(){
     let contact = {
@@ -175,7 +176,9 @@ export default function ThemesPage(){
 
     return(
         <div>
-            <h1>themes</h1>
+            <Typography variant="h3" component="h1">
+                Themes
+            </Typography>
             <div>
                 <ThemeCalendar themeArray={themeArray}/>
             </div>

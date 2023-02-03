@@ -6,8 +6,8 @@ import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
 import { flexbox } from '@mui/system';
-import ContactListItem from '../ContactListItem/ContactListItem';
-import StoryListItem from '../StoryListItem/StoryListItem';
+
+import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
 
 const style = {
     position: 'absolute',
@@ -224,7 +224,7 @@ export default function ThemeModal(props) {
                     {filteredContactsArray.map((contact, index) => {
                         return(
                             <Box key={index}>
-                                <ContactListItem props={contact}/>
+                                <ThemeContactListItem contact={contact} key={index}/>
                             </Box>
                         )
                     })}

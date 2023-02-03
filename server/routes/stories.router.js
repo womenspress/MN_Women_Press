@@ -56,29 +56,27 @@ router.get('/current/:id', async (req, res) => {
   try {
     await connection.query('BEGIN;');
     let response = await connection.query(getDetailsQueryText, [id]);
-    let currentStoryDetails = response.rows;
+    let currentStoryDetails = response.rows[0];
 
     let storyContactResponse = await connection.query(getContactDetails, [id]);
     let contactPaymentDetails = storyContactResponse.rows;
     // console.log('RES:', paymentDetail.contact_id);
-    for (let i = 0; i < currentStoryDetails[0].contacts.length; i++) {
+    for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
       for (let paymentDetail of contactPaymentDetails) {
         console.log('RES:', paymentDetail.contact_id);
-        if (
-          paymentDetail.contact_id === currentStoryDetails[0].contacts[i].id
-        ) {
+        if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
           console.log('IM HERE');
           const { project_association, invoice_total, invoice_paid } =
             paymentDetail;
-          currentStoryDetails[0].contacts[i].project_association =
+          currentStoryDetails.contacts[i].project_association =
             project_association;
-          currentStoryDetails[0].contacts[i].invoice_paid = invoice_paid;
-          currentStoryDetails[0].contacts[i].invoice_total = invoice_total;
+          currentStoryDetails.contacts[i].invoice_paid = invoice_paid;
+          currentStoryDetails.contacts[i].invoice_total = invoice_total;
         }
       }
     }
 
-    console.log('TESTING', currentStoryDetails[0].contacts);
+    console.log('TESTING', currentStoryDetails.contacts);
     console.log('CONTACTS', contactPaymentDetails);
     res.send(currentStoryDetails);
   } catch (err) {

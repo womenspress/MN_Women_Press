@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 // import { story } from '../../sampleStoryData';
-import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, styled, TextField } from '@mui/material';
+import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, styled, TextField, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import ListTags from '../../components/ListTags/ListTags';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+import { makeStatusColor } from '../../modules/makeStatusColor';
+
 
 export default function StoriesPage() {
   const dispatch = useDispatch();
@@ -19,10 +22,18 @@ export default function StoriesPage() {
   const [notes, setNotes] = useState(currentStory?.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
 
-  useEffect(()=>{
-    dispatch({ type: 'GET_CURRENT_STORY', payload: id})
+  useEffect(() => {
+    dispatch({ type: 'GET_CURRENT_STORY', payload: id })
   }, [])
 
+  const statusColor = makeStatusColor(currentStory);
+
+  const statusStyle = {
+    bgcolor: statusColor.color,
+    width: 20,
+    height: 20,
+    borderRadius: '50%'
+  }
 
   const handleCheck = (event) => {
     // console.log(event.target.id)
@@ -57,6 +68,9 @@ export default function StoriesPage() {
       <Grid container space={1}>
         {/* This grid row contains story header and tags */}
         <Grid item xs={8}>
+          <Tooltip title={statusColor.notes}>
+            <Box sx={statusStyle}></Box>
+          </Tooltip>
           <Typography variant='h4'>{currentStory.title}</Typography>
         </Grid>
         <Grid item xs={4}>

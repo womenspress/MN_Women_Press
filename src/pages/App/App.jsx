@@ -26,10 +26,12 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 // import and routes by Anthony Dampier based on Group Production
 import StoriesPage from '../StoriesPage/StoriesPage';
 import StoryDetailsPage from '../StoryDetailsPage/StoryDetailsPage'
+import ContactDetailsPage from '../ContactDetailsPage/ContactDetailsPage';
 import ArchivePage from '../ArchivePage/ArchivePage';
 import ContactsPage from '../ContactsPage/ContactsPage';
 import ThemesPage from '../ThemesPage/ThemePage';
 import AdminPage from '../AdminPage/AdminPage';
+
 
 
 import './App.css';
@@ -106,6 +108,14 @@ function App() {
                   path="/ContactsPage"
                 >
                   <ContactsPage />
+                </ProtectedRoute>
+
+                <ProtectedRoute
+                  // logged in shows StoryDetailsPage else shows LoginPage
+                  exact
+                  path="/ContactDetails/:id"
+                >
+                  <ContactDetailsPage />
                 </ProtectedRoute>
 
                 <ProtectedRoute

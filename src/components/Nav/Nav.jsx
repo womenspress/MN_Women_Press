@@ -30,23 +30,23 @@ function Nav() {
             </Link> */}
 
             <Link className="navLink" to="/StoriesPage">
-              Stories Page
+              Stories
             </Link>
 
             <Link className="navLink" to="/ArchivePage">
-              Archive Page
+              Archive
             </Link>
 
             <Link className="navLink" to="/ContactsPage">
-              Contacts Page
+              Contacts
             </Link>
 
             <Link className="navLink" to="/ThemesPage">
-              Themes Page
+              Themes
             </Link>
 
             <Link className="navLink" to="/AdminPage">
-              Admin Page
+              Admin
             </Link>
 
             {/* <LogOutButton className="navLink" /> */}

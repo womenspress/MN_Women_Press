@@ -38,13 +38,13 @@ export default function StatusDropdown({ story }) {
         statusToChange = 'payment_completed';
         break;
     }
-    dispatch({ type: 'UPDATE_STORY_STATUS', payload: {statusToChange: statusToChange, story_id: story.id} })
+    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, story_id: story.id } })
   }
 
   // get list of required elements to populate into the dropdown
 
   // returns boolean: true if any contact requires payment, false otherwise
-  const payment_required = !!story.contacts.filter(contact => contact.invoice_amount > 0).length
+  const payment_required = !!story.contacts?.filter(contact => contact.invoice_amount > 0).length
 
   // const payment_required = story.contacts.filter(contact=>contact.invoice_amount>0).length > 0;
 
@@ -100,9 +100,9 @@ export default function StatusDropdown({ story }) {
       <Box>
         <Button
           onClick={handleClick}
-          sx = {{color: 'grey.700', textTransform: 'none'}}
+          sx={{ color: 'grey.700', textTransform: 'none' }}
 
-          >
+        >
           status
         </Button>
       </Box>

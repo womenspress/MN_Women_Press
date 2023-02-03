@@ -114,6 +114,125 @@ ADD "photo_required" BOOLEAN DEFAULT FALSE,
 ADD "fact_check_required" BOOLEAN DEFAULT FALSE,
 ADD "graphic_image_completed" BOOLEAN DEFAULT FALSE;
 
+--story_contact--
+----story_contact_story_id_fkey
+ALTER TABLE story_contact
+DROP CONSTRAINT story_contact_story_id_fkey;
+
+ALTER TABLE story_contact
+ADD CONSTRAINT story_contact_story_id_fkey
+FOREIGN KEY (story_id)
+REFERENCES story(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+----story_contact_contact_id_fkey
+ALTER TABLE story_contact
+DROP CONSTRAINT story_contact_contact_id_fkey;
+
+ALTER TABLE story_contact
+ADD CONSTRAINT story_contact_contact_id_fkey
+FOREIGN KEY (contact_id)
+REFERENCES contact(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+--
+
+--contact_role--
+----contact_role_contact_id_fkey
+ALTER TABLE contact_role
+DROP CONSTRAINT contact_role_contact_id_fkey;
+
+ALTER TABLE contact_role
+ADD CONSTRAINT contact_role_contact_id_fkey
+FOREIGN KEY (contact_id)
+REFERENCES contact(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+----contact_role_role_id_fkey
+ALTER TABLE contact_role
+DROP CONSTRAINT contact_role_role_id_fkey;
+
+ALTER TABLE contact_role
+ADD CONSTRAINT contact_role_role_id_fkey
+FOREIGN KEY (role_id)
+REFERENCES "role"(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+--
+
+
+--story_tag--
+----story_tag_tag_id_fkey
+ALTER TABLE story_tag
+DROP CONSTRAINT story_tag_tag_id_fkey;
+
+ALTER TABLE story_tag
+ADD CONSTRAINT story_tag_tag_id_fkey
+FOREIGN KEY (tag_id)
+REFERENCES tag(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+----story_tag_story_id_fkey
+ALTER TABLE story_tag
+DROP CONSTRAINT story_tag_story_id_fkey;
+
+ALTER TABLE story_tag
+ADD CONSTRAINT story_tag_story_id_fkey
+FOREIGN KEY (story_id)
+REFERENCES story(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+--
+
+--tag_contact--
+----tag_contact_tag_id_fkey
+ALTER TABLE tag_contact
+DROP CONSTRAINT tag_contact_tag_id_fkey;
+
+ALTER TABLE tag_contact
+ADD CONSTRAINT tag_contact_tag_id_fkey
+FOREIGN KEY (tag_id)
+REFERENCES tag(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+----story_tag_story_id_fkey
+ALTER TABLE tag_contact
+DROP CONSTRAINT tag_contact_contact_id_fkey;
+
+ALTER TABLE tag_contact
+ADD CONSTRAINT tag_contact_contact_id_fkey
+FOREIGN KEY (contact_id)
+REFERENCES contact(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+--
+
+--theme_story--
+----theme_story_theme_id_fkey
+ALTER TABLE theme_story
+DROP CONSTRAINT theme_story_theme_id_fkey;
+
+ALTER TABLE theme_story
+ADD CONSTRAINT theme_story_theme_id_fkey
+FOREIGN KEY (theme_id)
+REFERENCES theme(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+
+----theme_story_story_id_fkey
+ALTER TABLE theme_story
+DROP CONSTRAINT theme_story_story_id_fkey;
+
+ALTER TABLE theme_story
+ADD CONSTRAINT theme_story_story_id_fkey
+FOREIGN KEY (story_id)
+REFERENCES story(id)
+ON DELETE CASCADE ON UPDATE NO ACTION;
+--
+
+ALTER TABLE contact
+ADD CONSTRAINT date_added_dt_def
+DEFAULT GETDATE() FOR date_added;
+
+ALTER TABLE contact
+ADD COLUMN date_added DATE
+;
+
 
 /* Dummy Data for project */ 
 

@@ -190,7 +190,34 @@ router.delete('/:id', (req, res) => {
 router.put('/:id', async (req, res) => {
   // EDIT route code here
   let id = req.params.id;
-  let story = req.body;
+  const {
+    title, //1
+    subtitle, //2
+    article_text, //3
+    article_link, //4
+    notes, //5
+    type, //6
+    copies_sent, //7
+    photo_uploaded, //8
+    fact_check_completed, //9, same as fact_checked, different naming conventions in data
+    graphic_image_required, //10
+    external_link, //11
+    word_count, //12
+    date_added, //13
+    rough_draft_deadline, //14
+    final_draft_deadline, //15
+    publication_date, //16
+    photo_required, //17
+    fact_check_required, //18
+    graphic_image_completed, //19
+    //payment_required,//will add when exisits in DB
+    //payment_completed, will add when exisits in DB
+    //photo, // will put in when exisits in DB
+    //copies_required, //will put in when exisits in DB
+    tags,
+    contacts,
+  } = req.body;
+
   let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
   let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
   let updateStoryQueryText = `
@@ -201,68 +228,73 @@ router.put('/:id', async (req, res) => {
   "final_draft_deadline"= $15, "publication_date"= $16, "photo_required"= $17, "fact_check_required"= $18,"graphic_image_completed"= $19
   WHERE "id" = $20;`;
   let updateStoryData = [
-    story.title, //1
-    story.subtitle, //2
-    story.article_text, //3
-    story.article_link, //4
-    story.notes, //5
-    story.type, //6
-    story.copies_sent, //7
-    story.photo_uploaded, //8
-    story.fact_check_completed, //9, same as fact_checked, different naming conventions in data
-    story.graphic_image_required, //10
-    story.external_link, //11
-    story.word_count, //12
-    story.date_added, //13
-    story.rough_draft_deadline, //14
-    story.final_draft_deadline, //15
-    story.publication_date, //16
-    //story.photo, // will put in when exisits in DB
-    //y.copies_required, //will put in when exisits in DB
-    story.photo_required, //17
-    story.fact_check_required, //18
-    story.graphic_image_completed, //19
-    //story.payment_required,//will add when exisits in DB
-    //story.payment_completed, will add when exisits in DB
+    title, //1
+    subtitle, //2
+    article_text, //3
+    article_link, //4
+    notes, //5
+    type, //6
+    copies_sent, //7
+    photo_uploaded, //8
+    fact_check_completed, //9, same as fact_checked, different naming conventions in data
+    graphic_image_required, //10
+    external_link, //11
+    word_count, //12
+    date_added, //13
+    rough_draft_deadline, //14
+    final_draft_deadline, //15
+    publication_date, //16
+    photo_required, //17
+    fact_check_required, //18
+    graphic_image_completed, //19
+    //payment_required,//will add when exisits in DB
+    //payment_completed, will add when exisits in DB
+    //photo, // will put in when exisits in DB
+    //copies_required, //will put in when exisits in DB
     id,
   ];
-  let attachTagsQuery = `
-  INSERT INTO "story_tag"
-  ( "tag_id","story_id")
-  VALUES 
-  ($1,$2);`;
 
-  let attachContactsQuery = `
-  INSERT INTO "story_contact" 
-  ("contact_id","story_id","invoice_paid", "invoice_total", "project_association") 
-  VALUES 
-  ($1, $2, $3, $4, $5);`;
   //Query
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
-    console.log('In query');
-    await connection.query(deleteTagsQuery, [id]);
-    console.log('before delete');
-    await connection.query(deleteContactsQuery, [id]);
-    console.log('before update');
+    //Step 1: delete all current tag and contact associations
+    const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
+    const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
+
+    await Promise.all([deleteTagsPromise, deleteContactsPromise]);
+
+    //Step 2: update Story details
     await connection.query(updateStoryQueryText, updateStoryData);
-    console.log('before tags');
-    let tags = req.body.tags;
-    for (let tag of tags) {
-      await connection.query(attachTagsQuery, [tag.id, id]);
-    }
-    console.log('before contacts');
-    let contacts = req.body.contacts;
-    for (let contact of contacts) {
-      await connection.query(attachContactsQuery, [
+
+    //Step 3: re-attach tags and contacts
+    const attachTagsPromise = tags.map((tag) => {
+      let attachTagsQuery = `
+      INSERT INTO "story_tag"
+      ( "tag_id","story_id")
+      VALUES 
+      ($1,$2);`;
+      return connection.query(attachTagsQuery, [tag.id, id]);
+    });
+
+    const attachContactsPromise = contacts.map((contact) => {
+      let attachContactsQuery = `
+      INSERT INTO "story_contact" 
+      ("contact_id","story_id","invoice_paid", "invoice_total", "project_association") 
+      VALUES 
+      ($1, $2, $3, $4, $5);`;
+
+      return connection.query(attachContactsQuery, [
         contact.id,
         id,
         contact.invoice_paid,
         contact.invoice_total,
         contact.project_association,
       ]);
-    }
+    });
+
+    await Promise.all([...attachContactsPromise, ...attachTagsPromise]);
+
     await connection.query('COMMIT');
     res.sendStatus(200);
   } catch (err) {

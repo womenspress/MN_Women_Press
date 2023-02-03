@@ -6,15 +6,18 @@ import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
 import { flexbox } from '@mui/system';
+import { largeModal, smallModal } from '../../__style';
 
+import ThemeStoryListItem from '../ThemeStoryListItem/ThemeStoryListItem';
 import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
+
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
+    width: 900,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -122,7 +125,7 @@ export default function ThemeModal(props) {
     }, [searchContactText]);
 
     return (
-        <div>
+        <>
         <Button onClick={handleOpen}>View Move</Button>
     
         <Modal
@@ -191,18 +194,13 @@ export default function ThemeModal(props) {
                         value={searchStoryText}
                         />
                 </Box>
-                <Box sx={{width: .1}}>
-                    <ul>
-                        {filteredStoriesArray.map((story, index) => {
-                            return(
-                                <li key={index}>
-                                    {JSON.stringify(story)}
-                                    {/* <StoryListItem story={story}/> */}
-                                </li>
-                            )
-                        })}
-                    </ul>
-                </Box>
+                <ul>
+                    {filteredStoriesArray.map((story, index) => {
+                        return(
+                            <ThemeStoryListItem story={story} key={index}/>
+                        )
+                    })}
+                </ul>
                 <Box sx={{display: 'flex', justifyContent: 'space-between' , mt: 2}}>
                     <Typography 
                         id="modal-modal-description" 
@@ -223,14 +221,12 @@ export default function ThemeModal(props) {
                 <ul>
                     {filteredContactsArray.map((contact, index) => {
                         return(
-                            <Box key={index}>
-                                <ThemeContactListItem contact={contact} key={index}/>
-                            </Box>
+                            <ThemeContactListItem contact={contact} key={index}/>
                         )
                     })}
                 </ul>
             </Box>
         </Modal>
-        </div>
+        </>
     );
 }

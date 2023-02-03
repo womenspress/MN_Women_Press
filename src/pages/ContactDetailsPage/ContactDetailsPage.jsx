@@ -11,7 +11,7 @@ import StoryListItem from '../../components/StoryListItem/StoryListItem';
 import MatchingHeightComponent from '../../components/MatchComponentHeight/MatchComponentHeight';
 
 // sample data import
-import { contact } from '../../sampleData';
+// import { contact } from '../../sampleData';
 
 export default function ContactDetailsPage() {
   const ref = useRef(null);

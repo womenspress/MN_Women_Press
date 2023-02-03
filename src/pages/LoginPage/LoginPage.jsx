@@ -26,7 +26,7 @@ function LoginPage() {
         },
       });
       // if login is successful, move the user to their dashboard
-      history.push('/dashboard')
+      history.push('/StoriesPage')
     } else {
       dispatch({ type: 'LOGIN_INPUT_ERROR' });
     }

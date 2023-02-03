@@ -319,20 +319,40 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // DELETE route goes here. straightforward thanks to ON DELETE CASCADE
-  res.sendStatus(200);
+  const deleteContactQuery = `DELETE FROM "contact" WHERE id=$1`
+  pool.query(deleteContactQuery, [req.params.id])
+  .then(() => res.sendStatus(200))
+  .catch((err) => {
+    console.log('delete contact failed: ', err);
+    res.sendStatus(500);
+  })
 })
 
 
-
+// CREATE tags for a contact. just insert one row into the junction table
 // require ID for params and req.body to include tags
 router.post('/tag/:id', (req, res) => {
-  // CREATE tags for a contact. just insert one row into the junction table
-  res.sendStatus(200);
+  const createTagQuery = `INSERT INTO "tag_contact"("tag_id", "contact_id") VALUES($1, $2);`
+  pool.query(createTagQuery, [req.body.tag.id, req.params.id])//NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
+  .then(() => res.sendStatus(200))
+  .catch((err) => {
+    console.log('create contact tag failed: ', err);
+    res.sendStatus(500);
+  })
 })
 
 router.delete('/tag/:id', (req, res) => {
   // DELETE a tag from a contact. delete a row from the junction table
-  res.sendStatus(200);
+  const deleteTagContactQuery = `DELETE FROM "tag_contact" WHERE "contact_id" = $1 AND "tag_id" = $2;`
+  pool.query(deleteTagContactQuery, [req.body.tag.id, req.params.id])//NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
+  .then(() => res.sendStatus(200))
+  .catch((err) => {
+    console.log('delete contact tag failed: ', err);
+    res.sendStatus(500);
+  })
+
+
+
 })
 
 

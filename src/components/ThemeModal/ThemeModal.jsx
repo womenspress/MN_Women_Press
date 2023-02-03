@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
+import { flexbox } from '@mui/system';
+import ContactListItem from '../ContactListItem/ContactListItem';
+import StoryListItem from '../StoryListItem/StoryListItem';
 
 const style = {
     position: 'absolute',
@@ -27,8 +30,8 @@ export default function ThemeModal(props) {
     let description = props.description || "undefined description";
     let month = props.month || "month undefined";
     let year =props.year || -1;
-    let stories = props.stories || [{id: -1, title: "title not found"}];
-    let contacts = props.contacts || [{id: -1, name: "contact not found"}];
+    let stories = props.stories || [{id: -1, title: "title not found", subtitle: "bugs", article_text: "beans", notes: "worms"}];
+    let contacts = props.contacts || [{id: -1, name: "contact not found", pronouns: 'she/they/them', expertise: "ice skating and catching butterflies", bio: "extreme mountain climber", note: "perfect photo dance session"}];
 
     // modal open function
     const [open, setOpen] = React.useState(false);
@@ -41,7 +44,7 @@ export default function ThemeModal(props) {
     const [editTheme, setEditTheme] = React.useState({id: id, name: editName, description: editDescription});
     
 
-    // edit, save, cancel function
+// edit, save, cancel function
     const [edit, setEdit] = React.useState(false);
     const [cancel, setCancel] = React.useState(false);
 
@@ -71,9 +74,52 @@ export default function ThemeModal(props) {
         dispatch({type: 'EDIT_THEME', payload: {id: id, name: editName, description: editDescription}})
         console.log('close edit mode');
         setEdit(false);
-        
         // dispatch {id: id, name: name, month: month, year: year, description: description}
     }
+
+/* 
+    SEARCH STORY FUNCTION: 
+    user input text into search, 
+    referenced array is filtered against text input, 
+    return all array item that contain text.
+*/
+    const [searchStoryText,  setSearchStoryText] = React.useState("");
+    const [filteredStoriesArray, setFilteredStoryArray] = React.useState(stories);
+
+    React.useEffect(() => {
+        setFilteredStoryArray(stories.filter(function(obj) {
+                if (
+                    obj.title?.includes(searchStoryText) || 
+                    obj.subtitle?.includes(searchStoryText) || 
+                    obj.article_text?.includes(searchStoryText) ||
+                    obj.notes?.includes(searchStoryText)
+                    ){
+                    console.log('passed filter:', obj);
+                    return obj;
+                }
+            }
+        ))
+    }, [searchStoryText]);
+
+// search contact function
+    const [searchContactText, setSearchContactText] = React.useState("");
+    const [filteredContactsArray, setFilteredContactsArray] = React.useState(contacts);
+
+    React.useEffect(() => {
+        setFilteredContactsArray(contacts.filter(function(obj) {
+                if (
+                    obj.name?.includes(searchContactText) || 
+                    obj.pronouns?.includes(searchContactText) || 
+                    obj.expertise?.includes(searchContactText) ||
+                    obj.bio?.includes(searchContactText) ||
+                    obj.note?.includes(searchContactText)
+                    ){
+                    console.log('passed filter:', obj);
+                    return obj;
+                }
+            }
+        ))
+    }, [searchContactText]);
 
     return (
         <div>
@@ -128,17 +174,61 @@ export default function ThemeModal(props) {
                     </>
                 }
                 </div>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Stories:
-                    {JSON.stringify(stories)}
-                    {stories.map((story, index) => {
-                        {JSON.stringify(index)}
+                <Box sx={{display: 'flex', justifyContent: 'space-between' , mt: 2}}>
+                    <Typography 
+                        id="modal-modal-description" 
+                        sx={{ mt: 2, width: .25}}
+                        variant="h4" component="h4"
+                        >
+                        Stories:
+                    </Typography>
+                    <TextField
+                        sx={{ mt: 2, width:.50}}
+                        id="outlined-textarea"
+                        label="search stories"
+                        placeholder="search stories"
+                        onChange={(event) => setSearchStoryText(event.target.value)}
+                        value={searchStoryText}
+                        />
+                </Box>
+                <Box sx={{width: .1}}>
+                    <ul>
+                        {filteredStoriesArray.map((story, index) => {
+                            return(
+                                <li key={index}>
+                                    {JSON.stringify(story)}
+                                    {/* <StoryListItem story={story}/> */}
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </Box>
+                <Box sx={{display: 'flex', justifyContent: 'space-between' , mt: 2}}>
+                    <Typography 
+                        id="modal-modal-description" 
+                        sx={{ mt: 2, width: .25}}
+                        variant="h4" component="h4"
+                        >
+                        Contacts:
+                    </Typography>
+                    <TextField
+                        sx={{ mt: 2, width:.50}}
+                        id="outlined-textarea"
+                        label="search contacts"
+                        placeholder="search contacts"
+                        onChange={(event) => setSearchContactText(event.target.value)}
+                        value={searchContactText}
+                        />
+                </Box>
+                <ul>
+                    {filteredContactsArray.map((contact, index) => {
+                        return(
+                            <Box key={index}>
+                                <ContactListItem props={contact}/>
+                            </Box>
+                        )
                     })}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Contacts:
-                    {JSON.stringify(contacts)}
-                </Typography>
+                </ul>
             </Box>
         </Modal>
         </div>

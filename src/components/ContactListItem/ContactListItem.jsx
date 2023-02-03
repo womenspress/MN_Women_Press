@@ -19,13 +19,13 @@ export default function ContactListItem({ contact }) {
             onClick={() => setDetailsOpen(!detailsOpen)}>
             {detailsOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
           </IconButton>
-          <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
-          <Typography>{contact.pronouns}</Typography>
+          <Typography sx={{ marginRight: 1 }}>{contact?.name}</Typography>
+          <Typography>{contact?.pronouns}</Typography>
         </Box>
-        <Typography>{contact.location}</Typography>
+        <Typography>{contact?.location}</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ marginRight: 1 }}>{contact.roles[0]}</Typography>
-          {contact.roles[1] && <Typography>• {contact.roles[1]}</Typography>}
+          <Typography sx={{ marginRight: 1 }}>{contact?.roles[0]}</Typography>
+          {contact?.roles[1] && <Typography>• {contact?.roles[1]}</Typography>}
         </Box>
       </Box>
 
@@ -33,11 +33,11 @@ export default function ContactListItem({ contact }) {
         in={detailsOpen}
       >
         <Box sx={{display: 'flex'}}>
-          <Avatar src = {contact.photo}/>
-          <Typography variant = 'body2'>{contact.bio}</Typography>
+          <Avatar src = {contact?.photo}/>
+          <Typography variant = 'body2'>{contact?.bio}</Typography>
           <Box>
             <Typography variant = 'body2'>most recent contribution:</Typography>
-            <StoryCard story={contact.stories[0]}/>
+            <StoryCard story={contact?.stories[0]}/>
 
           </Box>
         </Box>

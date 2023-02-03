@@ -146,29 +146,41 @@ router.post('/', async (req, res) => {
       roles
     } = req.body;
 
-    const date_added = new Date.toISOString()
+
+    //None of these worked, migrated to SQL time stamping for date_added
+    //const date_added =  new Date();
+    //const date_added = new Date.toISOString()
+    //const date_added = Date.now
 
     await client.query('BEGIN')
 
     //* create contact and get its id for future inserts
-    const contactInsertQuery = '~~~ SQL ~~~ returning id'
+    const contactInsertQuery = `INSERT INTO "contact" 
+    ("name" ,"pronouns" ,"expertise" ,"photo","email" ,"phone" ,"billing_address" , "mailing_address" , "bio" ,"note" ,"linkedIn" ,"twitter" ,"instagram" , "facebook" ,"date_added" ) 
+    VALUES 
+    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW()) returning id;`
     const contactInsertResults = await client.query(contactInsertQuery, [
-      name, pronouns, expertise, photo, email, phone, billing_address, mailing_address, bio, note, linkedin, twitter, instagram, facebook, date_added
+      name, pronouns, expertise, photo, email, phone, billing_address, mailing_address, bio, note, linkedin, twitter, instagram, facebook
     ]);
-    const contactId = contactInsertResults[0].id;
+    
+    const contactId = contactInsertResults.rows[0].id; //had to tease out id return a bit further
+    console.log(contactId);
 
     //* insert tag relations into the tag_contact junction table
 
     await Promise.all(tags.map(tag => {
-      const tagInsertQuery = '~~~ SQL query ~~~'
-      const tagInsertValues = [];
+      //SQL
+      const tagInsertQuery = `INSERT INTO "tag_contact"("tag_id", "contact_id") 
+      VALUES ($1, $2);`
+      const tagInsertValues = [tag.id, contactId];
       return client.query(tagInsertQuery, tagInsertValues);
     }));
 
     //* insert role relations into role_contact junction table
     await Promise.all(roles.map(role => {
-      const roleInsertQuery = `~~~ SQL query ~~~`;
-      const roleInsertValues = [];
+      const roleInsertQuery = `INSERT INTO "contact_role"("role_id", "contact_id") 
+      VALUES ($1, $2);`;
+      const roleInsertValues = [role.id, contactId];
       return client.query(roleInsertQuery, roleInsertValues);
     }));
 

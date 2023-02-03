@@ -144,9 +144,14 @@ router.post('/', async (req, res) => {
 router.delete('/:id', (req, res) => {
   // DELETE route code here
   let id = req.params.id;
-  let deleteQueryText = 'SQL';
-  pool.query(deleteQueryText, [id]).then().catch();
-  res.sendStatus(200);
+  let deleteQueryText = 'DELETE FROM "story" WHERE "id"=$1;';
+  pool
+    .query(deleteQueryText, [id])
+    .then(res.sendStatus(200))
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 
 /**

@@ -40,9 +40,9 @@ router.post('/', async (req, res) => {
   let postStoryQuery = `INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
   "fact_checked", "graphic_image_required", "external_link", "word_count", "date_added", "rough_draft_deadline",
-  "final_draft_deadline", "publication_date", "archived")
+  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed")
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
   RETURNING "id";`; //Return id of story
   let attachTagsQuery = `
   INSERT INTO "story_tag"
@@ -59,23 +59,29 @@ router.post('/', async (req, res) => {
     await connection.query('BEGIN;');
     console.log('In query');
     let storyResponse = await connection.query(postStoryQuery, [
-      story.title,
-      story.subtitle,
-      story.article_text,
-      story.article_link,
-      story.notes,
-      story.type,
-      story.copies_sent,
-      story.photo_uploaded,
-      story.fact_checked,
-      story.graphic_image_required,
-      story.external_link,
-      story.word_count,
-      story.date_added,
-      story.rough_draft_deadline,
-      story.final_draft_deadline,
-      story.publication_date,
-      story.archived,
+      story.title, //1
+      story.subtitle, //2
+      story.article_text, //3
+      story.article_link, //4
+      story.notes, //5
+      story.type, //6
+      story.copies_sent, //7
+      story.photo_uploaded, //8
+      story.fact_check_completed, //9, same as fact_checked, different naming conventions in data
+      story.graphic_image_required, //10
+      story.external_link, //11
+      story.word_count, //12
+      story.date_added, //13
+      story.rough_draft_deadline, //14
+      story.final_draft_deadline, //15
+      story.publication_date, //16
+      //story.photo, // will put in when exisits in DB
+      //y.copies_required, //will put in when exisits in DB
+      story.photo_required, //17
+      story.fact_check_required, //18
+      story.graphic_image_completed, //19
+      //story.payment_required,//will add when exisits in DB
+      //story.payment_completed, will add when exisits in DB
     ]);
     console.log('toryId:', storyResponse.rows[0].id);
     let storyId = storyResponse.rows[0].id;

@@ -25,10 +25,11 @@ function* fetchUser() {
 }
 
 function* fetchAllUsers() {
+  console.log('in fetchAllUsers saga')
   try {
     const response = yield axios.get('/api/user/all');
-    yield put({type: 'SET_ALL_USERS', payload: response.data});
-  } catch (error) { 
+    yield put({ type: 'SET_ALL_USERS', payload: response.data });
+  } catch (error) {
     console.log('error getting all users:', error);
   }
 }
@@ -36,7 +37,7 @@ function* fetchAllUsers() {
 function* setUserAccess(action) {
   try {
     yield axios.put('/api/user/access', action.payload);
-    yield put({ type: 'FETCH_ALL_USERS'});
+    yield put({ type: 'FETCH_ALL_USERS' });
   } catch (error) {
     console.log('error in setUserAccess saga:', error)
   }
@@ -45,7 +46,7 @@ function* setUserAccess(action) {
 function* deleteUser(action) {
   try {
     yield axios.delete('/api/user', action.payload);
-    yield put({type: 'FETCH_ALL_USERS'});
+    yield put({ type: 'FETCH_ALL_USERS' });
   } catch (error) {
     console.log('error in deleteUser saga:', error)
   }

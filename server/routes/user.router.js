@@ -17,7 +17,14 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 // gets all users for admin dashboard (we will filter unauthorized vs authorized on the front end so we can add/remove permissions for everyone)
 router.get('/all', rejectUnauthenticated, (req, res) => {
   // GET request for all users goes here
-  res.sendStatus(200);
+  const queryText = 'SELECT * FROM "user";';
+
+  pool.query(queryText).then((results) => {
+    res.send(results.rows);
+  }).catch((err) => {
+    console.log('error in get all user query: ', err)
+    res.sendStatus(500)
+  })
 })
 
 // Handles POST request with new user data
@@ -53,10 +60,17 @@ router.post('/logout', (req, res) => {
   res.sendStatus(200);
 });
 
+// grants or removes access, initiated from admin page
 router.put('/access', rejectUnauthenticated, (req, res) => {
-  // need to update user access based on ID (req.body.userId and req.body.access)
-  res.sendStatus(200)
-})
+  const queryText = 'UPDATE "user" set "access" = $1 WHERE "id" = $2;';
+  const queryParams = [req.body.access, req.body.userId];
+
+  pool.query(queryText, queryParams).then(()=> {
+    res.sendStatus(200);
+  }).catch((err) => {
+    console.log('error in update user access query:', err);
+  });
+});
 
 router.delete('/', rejectUnauthenticated, (req, res) => {
   // need route to delete User by ID (req.body === user ID)

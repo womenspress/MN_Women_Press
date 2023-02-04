@@ -7,15 +7,26 @@ const router = express.Router();
  */
 router.get('/', (req, res) => {
   // GET route code here
-  console.log('In themes router GET, getting all themes. URL: /api/themes');
-  res.sendStatus(200);
+  const getAllThemesQuery = `SELECT * FROM "theme" ORDER BY "name" ASC;`
+  pool.query(getAllThemesQuery).then((results) => {
+    res.send(results.rows);
+  }).catch((err) => {
+    console.log('error in get all themes query: ', err)
+    res.sendStatus(500)
+  })
 });
 
 
 router.get('/current/:id', (req, res) => {
   // GET route for contact detail
-  console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id');
-  res.sendStatus(200);
+  console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id',[req.params.id]);
+  const getCurrentThemeQuery = `SELECT * FROM "theme" WHERE "id" = $1;`
+  pool.query(getCurrentThemeQuery,[req.params.id]).then((results) => {
+    res.send(results.rows);
+  }).catch((err) => {
+    console.log('error in get current theme query: ', err)
+    res.sendStatus(500)
+  })
 });
 
 

@@ -12,30 +12,43 @@ import { makeStatusColor } from '../../modules/makeStatusColor';
 
 
 export default function StoriesPage() {
+  // hooks
   const dispatch = useDispatch();
   const { id } = useParams();
+
+  // redux variables
   const currentStory = useSelector(store => store.stories.currentStory);
-  const [photoStatus, setPhotoStatus] = useState(currentStory?.photo_uploaded);
-  const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(currentStory?.graphic_image_completed);
-  const [copiesSentStatus, setCopiesSentStatus] = useState(currentStory?.copies_sent);
-  const [paymentStatus, setPaymentStatus] = useState(currentStory?.payment_completed);
+
+
+  //------------- tracks status of todo list items-----------------//
+  const [photoStatus, setPhotoStatus] = useState(currentStory.photo_uploaded);
+  const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(currentStory.graphic_image_completed);
+  const [copiesSentStatus, setCopiesSentStatus] = useState(currentStory.copies_sent);
+  const [paymentStatus, setPaymentStatus] = useState(currentStory.payment_completed);
+  const [factChecked, setFactChecked] = useState(currentStory.fact_checked);
+
+
   const [notes, setNotes] = useState(currentStory.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
-  const [statusColor , setStatusColor] = useState({ color: 'red', notes: 'story is missing a rough draft deadline, final draft deadline, or author' })
+  const [statusColor, setStatusColor] = useState({});
+  
 
+  // gets current story on page load (page persists on refresh)
   useEffect(() => {
     dispatch({ type: 'GET_CURRENT_STORY', payload: id })
   }, [])
-  
 
+  // updates notes on DOM and checks status color when current story changes
   useEffect(() => {
     setNotes(currentStory.notes)
-  }, [currentStory.notes])
-
-  useEffect(()=> {
-    if (currentStory.contacts)  console.log('contacts[0]', currentStory.contacts[0])
     setStatusColor(makeStatusColor(currentStory))
-  }, [currentStory.contacts])
+    setPhotoStatus(currentStory.photo_uploaded);
+    setFactChecked(currentStory.fact_checked);
+    setGraphicPhotoStatus(currentStory.graphic_image_completed);
+    setCopiesSentStatus(currentStory.copies_sent);
+  }, [currentStory])
+
+
 
 
   const statusStyle = {
@@ -45,7 +58,7 @@ export default function StoriesPage() {
     borderRadius: '50%'
   }
 
-  //---------TODO----------\\
+  //---------TODO----------//
   // add edit modal to handle story edit function
   const handleStoryEdit = () => {
     console.log('in handleStoryEdit')
@@ -56,44 +69,52 @@ export default function StoriesPage() {
     if (notes !== currentStory.notes) {
       dispatch({ type: 'UPDATE_STORY_NOTES', payload: { storyId: id, notes: notes } });
     }
-
-
     setEditNotesMode(!editNotesMode);
   };
 
+
+  //------- handle the check/uncheck of todo list items --------------//
   const handleCheck = (event) => {
     // console.log(event.target.id)
-    let statusToChange
+    let statusToChange;
+    let statusValue;
     switch (event.target.id) {
       case 'copies sent':
         statusToChange = 'copies_sent';
-        setCopiesSentStatus(!copiesSentStatus)
+        statusValue = !copiesSentStatus;
+        setCopiesSentStatus(!copiesSentStatus);
         break;
       case 'upload photo':
         statusToChange = 'photo_uploaded';
-        setPhotoStatus(!photoStatus);
+        statusValue = !photoStatus;
+        setPhotoStatus(!photoStatus)
         break;
       case 'fact-check story':
-        statusToChange = 'fact_check_completed';
+        statusToChange = 'fact_checked';
+        statusValue = !factChecked;
+        setFactChecked(!factChecked)
         break;
       case 'upload graphic':
         statusToChange = 'graphic_image_completed';
+        statusValue = !graphicPhotoStatus;
         setGraphicPhotoStatus(!graphicPhotoStatus)
         break;
       case 'make payments':
         statusToChange = 'payment_completed';
+        statusValue = !paymentStatus;
         setPaymentStatus(!paymentStatus)
         break;
     }
-    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, story_id: currentStory.id } })
+    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })
   }
 
 
   return (
     <Box>
-      
       <Grid container space={1}>
-        {/* This grid row contains story header and tags */}
+
+
+        {/*------- This grid row contains story header and tags---------- */}
         <Grid item xs={8}>
           <Box display='flex' flexDirection='row' alignItems='center'>
             <Tooltip title={statusColor.notes}>
@@ -107,17 +128,19 @@ export default function StoriesPage() {
             <ListTags numOfDisplay={currentStory.tags?.length} tags={currentStory.tags} />
           </Box>
         </Grid>
+
+
         {/* This grid row contains 2 sections, 1 for general info and 1 that holds to-do + comments */}
         <Grid item xs={6} sx={{ backgroundColor: 'lightgrey', mr: 2 }}>
           <Grid container space={1}>
             <Grid item xs={11}>
               <Typography variant='h6'>General Info</Typography>
             </Grid>
-            {/* Need to link edit icon to story edit modal */}
             <Grid item xs={1}>
               <EditIcon onClick={handleStoryEdit} sx={{ '&:hover': { cursor: 'pointer' } }} />
             </Grid>
-            {/* Map of contacts, author first */}
+
+            {/*--------- Maps contacts, order: author, photographer, fact checker, other ----------- */}
             <Grid item xs={3}>
               <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
                 Author
@@ -138,7 +161,10 @@ export default function StoriesPage() {
                 )
               })}
             </Grid>
-            {/* Maps other contacts conditionally if they are required when story is created, starting with photographer */}
+
+
+            {/* Maps photographer and fact checker conditionally, if they 
+            are required for the story and none are assigned it will indicate accordingly*/}
             {currentStory.photo_required || currentStory.contacts?.filter(e => e?.story_association === 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
@@ -201,6 +227,8 @@ export default function StoriesPage() {
               :
               null
             }
+
+
             {/* Other contacts that are not fact checker, author, photographer go here */}
             {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').length > 0 ?
               <>
@@ -228,6 +256,7 @@ export default function StoriesPage() {
               :
               null
             }
+
             {/* Theme */}
             <Grid item xs={3}>
               <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -237,6 +266,7 @@ export default function StoriesPage() {
             <Grid item xs={9}>
               {currentStory.theme ? currentStory.theme[0]?.name : null}
             </Grid>
+
             {/* Publication date */}
             <Grid item xs={3}>
               <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -246,6 +276,7 @@ export default function StoriesPage() {
             <Grid item xs={9}>
               {currentStory?.publication_date}
             </Grid>
+
             {/* link to story */}
             <Grid item xs={3}>
               <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -257,6 +288,9 @@ export default function StoriesPage() {
             </Grid>
           </Grid>
         </Grid>
+
+
+
         {/* End general info section, next is the section that holds to-do and comments */}
         <Grid item xs={5}>
           <Grid container spacing={1} sx={{ backgroundColor: 'lightgrey', mt: "1px" }}>
@@ -266,66 +300,90 @@ export default function StoriesPage() {
             </Grid>
             {/* using the below grid to space the to-do list one item over */}
             <Grid item xs={1}><></></Grid>
-            <Grid item xs={11}>
-              {/* photo required? */}
-              {currentStory.photo_required ?
-                <FormGroup>
-                  <FormControlLabel
-                    label={'Photo Uploaded'}
-                    control={<Checkbox id={'upload photo'} checked={photoStatus} />}
-                    onChange={handleCheck}
-                  />
-                </FormGroup>
-                :
-                null
-              }
-            </Grid>
-            <Grid item xs={1}><></></Grid>
-            <Grid item xs={11}>
-              {/* graphic image required? */}
-              {currentStory.graphic_image_required ?
-                <FormGroup>
-                  <FormControlLabel
-                    label={'Graphic Image Uploaded'}
-                    control={<Checkbox id={'upload graphic'} checked={graphicPhotoStatus} />}
-                    onChange={handleCheck}
-                  />
-                </FormGroup>
-                :
-                null
-              }
-            </Grid>
-            <Grid item xs={1}><></></Grid>
-            <Grid item xs={11}>
-              {/* copies sent? */}
-              {currentStory.copies_required > 0 ?
-                <FormGroup>
-                  <FormControlLabel
-                    label={'Copies sent, required amount:' + currentStory.copies_required}
-                    control={<Checkbox id={'make payments'} checked={copiesSentStatus} />}
-                    onChange={handleCheck}
-                  />
-                </FormGroup>
-                :
-                null
-              }
-            </Grid>
-            <Grid item xs={1}><></></Grid>
-            <Grid item xs={11}>
-              {/* payment sent? */}
-              {currentStory.payment_required ?
-                <FormGroup>
-                  <FormControlLabel
-                    label={'Payment Sent'}
-                    control={<Checkbox id={'make payments'} checked={paymentStatus} />}
-                    onChange={handleCheck}
-                  />
-                </FormGroup>
-                :
-                null
-              }
-            </Grid>
-            {/* end to-do items */}
+
+            {/* wrapping this entire piece in a conditional to help with async rendering issues*/}
+            {photoStatus || graphicPhotoStatus || factChecked || copiesSentStatus ?
+              <>
+                <Grid item xs={11}>
+                  {/* photo required? */}
+                  {currentStory.photo_required ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Photo Uploaded'}
+                        control={<Checkbox id={'upload photo'} checked={photoStatus} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+                  {/* graphic image required? */}
+                  {currentStory.graphic_image_required ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Graphic Image Uploaded'}
+                        control={<Checkbox id={'upload graphic'} checked={graphicPhotoStatus} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                  {/* fact check required? */}
+                  {currentStory.fact_check_required ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Fact Checked'}
+                        control={<Checkbox id={'fact-check story'} checked={factChecked} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+                  {/* copies sent? */}
+                  {currentStory.copies_required > 0 ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Copies sent, required amount:' + currentStory.copies_required}
+                        control={<Checkbox id={'make payments'} checked={copiesSentStatus} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+                  {/* payment sent? */}
+                  {currentStory.payment_required ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Payment Sent'}
+                        control={<Checkbox id={'make payments'} checked={paymentStatus} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                </Grid>
+                {/* end to-do items */}
+              </>
+              :
+              null}
+
+            <Grid item xs={12}></Grid>
+
+
+
             {/* start comments section */}
             <Grid item xs={9}>
               <Typography variant='h6'>Comments</Typography>

@@ -64,14 +64,15 @@ function* editStory(action) {
 
 function* updateStoryStatus(action) {
   try{
-    yield axios.put(`/api/stories/status/${action.payload.story_id}`, action.payload.statusToChange);
-    yield put({type: 'GET_ALL_STORIES'});
+    yield axios.put(`/api/stories/status/${action.payload.story_id}`, action.payload);
+    yield put({type: 'GET_CURRENT_STORY', payload: action.payload.story_id});
   }
   catch(error){
     console.log('error in updateStoryStatus saga:', error)
   }
 }
 
+// updates only notes part of story
 function* updateStoryNotes(action) {
   //action.payload === {storyId: num, notes: 'string'}
   try {

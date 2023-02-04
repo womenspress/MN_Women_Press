@@ -56,7 +56,9 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
     return 'translate(-5%,5%)'
   }
 
-  const author = story.contacts?.filter(contact => contact.role === 'author');
+  const author = [{name: 'paolo'}]
+  
+  //! temporary fix. reinstate this once data is right. fstory.contacts?.filter(contact => contact.role === 'author');
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -81,7 +83,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
           </IconButton>
           <Typography>{story.title}</Typography>
         </Box>
-        <Typography>{author ? author[0].name : null}</Typography>
+        <Typography>{author.length ? author[0].name : null}</Typography>
         <StatusDropdown story={story} />
       </Box>
 

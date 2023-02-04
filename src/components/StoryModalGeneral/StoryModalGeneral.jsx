@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // libraries
 
@@ -9,9 +9,14 @@ import { Box, Typography, Grid, Button, TextField } from '@mui/material'
 
 export default function StoryModalGeneral(props) {
 
+
   //! todo: make dropdown tag and contact search functionality
 
-  const { setOpen, setStep } = props
+  const {
+    setOpen,
+    setStep,
+    createMode
+  } = props
 
   const dispatch = useDispatch()
 
@@ -24,16 +29,22 @@ export default function StoryModalGeneral(props) {
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [tagSearchTerm, setTagSearchTerm] = useState('');
 
-  // on submit, navigate to additional
+  useEffect(()=>{
+    setInputValues(currentStory)
+  },[currentStory])
+
+  // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } })
+    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
+    else dispatch({type: 'EDIT_STORY', payload: {...currentStory, ...inputValues}})
     setOpen(false);
   }
 
+  // navigation: update temp story with input values, move to next step
   const navigateAdditional = () => {
     console.log('navigating to next page');
-    dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } })
+    dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } });
     setStep('additional');
   }
 
@@ -41,6 +52,7 @@ export default function StoryModalGeneral(props) {
 
   return (
     <Box>
+      input values: {JSON.stringify(inputValues)}
       <Typography variant='h4'>New Story - general</Typography>
       <Grid container spacing={1}>
 
@@ -64,11 +76,11 @@ export default function StoryModalGeneral(props) {
           </Typography>
         </Grid>
         <Grid item xs={9}>
-          
-            <TextField
-              value={contactSearchTerm}
-              onChange={(e) => setContactSearchTerm(e.target.value)}
-            />
+
+          <TextField
+            value={contactSearchTerm}
+            onChange={(e) => setContactSearchTerm(e.target.value)}
+          />
           <Box sx={{ bgcolor: 'grey.100' }}>
             contacts go here
             {/* {inputValues.contacts.map(contact=>{
@@ -76,7 +88,7 @@ export default function StoryModalGeneral(props) {
                 <ContactElement/>
               )
             })} */}
-            </Box>
+          </Box>
 
         </Grid>
 
@@ -109,7 +121,7 @@ export default function StoryModalGeneral(props) {
                 <TagElement/>
               )
             })} */}
-            </Box>
+          </Box>
         </Grid>
 
       </Grid>

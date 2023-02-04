@@ -11,25 +11,28 @@ export default function StoryModalNeeds(props) {
 
   //! todo: make dropdown tag and contact search functionality
 
-  const { setOpen, setStep } = props
+  const { 
+    setOpen, 
+    setStep,
+    createMode 
+  } = props
 
   const dispatch = useDispatch()
 
   const currentStory = useSelector(store => store.stories.tempStory)
-  const contacts = useSelector(store => store.contacts.allContacts)
-  const tags = useSelector(store => store.tags.allTags)
-
 
   const [inputValues, setInputValues] = useState(currentStory);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [tagSearchTerm, setTagSearchTerm] = useState('');
 
-  // on submit, navigate to additional
-  const handleSubmit = () => {
-    console.log('saved and submitted');
-    dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } })
-    setOpen(false);
-  }
+    // on submit: close modal. create mode true => POST data. create mode false => PUT data.
+    const handleSubmit = () => {
+      console.log('saved and submitted');
+      if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
+      else dispatch({type: 'EDIT_STORY', payload: {...currentStory, ...inputValues}});
+      setOpen(false);
+    }
+  
 
   const navigateAdditional = () => {
     console.log('navigating to next page');
@@ -41,7 +44,7 @@ export default function StoryModalNeeds(props) {
 
   return (
     <Box>
-      <Typography variant='h4'>New Story - general</Typography>
+      <Typography variant='h4'>New Story - story needs</Typography>
       <Grid container spacing={1}>
 
         {/* payment */}
@@ -51,6 +54,14 @@ export default function StoryModalNeeds(props) {
           </Typography>
         </Grid>
         <Grid item xs={9}>
+          <Box sx ={{bgcolor: 'grey.100'}}>contacts with checkboxes here</Box>
+          {/* 
+          {currentStory.contacts.map(contact=>{
+            return(
+              <ContactComponent contact={contact}/>
+            )
+          })}
+          */}
           <TextField
             value={inputValues.title}
             onChange={(e) => setInputValues({ ...inputValues, title: e.target.value })}

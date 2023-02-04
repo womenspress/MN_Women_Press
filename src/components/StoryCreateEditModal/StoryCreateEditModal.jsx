@@ -11,19 +11,16 @@ import StoryModalAdditional from '../StoryModalAdditional/StoryModalAdditional';
 import StoryModalNeeds from '../StoryModalNeeds/StoryModalNeeds';
 
 
-
-
 export default function StoryCreateEditModal(props) {
 
   const {
     open,
     setOpen,
-    createMode,
-    setCreateMode
+    createMode
   } = props
 
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   // I am assuming that since this is a modal, the tags and contacts will already be in the store (no useEffect required)
 
@@ -33,15 +30,13 @@ export default function StoryCreateEditModal(props) {
   const [step, setStep] = useState('general')
   const [inputValues, setInputValues] = useState({ title: '', contacts: [], notes: '', tags: [] })
 
-  
+
 
   return (
     <Box>
-      {step === 'general' && <StoryModalGeneral setOpen = {setOpen} setStep={setStep} />}
-      {step === 'additional' && <StoryModalAdditional setOpen = {setOpen} setStep={setStep} />}
-      {step === 'needs' && <StoryModalNeeds setOpen = {setOpen} setStep={setStep} />}
-
-      
+      {step === 'general' && <StoryModalGeneral createMode={createMode} setOpen={setOpen} setStep={setStep} />}
+      {step === 'additional' && <StoryModalAdditional createMode={createMode} setOpen={setOpen} setStep={setStep} />}
+      {step === 'needs' && <StoryModalNeeds createMode={createMode} setOpen={setOpen} setStep={setStep} />}
     </Box>
   )
 }

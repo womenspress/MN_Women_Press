@@ -10,10 +10,13 @@ import { DateTime } from 'luxon'
 export function makeStatusColor(story) {
   // console.log('publication date', story.publication_date)
 
-  const hasAuthor = !!story.contacts?.filter(contact => contact.role === 'author').length
+  const hasAuthor = true;
+  
+  // !!story.contacts?.filter(contact => contact.role === 'author').length
   // console.log('author?', hasAuthor)
 
-  const paymentRequired = !!story.contacts?.filter(contact=>contact.invoice_amount>0).length
+  const paymentRequired = true; 
+  //!!story.contacts?.filter(contact=>contact.invoice_amount>0).length
   // console.log('payment required?', paymentRequired)
 
   const piecesToTrack = [
@@ -48,7 +51,7 @@ export function makeStatusColor(story) {
       complete: story.payment_completed,
     },
   ].filter(piece => piece.status);
-  console.log(piecesToTrack);
+  // console.log(piecesToTrack);
 
   const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
   // console.log('pieces ready', piecesReady);

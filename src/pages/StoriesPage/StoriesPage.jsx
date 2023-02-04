@@ -1,25 +1,36 @@
 
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // libraries
+import { useDispatch, useSelector } from 'react-redux';
 
 // components
 import StoryListItem from '../../components/StoryListItem/StoryListItem'
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
-
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { Box, Button, IconButton, Typography, Modal } from '@mui/material'
 
 // internal
 import { largeModal } from '../../__style'
-
 import { story } from '../../sampleData';
 
 export default function StoriesPage() {
 
-  const [createMode, setCreateMode] = useState(true)
-  const [modalOpen, setModalOpen] = useState(false)
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch({ type: 'GET_ALL_STORIES' })
+  //   dispatch({ type: 'GET_ALL_CONTACTS' })
+  //   dispatch({ type: 'GET_ALL_THEMES' })
+  //   dispatch({ type: 'GET_ALL_TAGS' })
+  // }
+  //   , [])
+
+  //! temporary fix. const allStories = useSelector(store => store.stories.allStories);
+
+  // createMode: will the big story modal be in create or edit mode?
+  const [createMode, setCreateMode] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleClickPlus = () => {
     setModalOpen(true)
@@ -33,13 +44,18 @@ export default function StoriesPage() {
           <ControlPointIcon />
         </IconButton>
       </Box>
-      <StoryListItem story={story} createMode={createMode} setCreateMode={setCreateMode} />
+
+      {/* //! temporary fix - reinstate when data is right. {allStories.length && allStories?.map(story => {
+        return (
+          <StoryListItem key = {story.title} story={story} createMode={createMode} setCreateMode={setCreateMode} />
+        )
+      })} */}
 
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal />
+          <StoryCreateEditModal createMode={createMode} />
         </Box>
       </Modal>
 

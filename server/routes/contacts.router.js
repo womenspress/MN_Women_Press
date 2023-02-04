@@ -5,16 +5,16 @@ const router = express.Router();
 /**
  * GET route template
  */
-// router.get('/', async (req, res) => {
-//   // GET route code here
-//   console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
+router.get('/', async (req, res) => {
+  // GET route code here
+  console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
 
-//   const client = await pool.connect()
-//   try {
-//     await client.query('BEGIN')
-//     let allContacts = []
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    let allContacts = []
 
-//     //* 1. general info: all info in the contact table
+    //* 1. general info: all info in teh contact table
 
     const generalInfoQuery = `SELECT "contact".*,  json_agg(DISTINCT "story") AS "stories", json_agg(DISTINCT "tag") AS "tags"
     FROM "contact" 
@@ -28,89 +28,89 @@ const router = express.Router();
     ;`
     const generalInfoResults = await client.query(generalInfoQuery);
 
-//     allContacts = generalInfoResults.rows
+    allContacts = generalInfoResults.rows
 
-//     //* 2. stories. query returns array of objects:
-//     /* 
-//       {
-//         id (contact id): 
-//         stories: [{},{}]
-//       }
-//     */
-
-    const storyQuery = '~~~ enter SQL stuff here ~~~'
-    const storyResults = await client.query(storyQuery);
-
-    for (let contact of allContacts) {
-      for (let story of storyResults.rows) {
-        if (contact.id === story.id) {
-          contact.stories = story.stories
-        }
+    //* 2. stories. query returns array of objects:
+    /* 
+      {
+        id (contact id): 
+        stories: [{},{}]
       }
-      if (!contact.stories) contact.stories = []
+    */
+
+    // const storyQuery = '~~~ enter SQL stuff here ~~~'
+    // const storyResults = await client.query(storyQuery);
+
+    // for (let contact of allContacts) {
+    //   for (let story of storyResults.rows) {
+    //     if (contact.id === story.id) {
+    //       contact.stories = story.stories
+    //     }
+    //   }
+    //   if (!contact.stories) contact.stories = []
+    // }
+
+    //* 3. themes. query returns array of objects:
+    /* 
+    {
+      id (contact id):
+      themes: [{},{}]
     }
+    */
 
-//     //* 3. themes. query returns array of objects:
-//     /* 
-//     {
-//       id (contact id):
-//       themes: [{},{}]
-//     }
-//     */
-
-    const themeQuery = '~~~ enter SQL stuff here ~~~'
-    const themeResults = await client.query(themeQuery)
-    for (let contact of allContacts) {
-      for (let theme of themeResults.rows) {
-        if (contact.id === theme.id) {
-          contact.themes = theme.themes
-        }
-      }
-      if (!contact.themes) contact.themes = []
-    }
+    // const themeQuery = '~~~ enter SQL stuff here ~~~'
+    // const themeResults = await client.query(themeQuery)
+    // for (let contact of allContacts) {
+    //   for (let theme of themeResults.rows) {
+    //     if (contact.id === theme.id) {
+    //       contact.themes = theme.themes
+    //     }
+    //   }
+    //   if (!contact.themes) contact.themes = []
+    // }
 
 
-//     //* 4. roles
+    //* 4. roles
 
-    const rolesQuery = '~~~ enter SQL stuff here ~~~'
-    const rolesResults = await client.query(rolesQuery)
-    for (let contact of allContacts) {
-      for (let roles of rolesResults.rows) {
-        if (contact.id === roles.id) {
-          contact.roles = roles.roles
-        }
-      }
-      if (!contact.roles) contact.roles = []
-    }
+    // const rolesQuery = '~~~ enter SQL stuff here ~~~'
+    // const rolesResults = await client.query(rolesQuery)
+    // for (let contact of allContacts) {
+    //   for (let roles of rolesResults.rows) {
+    //     if (contact.id === roles.id) {
+    //       contact.roles = roles.roles
+    //     }
+    //   }
+    //   if (!contact.roles) contact.roles = []
+    // }
 
-//     //* 5. tags
+    //* 5. tags
 
-    const tagsQuery = '~~~ enter SQL stuff here ~~~'
-    const tagsResults = await client.query(tagsQuery)
-    for (let contact of allContacts) {
-      for (let tags of tagsResults.rows) {
-        if (contact.id === tags.id) {
-          contact.tags = tags.tags
-        }
-      }
-      if (!contact.tags) contact.tags = []
-    }
+    // const tagsQuery = '~~~ enter SQL stuff here ~~~'
+    // const tagsResults = await client.query(tagsQuery)
+    // for (let contact of allContacts) {
+    //   for (let tags of tagsResults.rows) {
+    //     if (contact.id === tags.id) {
+    //       contact.tags = tags.tags
+    //     }
+    //   }
+    //   if (!contact.tags) contact.tags = []
+    // }
 
 
-//     await client.query('COMMIT')
-//     res.send(allContacts)
-//   }
-//   catch (error) {
-//     await client.query('ROLLBACK')
-//     console.log('could not get all contacts info', error)
-//     res.sendStatus(500)
-//   }
-//   finally {
-//     client.release()
-//   }
+    await client.query('COMMIT')
+    res.send(allContacts)
+  }
+  catch (error) {
+    await client.query('ROLLBACK')
+    console.log('could not get all contacts info', error)
+    res.sendStatus(500)
+  }
+  finally {
+    client.release()
+  }
 
-//   res.sendStatus(200);
-// });
+  res.sendStatus(200);
+});
 
 //* ------------- GET BY ID --------------**TENTATIVELY BEING MANAGED BY PULLING OUT OF STATE**
 
@@ -165,9 +165,9 @@ router.put('/:id', async (req, res) => {
 
     //* 1. delete existing tags and roles
 
-    const deleteRolesQuery = client.query(`~~~ SQL ~~~`, [req.params.id])
+    const deleteRolesQuery = client.query(`DELETE FROM "contact_role" WHERE "contact_id" = $1;`, [req.params.id])
 
-    const deleteTagsQuery = client.query(`~~~ SQL ~~~`, [req.params.id])
+    const deleteTagsQuery = client.query(`DELETE FROM "tag_contact" WHERE "contact_id" = $1;`, [req.params.id])
 
     await Promise.all([deleteRolesQuery, deleteTagsQuery])
 

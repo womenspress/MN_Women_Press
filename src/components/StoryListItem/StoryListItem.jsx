@@ -97,7 +97,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
               <DeleteIcon />
             </IconButton>
             <Button
-              onClick={() => history.push(`/story/${story.id}`)}
+              onClick={() => history.push(`/storydetails/${story.id}`)}
               size='small'
               color='inherit'
               endIcon={<ArrowForwardIcon />}>

@@ -19,7 +19,7 @@ export default function StoriesPage() {
   const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(currentStory?.graphic_image_completed);
   const [copiesSentStatus, setCopiesSentStatus] = useState(currentStory?.copies_sent);
   const [paymentStatus, setPaymentStatus] = useState(currentStory?.payment_completed);
-  const [notes, setNotes] = useState(currentStory?.notes);
+  const [notes, setNotes] = useState(currentStory.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
 
   useEffect(() => {
@@ -67,10 +67,12 @@ export default function StoriesPage() {
       <Grid container space={1}>
         {/* This grid row contains story header and tags */}
         <Grid item xs={8}>
-          <Tooltip title={statusColor.notes}>
-            <Box sx={statusStyle}></Box>
-          </Tooltip>
-          <Typography variant='h4'>{currentStory.title}</Typography>
+          <Box display='flex' flexDirection='row' alignItems='center'>
+            <Tooltip title={statusColor.notes}>
+              <Box sx={statusStyle}></Box>
+            </Tooltip>
+            <Typography variant='h4' sx={{ ml: 1 }}>{currentStory.title}</Typography>
+          </Box>
         </Grid>
         <Grid item xs={4}>
           <Box>
@@ -109,7 +111,7 @@ export default function StoriesPage() {
               })}
             </Grid>
             {/* Maps other contacts conditionally if they are required when story is created, starting with photographer */}
-            {currentStory.photo_required ?
+            {currentStory.photo_required || currentStory.contacts?.filter(e => e.story_association === 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -140,7 +142,7 @@ export default function StoriesPage() {
               :
               null
             }
-            {currentStory.fact_check_required ?
+            {currentStory.fact_check_required || currentStory.contacts?.filter(e => e.story_association === 'fact checker').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -180,7 +182,7 @@ export default function StoriesPage() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9}>
-                  {currentStory.contacts.filter(e => e.story_association !== 'fact checker' && e.story_association !== 'author' && e.story_association !== 'photographer').map((contact) => {
+                  {currentStory.contacts?.filter(e => e.story_association !== 'fact checker' && e.story_association !== 'author' && e.story_association !== 'photographer').map((contact) => {
                     return (
                       <Grid container spacing={1} key={contact.id}>
                         {/* The below portion can be swapped out with a contact card component once created */}
@@ -205,7 +207,7 @@ export default function StoriesPage() {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              {currentStory.theme?.name}
+              {currentStory.theme ? currentStory.theme[0].name : null}
             </Grid>
             {/* Publication date */}
             <Grid item xs={3}>

@@ -1,4 +1,5 @@
 const express = require('express');
+const { rejectUnauthenticated } = require('../modules/authentication-middleware');
 const pool = require('../modules/pool');
 const router = express.Router();
 
@@ -343,6 +344,15 @@ router.delete('/tag/:id', (req, res) => {
     });
   res.sendStatus(200);
 });
+
+
+// updates notes, initiated at story details page
+router.put('/notes/:id', rejectUnauthenticated, (req, res) => {
+  const queryText = 'UPDATE "story" SET "notes"=$1 WHERE "id"=$2;';
+  const queryParams = [req.body.notes, req.params.id];
+
+  pool.query(queryText, queryParams).then(()=> res.sendStatus(200)).catch((err) => console.log(err));
+})
 
 // search is happening on front end, looking at store items
 // router.get('/search', (req, res) => {

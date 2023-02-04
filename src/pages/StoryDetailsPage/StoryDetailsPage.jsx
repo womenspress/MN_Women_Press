@@ -21,12 +21,22 @@ export default function StoriesPage() {
   const [paymentStatus, setPaymentStatus] = useState(currentStory?.payment_completed);
   const [notes, setNotes] = useState(currentStory.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
+  const [statusColor , setStatusColor] = useState({ color: 'red', notes: 'story is missing a rough draft deadline, final draft deadline, or author' })
 
   useEffect(() => {
     dispatch({ type: 'GET_CURRENT_STORY', payload: id })
   }, [])
+  
 
-  const statusColor = makeStatusColor(currentStory);
+  useEffect(() => {
+    setNotes(currentStory.notes)
+  }, [currentStory.notes])
+
+  useEffect(()=> {
+    if (currentStory.contacts)  console.log('contacts[0]', currentStory.contacts[0])
+    setStatusColor(makeStatusColor(currentStory))
+  }, [currentStory.contacts])
+
 
   const statusStyle = {
     bgcolor: statusColor.color,
@@ -34,6 +44,22 @@ export default function StoriesPage() {
     height: 20,
     borderRadius: '50%'
   }
+
+  //---------TODO----------\\
+  // add edit modal to handle story edit function
+  const handleStoryEdit = () => {
+    console.log('in handleStoryEdit')
+  }
+
+  const handleCommentEdit = () => {
+    //updates story notes if there are changes
+    if (notes !== currentStory.notes) {
+      dispatch({ type: 'UPDATE_STORY_NOTES', payload: { storyId: id, notes: notes } });
+    }
+
+
+    setEditNotesMode(!editNotesMode);
+  };
 
   const handleCheck = (event) => {
     // console.log(event.target.id)
@@ -62,8 +88,10 @@ export default function StoriesPage() {
     dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, story_id: currentStory.id } })
   }
 
+
   return (
     <Box>
+      
       <Grid container space={1}>
         {/* This grid row contains story header and tags */}
         <Grid item xs={8}>
@@ -87,7 +115,7 @@ export default function StoriesPage() {
             </Grid>
             {/* Need to link edit icon to story edit modal */}
             <Grid item xs={1}>
-              <EditIcon />
+              <EditIcon onClick={handleStoryEdit} sx={{ '&:hover': { cursor: 'pointer' } }} />
             </Grid>
             {/* Map of contacts, author first */}
             <Grid item xs={3}>
@@ -96,7 +124,7 @@ export default function StoriesPage() {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              {currentStory.contacts?.filter(e => e.story_association === 'author').map((contact) => {
+              {currentStory.contacts?.filter(e => e?.story_association === 'author').map((contact) => {
                 return (
                   <Grid container spacing={1} key={contact.id}>
                     {/* The below portion can be swapped out with a contact card component once created */}
@@ -111,16 +139,16 @@ export default function StoriesPage() {
               })}
             </Grid>
             {/* Maps other contacts conditionally if they are required when story is created, starting with photographer */}
-            {currentStory.photo_required || currentStory.contacts?.filter(e => e.story_association === 'photographer').length > 0 ?
+            {currentStory.photo_required || currentStory.contacts?.filter(e => e?.story_association === 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
                     Photographer
                   </Typography>
                 </Grid>
-                {currentStory.contacts.filter(e => e.story_association === 'photographer').length > 0 ?
+                {currentStory.contacts.filter(e => e?.story_association === 'photographer').length > 0 ?
                   <Grid item xs={9}>
-                    {currentStory.contacts.filter(e => e.story_association === 'photographer').map((contact) => {
+                    {currentStory.contacts.filter(e => e?.story_association === 'photographer').map((contact) => {
                       return (
                         <Grid container spacing={1} key={contact.id}>
                           {/* The below portion can be swapped out with a contact card component once created */}
@@ -142,16 +170,16 @@ export default function StoriesPage() {
               :
               null
             }
-            {currentStory.fact_check_required || currentStory.contacts?.filter(e => e.story_association === 'fact checker').length > 0 ?
+            {currentStory.fact_check_required || currentStory.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
                     Fact Checker
                   </Typography>
                 </Grid>
-                {currentStory.contacts?.filter(e => e.story_association === 'fact checker').length > 0 ?
+                {currentStory.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
                   <Grid item xs={9}>
-                    {currentStory.contacts.filter(e => e.story_association === 'fact checker').map((contact) => {
+                    {currentStory.contacts.filter(e => e?.story_association === 'fact checker').map((contact) => {
                       return (
                         <Grid container spacing={1} key={contact.id}>
                           {/* The below portion can be swapped out with a contact card component once created */}
@@ -174,7 +202,7 @@ export default function StoriesPage() {
               null
             }
             {/* Other contacts that are not fact checker, author, photographer go here */}
-            {currentStory.contacts?.filter(e => e.story_association !== 'fact checker' && e.story_association !== 'author' && e.story_association !== 'photographer').length > 0 ?
+            {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
@@ -182,14 +210,14 @@ export default function StoriesPage() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9}>
-                  {currentStory.contacts?.filter(e => e.story_association !== 'fact checker' && e.story_association !== 'author' && e.story_association !== 'photographer').map((contact) => {
+                  {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').map((contact) => {
                     return (
-                      <Grid container spacing={1} key={contact.id}>
+                      <Grid container spacing={1} key={contact ? contact.id : 1}>
                         {/* The below portion can be swapped out with a contact card component once created */}
                         <Grid item xs={12}>
                           <Box component={Paper} p={1} m={1}>
-                            <Typography fontWeight='bold'>{contact.name}</Typography>
-                            <Typography>{contact.email}</Typography>
+                            <Typography fontWeight='bold'>{contact?.name}</Typography>
+                            <Typography>{contact?.email}</Typography>
                           </Box>
                         </Grid>
                       </Grid>
@@ -207,7 +235,7 @@ export default function StoriesPage() {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              {currentStory.theme ? currentStory.theme[0].name : null}
+              {currentStory.theme ? currentStory.theme[0]?.name : null}
             </Grid>
             {/* Publication date */}
             <Grid item xs={3}>
@@ -302,11 +330,11 @@ export default function StoriesPage() {
             <Grid item xs={9}>
               <Typography variant='h6'>Comments</Typography>
             </Grid>
-            <Grid item xs={3} onClick={() => setEditNotesMode(!editNotesMode)}>
+            <Grid item xs={3} onClick={() => handleCommentEdit()}>
               {editNotesMode ?
-                <Typography>Save <SaveIcon /></Typography>
+                <Typography sx={{ '&:hover': { cursor: 'pointer' } }} >Save <SaveIcon /></Typography>
                 :
-                <Typography>Edit <EditIcon /></Typography>
+                <Typography sx={{ '&:hover': { cursor: 'pointer' } }} >Edit <EditIcon /></Typography>
               }
             </Grid>
             <Grid item xs={12} mr={1}>

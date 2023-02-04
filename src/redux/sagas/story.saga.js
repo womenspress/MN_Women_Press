@@ -15,6 +15,7 @@ function* storySaga() {
   yield takeEvery('CREATE_NEW_STORY', createNewStory);
   yield takeEvery('EDIT_STORY', editStory);
   yield takeEvery('UPDATE_STORY_STATUS', updateStoryStatus);
+  yield takeEvery('UPDATE_STORY_NOTES', updateStoryNotes);
   yield takeEvery('DELETE_STORY', deleteStory);
   yield takeEvery('CREATE_STORY_TAG', createStoryTag);
   yield takeEvery('DELETE_STORY_TAG', deleteStoryTag);
@@ -31,6 +32,7 @@ function* getAllStories() {
 
 // action.payload is story ID
 function* getCurrentStory(action) {
+  console.log('in getCurrentStory, action:', action)
   try {
     const currentStory = yield axios.get(`/api/stories/current/${action.payload}`);
     yield put({ type: 'SET_CURRENT_STORY', payload: currentStory.data });
@@ -67,6 +69,16 @@ function* updateStoryStatus(action) {
   }
   catch(error){
     console.log('error in updateStoryStatus saga:', error)
+  }
+}
+
+function* updateStoryNotes(action) {
+  //action.payload === {storyId: num, notes: 'string'}
+  try {
+    yield axios.put('/api/stories/notes/' + action.payload.storyId, action.payload);
+    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.storyId})
+  } catch (error) {
+    console.log('error in updateStoryNotes saga:', error)
   }
 }
 

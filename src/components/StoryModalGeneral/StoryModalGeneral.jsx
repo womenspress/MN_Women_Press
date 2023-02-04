@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 
 // libraries
-
 import { useDispatch, useSelector } from 'react-redux'
 
 // components
-import { Box, Typography, Grid, Button, TextField } from '@mui/material'
+import { Box, Typography, Grid, Button, TextField, Menu } from '@mui/material';
+import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
+import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
+
+//internal
+import { contacts, tags } from '../../sampleData'
 
 export default function StoryModalGeneral(props) {
 
@@ -13,7 +17,7 @@ export default function StoryModalGeneral(props) {
   //! todo: make dropdown tag and contact search functionality
 
   const {
-    setOpen,
+    setModalOpen,
     setStep,
     createMode
   } = props
@@ -21,24 +25,61 @@ export default function StoryModalGeneral(props) {
   const dispatch = useDispatch()
 
   const currentStory = useSelector(store => store.stories.tempStory)
-  const contacts = useSelector(store => store.contacts.allContacts)
-  const tags = useSelector(store => store.tags.allTags)
+  //! const contacts = useSelector(store => store.contacts.allContacts)
+  // const tags = useSelector(store => store.tags.allTags)
 
 
   const [inputValues, setInputValues] = useState(currentStory);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [tagSearchTerm, setTagSearchTerm] = useState('');
 
-  useEffect(()=>{
-    setInputValues(currentStory)
-  },[currentStory])
+  // useEffect(() => {
+  //   setInputValues(currentStory)
+  // }, [currentStory])
 
-  // on submit: close modal. create mode true => POST data. create mode false => PUT data.
+  const [contactAnchor, setContactAnchor] = useState(null);
+  const contactOpen = Boolean(contactAnchor);
+
+  const handleSearchContacts = (event) => {
+    setContactAnchor(event.currentTarget)
+  }
+
+  const handleContactsClose = () => {
+    setContactAnchor(null)
+  }
+
+  const [tagAnchor, setTagAnchor] = useState(null);
+  const tagOpen = Boolean(tagAnchor);
+
+  const handleSearchTags = (event) => {
+    setTagAnchor(event.currentTarget)
+  }
+
+  const handleTagsClose = () => {
+    setTagAnchor(null)
+  }
+  // if contact search term exists, open the menu
+  // const handleContactSearch = (e) => {
+  //   console.log(e)
+  //   setContactSearchTerm(e.target.value);
+  //   if (contactSearchTerm) setContactAnchor(e.target)
+  // }
+
+
+  // need ids of contacts on the story. results to populate into map are contacts who are not in the ids list
+  const contactIds = inputValues.contacts ? inputValues.contacts.map(contact => contact.id) : [];
+  const contactResults = contacts.filter(contact => { !contactIds.includes(contact.id) })
+
+
+  // on submit: close modal. create mode true => POST data, clear temp story. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
-    else dispatch({type: 'EDIT_STORY', payload: {...currentStory, ...inputValues}})
-    setOpen(false);
+    if (createMode) {
+      dispatch({ type: 'CLEAR_TEMP_STORY' })
+      dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
+    }
+    else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } })
+    setModalOpen(false);
   }
 
   // navigation: update temp story with input values, move to next step
@@ -53,6 +94,9 @@ export default function StoryModalGeneral(props) {
   return (
     <Box>
       input values: {JSON.stringify(inputValues)}
+      contactId: {JSON.stringify(contactIds)}
+      contactResults: {JSON.stringify(contactResults)}
+      tags: {JSON.stringify(tags)}
       <Typography variant='h4'>New Story - general</Typography>
       <Grid container spacing={1}>
 
@@ -81,6 +125,20 @@ export default function StoryModalGeneral(props) {
             value={contactSearchTerm}
             onChange={(e) => setContactSearchTerm(e.target.value)}
           />
+          <Button
+            onClick={handleSearchContacts}
+          >search</Button>
+          <Menu
+            anchorEl={contactAnchor}
+            open={contactOpen}
+            onClose={handleContactsClose}
+          >
+            {contacts.map(contact => {
+              return (
+                <ContactDropdownItem key={contact.id} handleClose={handleContactsClose} contact={contact} setInputValues={setInputValues} inputValues={inputValues} />
+              )
+            })}
+          </Menu>
           <Box sx={{ bgcolor: 'grey.100' }}>
             contacts go here
             {/* {inputValues.contacts.map(contact=>{
@@ -114,6 +172,20 @@ export default function StoryModalGeneral(props) {
             value={tagSearchTerm}
             onChange={(e) => setTagSearchTerm(e.target.value)}
           />
+          <Button
+            onClick={handleSearchTags}
+          >search</Button>
+          <Menu
+            anchorEl={tagAnchor}
+            open={tagOpen}
+            onClose={handleTagsClose}
+          >
+            {tags.map(tag => {
+              return (
+                <TagDropdownItem key={tag.id} handleClose={handleTagsClose} tag={tag} setInputValues={setInputValues} inputValues={inputValues} />
+              )
+            })}
+          </Menu>
           <Box sx={{ bgcolor: 'grey.100' }}>
             tags go here
             {/* {inputValues.tags.map(tag=>{

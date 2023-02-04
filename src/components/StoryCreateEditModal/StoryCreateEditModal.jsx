@@ -14,8 +14,7 @@ import StoryModalNeeds from '../StoryModalNeeds/StoryModalNeeds';
 export default function StoryCreateEditModal(props) {
 
   const {
-    open,
-    setOpen,
+    setModalOpen,
     createMode
   } = props
 
@@ -34,9 +33,9 @@ export default function StoryCreateEditModal(props) {
 
   return (
     <Box>
-      {step === 'general' && <StoryModalGeneral createMode={createMode} setOpen={setOpen} setStep={setStep} />}
-      {step === 'additional' && <StoryModalAdditional createMode={createMode} setOpen={setOpen} setStep={setStep} />}
-      {step === 'needs' && <StoryModalNeeds createMode={createMode} setOpen={setOpen} setStep={setStep} />}
+      {step === 'general' && <StoryModalGeneral createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} />}
+      {step === 'additional' && <StoryModalAdditional createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} />}
+      {step === 'needs' && <StoryModalNeeds createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} />}
     </Box>
   )
 }

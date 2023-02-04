@@ -36,6 +36,11 @@ export default function StoriesPage() {
     setModalOpen(true)
   }
 
+  const handleClose = () =>{
+    setModalOpen(false)
+    dispatch({type: 'CLEAR_TEMP_STORY'})
+  }
+
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -53,9 +58,9 @@ export default function StoriesPage() {
 
       <Modal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}>
+        onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal createMode={createMode} />
+          <StoryCreateEditModal setModalOpen = {setModalOpen} createMode={createMode} />
         </Box>
       </Modal>
 

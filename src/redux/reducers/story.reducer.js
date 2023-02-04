@@ -1,7 +1,7 @@
 // import events from '../../events'
 
 import { combineReducers } from 'redux';
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 
 /* 
   - all themes in store
@@ -14,16 +14,23 @@ const allStories = (state = [], action) => {
   return state
 }
 
-const currentStory = (state = {rough_draft_deadline: DateTime.now(), final_draft_deadline: DateTime.now().toISO(), publication_date: DateTime.now().toISO()}, action) => {
+const currentStory = (state = { rough_draft_deadline: DateTime.now(), final_draft_deadline: DateTime.now().toISO(), publication_date: DateTime.now().toISO() }, action) => {
   if (action.type === 'SET_CURRENT_STORY') return action.payload
   return state
 }
 
-
+const blankStory = {
+  rough_draft_deadline: DateTime.now().toISO(), 
+  final_draft_deadline: DateTime.now().toISO(), 
+  publication_date: DateTime.now().toISO(),
+  contacts: [],
+  tags: []
+}
 //! staging area, not sure if we'll use
 
-const tempStory = (state = {rough_draft_deadline: DateTime.now().toISO(), final_draft_deadline: DateTime.now().toISO(), publication_date: DateTime.now().toISO()}, action) => {
+const tempStory = (state = blankStory, action) => {
   if (action.type === 'SET_TEMP_STORY') return action.payload
+  if (action.type === 'CLEAR_TEMP_STORY') return blankStory
   return state
 }
 

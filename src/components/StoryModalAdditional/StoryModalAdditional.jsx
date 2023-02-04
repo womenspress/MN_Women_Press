@@ -16,7 +16,7 @@ export default function StoryModalAdditional(props) {
   //! todo: make dropdown tag and contact search functionality
 
   const {
-    setOpen,
+    setModalOpen,
     setStep,
     createMode
   } = props
@@ -48,9 +48,11 @@ export default function StoryModalAdditional(props) {
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
+    if (createMode) {
+      dispatch({type: 'CLEAR_TEMP_STORY'})
+      dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });}
     else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } });
-    setOpen(false);
+    setModalOpen(false);
   }
 
   // navigation: move to appropriate step, update temp story with the input values

@@ -5,34 +5,86 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // components
-import { Box, Typography, Grid, Button, TextField } from '@mui/material'
+import { Box, Typography, Grid, Button, TextField, Checkbox, FormGroup, FormControlLabel } from '@mui/material'
 
 export default function StoryModalNeeds(props) {
 
   //! todo: make dropdown tag and contact search functionality
 
-  const { 
-    setOpen, 
+  const {
+    setModalOpen,
     setStep,
-    createMode 
+    createMode
   } = props
+
+
 
   const dispatch = useDispatch()
 
   const currentStory = useSelector(store => store.stories.tempStory)
 
   const [inputValues, setInputValues] = useState(currentStory);
-  const [contactSearchTerm, setContactSearchTerm] = useState('');
-  const [tagSearchTerm, setTagSearchTerm] = useState('');
+  const [photographerSearch, setPhotographerSearch] = useState('');
 
-    // on submit: close modal. create mode true => POST data. create mode false => PUT data.
-    const handleSubmit = () => {
-      console.log('saved and submitted');
-      if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
-      else dispatch({type: 'EDIT_STORY', payload: {...currentStory, ...inputValues}});
-      setOpen(false);
+  const [checkboxStatus, setCheckboxStatus] = useState({
+    payment: [],
+    graphic: false,
+    photo: false,
+    copies_sent: false,
+  });
+
+  /* add once data is flowing
+    const contacts = inputValues.contacts
+   */
+
+  const handleCheck = (e) => {
+    console.log('in handleCheck for element with id: ', e.target.id);
+
+    const contactToChange = inputValues.contacts.filter(contact => contact.id === e.target.id)[0];
+    contactToChange.payment_required = !contactToChange.payment_required;
+
+    // if (e.target.checked) 
+    /* 
+    setInputValues({...inputValues, contacts: [...contacts, ]})
+    */
+
+  }
+
+
+  const handleGraphic = (e) => {
+    console.log('in handleGraphic');
+    if (e.target.checked) setInputValues({ ...inputValues, graphic_image_required: true });
+    else setInputValues({ ...inputValues, graphic_image_required: false })
+  }
+
+  const handlePhoto = (e) => {
+    console.log('in handlePhoto');
+    if (e.target.checked) setInputValues({ ...inputValues, photo_required: true });
+    else setInputValues({ ...inputValues, photo_required: false })
+  }
+
+  const handleCopies = (e) => {
+    console.log('in handleCopies');
+    if (e.target.checked) setInputValues({ ...inputValues, copies_required: true })
+    else setInputValues({ ...inputValues, copies_required: false, number_of_copies: 0 })
+  }
+
+  const handleCopyNumber = (e) => {
+    console.log('handling copy number');
+    setInputValues({ ...inputValues, number_of_copies: e.target.value })
+  }
+
+
+  // on submit: close modal. create mode true => POST data. create mode false => PUT data.
+  const handleSubmit = () => {
+    console.log('saved and submitted');
+    if (createMode) {
+      dispatch({ type: 'CLEAR_TEMP_STORY' })
+      dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
     }
-  
+    else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } });
+    setModalOpen(false);
+  }
 
   const navigateAdditional = () => {
     console.log('navigating to next page');
@@ -44,6 +96,8 @@ export default function StoryModalNeeds(props) {
 
   return (
     <Box>
+      input values: {JSON.stringify(inputValues)}
+
       <Typography variant='h4'>New Story - story needs</Typography>
       <Grid container spacing={1}>
 
@@ -54,14 +108,17 @@ export default function StoryModalNeeds(props) {
           </Typography>
         </Grid>
         <Grid item xs={9}>
-          <Box sx ={{bgcolor: 'grey.100'}}>contacts with checkboxes here</Box>
-          {/* 
-          {currentStory.contacts.map(contact=>{
+          <Box sx={{ bgcolor: 'grey.100' }}>contacts with checkboxes here</Box>
+          <FormGroup>
+            {/* 
+          {contacts.map(contact=>{
+            setCheckboxStatus({...checkboxStatus, payment: [...payment, {[contact.name]: 0}]})
             return(
-              <ContactComponent contact={contact}/>
+              <FormControlLabel key = contact.name label = {contact.name} control = {<Checkbox id = {contact.id} onChange={handleCheck}/>}/>
             )
           })}
           */}
+          </FormGroup>
           <TextField
             value={inputValues.title}
             onChange={(e) => setInputValues({ ...inputValues, title: e.target.value })}
@@ -70,59 +127,37 @@ export default function StoryModalNeeds(props) {
 
         {/* graphic */}
         <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            graphic
-          </Typography>
+          <FormControlLabel control={<Checkbox onChange={handleGraphic} />} label='graphic' />
         </Grid>
         <Grid item xs={9}>
-
-          <TextField
-            value={contactSearchTerm}
-            onChange={(e) => setContactSearchTerm(e.target.value)}
-          />
-          <Box sx={{ bgcolor: 'grey.100' }}>
-            contacts go here
-            {/* {inputValues.contacts.map(contact=>{
-              return (
-                <ContactElement/>
-              )
-            })} */}
-          </Box>
 
         </Grid>
 
         {/* photo */}
         <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            photo
-          </Typography>
+          <FormControlLabel control={<Checkbox onChange={handlePhoto} />} label='photo' />
+
         </Grid>
         <Grid item xs={9}>
-          <TextField
-            value={inputValues.notes}
-            onChange={(e) => setInputValues({ ...inputValues, notes: e.target.value })}
-          />
+          {inputValues.photo_required && <TextField
+            value={photographerSearch}
+            onChange={(e) => setPhotographerSearch(e.target.value)}
+          />}
+
         </Grid>
 
         {/* copies sent */}
         <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>copies sent</Typography>
+          <FormControlLabel control={<Checkbox onChange={handleCopies} />} label='copies sent' />
         </Grid>
         <Grid item xs={9}>
-          <TextField
-            value={tagSearchTerm}
-            onChange={(e) => setTagSearchTerm(e.target.value)}
-          />
-          <Box sx={{ bgcolor: 'grey.100' }}>
-            tags go here
-            {/* {inputValues.tags.map(tag=>{
-              return (
-                <TagElement/>
-              )
-            })} */}
-          </Box>
+          {inputValues.copies_required && <TextField
+            type='number'
+            placeholder='number of copies'
+            value={inputValues.number_of_copies}
+            onChange={handleCopyNumber}
+          />}
         </Grid>
-
       </Grid>
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>

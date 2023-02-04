@@ -217,7 +217,7 @@ router.put('/:id', async (req, res) => {
 
 
 
-    // //* 3. insert tags and roles info WILL DO THIS NEXT
+    // //* 3. insert tags and roles info
     // // 3a. tags
     const tagsPromises = tags.map(tag => {
       const insertTagText = `UPDATE "tag_contact" SET "tag_id"=$1 WHERE "contact_id"=$2;`;

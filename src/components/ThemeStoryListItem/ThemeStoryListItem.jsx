@@ -36,14 +36,14 @@ export default function ThemeStoryListItem({ story}) {
     /* 
     */
 
-    const statusColor = makeStatusColor(story)
+    // const statusColor = makeStatusColor(story)
 
-    const statusStyle = {
-        bgcolor: statusColor.color,
-        width: 16,
-        height: 16,
-        borderRadius: '50%'
-    }
+    // const statusStyle = {
+    //     bgcolor: statusColor.color,
+    //     width: 16,
+    //     height: 16,
+    //     borderRadius: '50%'
+    // }
 
     const getTransform = (position) => {
         // mousePos: [x,y]
@@ -72,9 +72,9 @@ export default function ThemeStoryListItem({ story}) {
         <Paper sx={{ paddingX: 1, marginY: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Tooltip title = {statusColor.notes}>
+                {/* <Tooltip title = {statusColor.notes}>
                 <Box sx={statusStyle}></Box>
-                </Tooltip>
+                </Tooltip> */}
                 <IconButton
                     size='small'
                     onClick={() => setCollapseOpen(!collapseOpen)}>
@@ -82,7 +82,7 @@ export default function ThemeStoryListItem({ story}) {
                 </IconButton>
                 <Typography>{story.title}</Typography>
             </Box>
-            <Typography>{author[0] ? author[0]?.name : 'Author Not Found'}</Typography>
+            {/* <Typography>{author[0]? author[0].name : 'Author Not Found'}</Typography> */}
             <StatusDropdown story={story} />
         </Box>
         {/* --------------- collapse ---------------- */}

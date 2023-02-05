@@ -102,12 +102,9 @@ export const contact = {
       article_text: '',
       article_link: 'https://www.womenspress.com/from-soil-to-stars-a-conversation-with-erin-sharkey/',
       notes: `Every time I get the chance to chat with writer and cultural worker Erin Sharkey, I find more ways that our interests and perspectives intersect, including those related to land stewardship, ancestry and collective memory, and the value of archives.
-
-  Sharkey edited the forthcoming collection of essays A Darker Wilderness: Black Nature Writing from Soil to Stars, which offers intimate and varied reflections on nature by contemporary Black writers and poets.
-  
-  Every piece in the collection uses an object from the writers’ personal archives or the larger historical archive — a grandfather’s fishing box, a property deed, a newspaper photograph — to reflect on how nature has influenced the lives of Black folks throughout time.
-  
-  Our conversation was edited for length and clarity.`,
+        Sharkey edited the forthcoming collection of essays A Darker Wilderness: Black Nature Writing from Soil to Stars, which offers intimate and varied reflections on nature by contemporary Black writers and poets.
+        Every piece in the collection uses an object from the writers’ personal archives or the larger historical archive — a grandfather’s fishing box, a property deed, a newspaper photograph — to reflect on how nature has influenced the lives of Black folks throughout time.
+        Our conversation was edited for length and clarity.`,
       photo: '',
       type: '',
       copies_required: 0,

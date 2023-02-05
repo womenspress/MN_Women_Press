@@ -7,7 +7,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   // GET route code here
-  console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
+  // console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
 
   const client = await pool.connect()
   try {
@@ -109,7 +109,6 @@ router.get('/', async (req, res) => {
     client.release()
   }
 
-  res.sendStatus(200);
 });
 
 //* ------------- GET BY ID --------------**TENTATIVELY BEING MANAGED BY PULLING OUT OF STATE**

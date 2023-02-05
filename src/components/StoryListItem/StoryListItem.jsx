@@ -35,7 +35,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
   /* 
    */
 
-  console.log('story list item, story:', story)
+  // console.log('story list item, story:', story)
 
   const statusColor = makeStatusColor(story)
 

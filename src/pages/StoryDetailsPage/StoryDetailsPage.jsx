@@ -359,12 +359,27 @@ export default function StoriesPage() {
                 </Grid>
                 <Grid item xs={1}><></></Grid>
                 <Grid item xs={11}>
+                  {/* payments required? */}
+                  {currentStory.payment_required ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Payment(s) Sent'}
+                        control={<Checkbox id={'make payments'} checked={paymentRequired} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
                   {/* copies sent? */}
                   {currentStory.copies_required > 0 ?
                     <FormGroup>
                       <FormControlLabel
                         label={'Copies sent, required amount:' + currentStory.copies_required}
-                        control={<Checkbox id={'make payments'} checked={copiesSentStatus} />}
+                        control={<Checkbox id={'make payments'} checked={copiesStatus} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>

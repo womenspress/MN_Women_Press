@@ -24,8 +24,9 @@ export default function ContactListItem({ contact }) {
         </Box>
         <Typography>{contact.location}</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ marginRight: 1 }}>{contact.roles[0]}</Typography>
-          {contact.roles[1] && <Typography>• {contact.roles[1]}</Typography>}
+          {/* TODO: once roles are included we can uncomment the below */}
+          {/* <Typography sx={{ marginRight: 1 }}>{contact.roles[0]}</Typography> */}
+          {/* {contact.roles[1] && <Typography>• {contact.roles[1]}</Typography>} */}
         </Box>
       </Box>
 

@@ -32,7 +32,7 @@ function* getAllStories() {
 
 // action.payload is story ID
 function* getCurrentStory(action) {
-  console.log('in getCurrentStory, action:', action)
+  // console.log('in getCurrentStory, action:', action)
   try {
     const currentStory = yield axios.get(`/api/stories/current/${action.payload}`);
     yield put({ type: 'SET_CURRENT_STORY', payload: currentStory.data });

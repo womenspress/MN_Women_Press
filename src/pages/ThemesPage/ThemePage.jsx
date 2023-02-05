@@ -1,8 +1,12 @@
 import React from 'react';
 import ThemeCalendar from '../../components/ThemeCalendar/ThemeCalendar';
 import { Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 export default function ThemesPage(){
+
+    const ThemeArrayDB = useSelector(store => store.allThemes);
+
     let contact = {
         id: 1,
         name: 'Folasade Adesanya',
@@ -150,7 +154,7 @@ export default function ThemesPage(){
     }
 
 
-    let themeArray = [
+    let themeArray = ThemeArrayDB || [
         {
             // Example
             id: 0,

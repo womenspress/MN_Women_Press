@@ -35,6 +35,8 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
   /* 
    */
 
+  // console.log('story list item, story:', story)
+
   const statusColor = makeStatusColor(story)
 
   const statusStyle = {
@@ -56,7 +58,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
     return 'translate(-5%,5%)'
   }
 
-  const author = story.contacts?.filter(contact => contact.role === 'author');
+  const author = story.contacts?.filter(contact => contact?.role === 'author');
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -81,7 +83,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
           </IconButton>
           <Typography>{story.title}</Typography>
         </Box>
-        <Typography>{author ? author[0].name : null}</Typography>
+        <Typography>{author ? author[0]?.name : null}</Typography>
         <StatusDropdown story={story} />
       </Box>
 
@@ -97,7 +99,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
               <DeleteIcon />
             </IconButton>
             <Button
-              onClick={() => history.push(`/story/${story.id}`)}
+              onClick={() => history.push(`/storydetails/${story.id}`)}
               size='small'
               color='inherit'
               endIcon={<ArrowForwardIcon />}>

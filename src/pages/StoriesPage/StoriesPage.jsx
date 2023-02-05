@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import StoryListItem from '../../components/StoryListItem/StoryListItem'
-import { story } from '../../sampleData';
 
 export default function StoriesPage() {
   const dispatch = useDispatch();
@@ -17,8 +15,16 @@ export default function StoriesPage() {
   return (
     <>
       <h1>Stories Page</h1>
-      {stories.map((item) => {return <StoryListItem key={item.id} story={item} createMode={createMode} setCreateMode={setCreateMode} />})}
-      {/* <StoryListItem story={story} createMode={createMode} setCreateMode={setCreateMode} /> */}
+      {stories.map((item) => {
+        return (
+          <StoryListItem
+            key={item.id}
+            story={item}
+            createMode={createMode}
+            setCreateMode={setCreateMode}
+          />
+        )
+      })}
     </>
   )
 }

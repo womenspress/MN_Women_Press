@@ -21,6 +21,8 @@ export default function StoriesPage() {
 
 
   //------------- tracks status of todo list items-----------------//
+  // using local state to hold checkmark required variables, otherwise uncontrolled checkboxes would render first
+  // despite my attempts with other methods
   const [photoStatus, setPhotoStatus] = useState(currentStory.photo_uploaded);
   const [photoRequired, setPhotoRequired] = useState(currentStory.photo_required);
   const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(currentStory.graphic_image_completed);
@@ -43,7 +45,7 @@ export default function StoriesPage() {
     dispatch({ type: 'GET_CURRENT_STORY', payload: id })
   }, [])
 
-  // updates notes on DOM and checks status color when current story changes
+  // updates notes on DOM, checks status color, and refreshes task item states when current story changes
   useEffect(() => {
     setNotes(currentStory.notes)
     setStatusColor(makeStatusColor(currentStory))

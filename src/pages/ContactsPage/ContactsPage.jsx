@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Grid } from '@mui/material';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 
 import ContactListItem from '../../components/ContactListItem/ContactListItem';
 import CreateNewContactModal from '../../components/CreateNewContactModal/CreateNewContactModal';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 
 export default function ContactsPage() {
     const dispatch = useDispatch();

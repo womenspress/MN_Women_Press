@@ -55,15 +55,21 @@ router.get('/current/:id', async (req, res) => {
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
+    //1. get all details related to one story
     let response = await connection.query(getDetailsQueryText, [id]);
+    // set story response to a variable
     let currentStoryDetails = response.rows[0];
 
+    //2. get story contact details (invoice total, invoice paid, project_association)
     let storyContactResponse = await connection.query(getContactDetails, [id]);
     let contactPaymentDetails = storyContactResponse.rows;
-    // console.log('RES:', paymentDetail.contact_id);
+
+    //3. loop over every contact in the story
     for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
+      //4. For each contact in story, loop over each contactPayment detail
       for (let paymentDetail of contactPaymentDetails) {
         console.log('RES:', paymentDetail.contact_id);
+        // if id matches add info to currentStoryDetails array
         if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
           console.log('IM HERE');
           const { project_association, invoice_total, invoice_paid } =
@@ -76,8 +82,7 @@ router.get('/current/:id', async (req, res) => {
       }
     }
 
-    console.log('TESTING', currentStoryDetails.contacts);
-    console.log('CONTACTS', contactPaymentDetails);
+    //5. Send modified array as response
     res.send(currentStoryDetails);
   } catch (err) {
     connection.query('ROLLBACK;');

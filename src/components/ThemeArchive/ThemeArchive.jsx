@@ -15,6 +15,7 @@ export default function ThemeArchive() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortMethod, setSortMethod] = useState('date');
   const [filterMethod, setFilterMethod] = useState('none');
+  const [sortDirection, setSortDirection] = useState('descending')
   const sortOptions = ['date', 'title']
   const filterOptions = ['none', 'recent',]
 
@@ -87,7 +88,7 @@ const themeResults = filterResults(sortResults(searchResults(archiveThemes)))
         />
 
       </Box>
-      {themeResults?.map(theme => {
+      {allThemes?.map(theme => {
         return (
           <ThemeCard theme={theme} />
         )

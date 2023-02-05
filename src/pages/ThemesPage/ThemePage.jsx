@@ -8,10 +8,10 @@ export default function ThemesPage(){
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch({type:'GET_ALL_THEMES'});
+        const response = dispatch({type:'GET_ALL_THEMES'});
     }, [])
 
-    const ThemeArrayDB = useSelector(store => store.allThemes);
+    let ThemeArrayDB = useSelector(store => store.themes.allThemes);
 
     let contact = {
         id: 1,
@@ -160,31 +160,18 @@ export default function ThemesPage(){
     }
 
 
-    let themeArray = ThemeArrayDB || [
-        {
-            // Example
-            id: 0,
-            name: "cucumbers1", 
-            description: "theme description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            month: "January",
-            year: 2023,
-            stories: [
-                story, story
-            ],
-            contacts: [
-                contact, contact
-            ]
-        },
-    ]
+    let themeArray = ThemeArrayDB;
 
-
+    
     return(
         <div>
             <Typography variant="h3" component="h1">
                 Themes
             </Typography>
             <div>
-                <ThemeCalendar themeArray={themeArray}/>
+            {ThemeArrayDB && 
+                    <ThemeCalendar themeArray={ThemeArrayDB}/>
+            }
             </div>
         </div>
     )

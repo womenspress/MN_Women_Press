@@ -26,11 +26,11 @@ export default function ThemeContactListItem(props){
                     <Typography sx={{ marginRight: 1 }}>{contact?.name}</Typography>
                     <Typography>{contact?.pronouns}</Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography sx={{ marginRight: 1 }}>{contact?.roles[0].name}</Typography>
                     
                     {contact?.roles[1].name && <Typography>• {contact?.roles[1].name}</Typography>}
-                </Box> 
+                </Box>  */}
                 <Typography>{contact.location}</Typography>
             </Box>
 

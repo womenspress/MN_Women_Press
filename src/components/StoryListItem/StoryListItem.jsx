@@ -35,6 +35,8 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
   /* 
    */
 
+  // console.log('story list item, story:', story)
+
   const statusColor = makeStatusColor(story)
 
   const statusStyle = {
@@ -56,8 +58,8 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
     return 'translate(-5%,5%)'
   }
 
-  const author = [{name: 'paolo'}]
-  
+  const author = [{ name: 'paolo' }]
+
   //! temporary fix. reinstate this once data is right. fstory.contacts?.filter(contact => contact.role === 'author');
 
   const handleDeleteOpen = (e) => {
@@ -73,8 +75,8 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title = {statusColor.notes}>
-          <Box sx={statusStyle}></Box>
+          <Tooltip title={statusColor.notes}>
+            <Box sx={statusStyle}></Box>
           </Tooltip>
           <IconButton
             size='small'
@@ -99,7 +101,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
               <DeleteIcon />
             </IconButton>
             <Button
-              onClick={() => history.push(`/story/${story.id}`)}
+              onClick={() => history.push(`/storydetails/${story.id}`)}
               size='small'
               color='inherit'
               endIcon={<ArrowForwardIcon />}>
@@ -120,8 +122,8 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
       >
         <Box
           sx={largeModal}>
-            <CreateStory createMode = {createMode}/>
-            </Box>
+          <CreateStory createMode={createMode} />
+        </Box>
       </Modal>
       <Modal
         open={deleteOpen}

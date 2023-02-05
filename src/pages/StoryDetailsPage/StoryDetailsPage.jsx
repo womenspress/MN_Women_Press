@@ -22,10 +22,15 @@ export default function StoriesPage() {
 
   //------------- tracks status of todo list items-----------------//
   const [photoStatus, setPhotoStatus] = useState(currentStory.photo_uploaded);
+  const [photoRequired, setPhotoRequired] = useState(currentStory.photo_required);
   const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(currentStory.graphic_image_completed);
-  const [copiesSentStatus, setCopiesSentStatus] = useState(currentStory.copies_sent);
+  const [graphicPhotoRequired, setGraphicPhotoRequired] = useState(currentStory.graphic_image_required);
+  const [copiesStatus, setCopiesStatus] = useState(currentStory.copies_sent);
+  const [copiesRequired, setCopiesRequired] = useState(currentStory.copies_required);
   const [paymentStatus, setPaymentStatus] = useState(currentStory.payment_completed);
+  const [paymentRequired, setPaymentRequired] = useState(currentStory.payment_required);
   const [factChecked, setFactChecked] = useState(currentStory.fact_checked);
+  const [factCheckRequired, setFactCheckRequired] = useState(currentStory.fact_check_required);
 
 
   const [notes, setNotes] = useState(currentStory.notes);
@@ -43,9 +48,15 @@ export default function StoriesPage() {
     setNotes(currentStory.notes)
     setStatusColor(makeStatusColor(currentStory))
     setPhotoStatus(currentStory.photo_uploaded);
+    setPhotoRequired(currentStory.photo_required);
     setFactChecked(currentStory.fact_checked);
+    setFactCheckRequired(currentStory.fact_check_required);
     setGraphicPhotoStatus(currentStory.graphic_image_completed);
-    setCopiesSentStatus(currentStory.copies_sent);
+    setGraphicPhotoRequired(currentStory.graphic_image_required);
+    setCopiesStatus(currentStory.copies_sent);
+    setCopiesRequired(currentStory.copies_required);
+    setPaymentStatus(currentStory.payment_completed);
+    setPaymentRequired(currentStory.payment_required);
   }, [currentStory])
 
 
@@ -301,8 +312,9 @@ export default function StoriesPage() {
             {/* using the below grid to space the to-do list one item over */}
             <Grid item xs={1}><></></Grid>
 
-            {/* wrapping this entire piece in a conditional to help with async rendering issues*/}
-            {photoStatus || graphicPhotoStatus || factChecked || copiesSentStatus ?
+            {/* using local state for a conditional before rendering the checkboxes, otherwise they 
+            will have an issue with going from uncontrolled to controlled since redux is async*/}
+            {photoRequired || graphicPhotoRequired || factCheckRequired || copiesRequired ?
               <>
                 <Grid item xs={11}>
                   {/* photo required? */}

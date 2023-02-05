@@ -18,26 +18,13 @@ export default function ContactDetailsPage() {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  // const contact = useSelector(store => store.contacts.currentContact)
+  const contact = useSelector(store => store.contacts.currentContact)
   const [createMode, setCreateMode] = useState(true)
 
   useEffect(() => {
     dispatch({ type: 'GET_CURRENT_CONTACT', payload: id })
   }, [])
 
-  // sort by select options
-  const sortByOptions = [
-    { value: 'newest', label: 'newest' },
-    { value: 'publication_date', label: 'publication date' },
-    { value: 'type', label: 'type' },
-  ]
-
-  const customSelectStyles = {
-    control: (provided) => ({
-      ...provided,
-      width: '150px',
-    })
-  };
 
   return (
     <Box>

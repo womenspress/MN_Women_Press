@@ -57,6 +57,7 @@ CREATE TABLE "story" (
     "photo" VARCHAR, /*Do we have any idea what we are doing for this process?*/
     "type" VARCHAR,
     "copies_required" BOOLEAN DEFAULT FALSE,
+    "number_of_copies" INT, 
     "copies_sent" BOOLEAN DEFAULT FALSE,
     "photo_required" BOOLEAN DEFAULT FALSE , 
     "photo_uploaded" BOOLEAN DEFAULT FALSE,

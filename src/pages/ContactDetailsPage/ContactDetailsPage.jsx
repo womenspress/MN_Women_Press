@@ -5,27 +5,24 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-
-
 import StoryListItem from '../../components/StoryListItem/StoryListItem';
 import MatchingHeightComponent from '../../components/MatchComponentHeight/MatchComponentHeight';
 
-// sample data import
-// import { contact } from '../../sampleData';
 
 export default function ContactDetailsPage() {
   const ref = useRef(null);
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const allContacts = useSelector(store => store.contacts.allContacts)
+  const allContacts = useSelector(store => store.contacts.allContacts)  
+  
   const [createMode, setCreateMode] = useState(true);
   const [ contact, setContact ] = useState({});
 
   useEffect(() => {
     dispatch({ type: 'GET_ALL_CONTACTS'});
   }, [])
-
+  
   useEffect(() => {
     setContact(allContacts.filter((contact) => contact.id == id));
   }, [allContacts])
@@ -73,8 +70,10 @@ export default function ContactDetailsPage() {
           />
 
         </Grid>
-        {/* this row has the two large sections of information, general info and contributions */}
+        {/* this row contains the two large sections of information, general info and contributions */}
         <Grid container space={1}>
+
+
           {/* general info section */}
           <Grid item xs={4} ref={ref} sx={{ p: 1, backgroundColor: 'lightgrey', mt: 1 }}>
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Bio</Typography>
@@ -100,6 +99,8 @@ export default function ContactDetailsPage() {
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Facebook</Typography>
             <Typography variant='body1'>{contact[0]?.facebook}</Typography>
           </Grid>
+
+
           {/* contributions section */}
           <Grid item xs={8} sx={{ pl: 1, backgroundColor: 'white' }}>
             {/* container so there is margin between general info and contributions while maximizing screen space */}
@@ -113,6 +114,8 @@ export default function ContactDetailsPage() {
               </MatchingHeightComponent>
             </Grid>
           </Grid>
+
+
         </Grid>
       </Grid>
     </Box>

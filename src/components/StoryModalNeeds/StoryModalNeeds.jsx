@@ -62,8 +62,8 @@ export default function StoryModalNeeds(props) {
     */
   }
 
-  contactsOnStory.map(contact=><ContactDisplay contact = {contact}
-    onClick = {()=>setInputValues({...inputValues, contacts: [...inputValues.contacts, ???]})}/>)
+  // contactsOnStory.map(contact=><ContactDisplay contact = {contact}
+  //   onClick = {()=>setInputValues({...inputValues, contacts: [...inputValues.contacts, ???]})}/>)
 
 
 

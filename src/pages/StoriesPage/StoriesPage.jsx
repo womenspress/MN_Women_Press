@@ -18,8 +18,8 @@ export default function StoriesPage() {
   useEffect(() => {
     dispatch({ type: 'GET_ALL_STORIES' })
     dispatch({ type: 'GET_ALL_CONTACTS' })
-    // dispatch({ type: 'GET_ALL_THEMES' })
-    // dispatch({ type: 'GET_ALL_TAGS' })
+    dispatch({ type: 'GET_ALL_THEMES' })
+    dispatch({ type: 'GET_ALL_TAGS' })
   }
     , [])
 

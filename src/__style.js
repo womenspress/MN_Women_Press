@@ -29,3 +29,10 @@ export const smallModal = {
   boxShadow: 24,
   padding: 2,
 }
+
+export const smallCard = {
+  width: 200,
+  height: 50,
+  margin: .5,
+  padding: .5
+}

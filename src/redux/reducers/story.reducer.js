@@ -24,12 +24,13 @@ const blankStory = {
   final_draft_deadline: DateTime.now().toISO(), 
   publication_date: DateTime.now().toISO(),
   contacts: [],
-  tags: []
+  tags: [],
+  themes: []
 }
 //! staging area, not sure if we'll use
 
 const tempStory = (state = blankStory, action) => {
-  if (action.type === 'SET_TEMP_STORY') return action.payload
+  if (action.type === 'SET_TEMP_STORY') return {...state, ...action.payload}
   if (action.type === 'CLEAR_TEMP_STORY') return blankStory
   return state
 }

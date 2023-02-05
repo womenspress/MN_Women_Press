@@ -201,17 +201,18 @@ export default function StoryModalAdditional(props) {
           />
         </Grid>
 
-        {/* graphic */}
-        <Grid item xs={3}>
-          <FormControlLabel control={<Checkbox onChange={handleGraphic} />} label='graphic' />
+        {/* more options */}
+        <Grid item xs={2}>
+          <Typography>additional needs</Typography>
         </Grid>
         <Grid item xs={9}>
-
+          <FormControlLabel control={<Checkbox onChange={handleGraphic} />} label='graphic' />
+          <FormControlLabel control={<Checkbox onChange={handlePhoto} />} label='photo' />
+          <FormControlLabel control={<Checkbox onChange={handleCopies} />} label='copies sent' />
         </Grid>
 
         {/* photo */}
         <Grid item xs={3}>
-          <FormControlLabel control={<Checkbox onChange={handlePhoto} />} label='photo' />
 
         </Grid>
         <Grid item xs={9}>
@@ -224,7 +225,6 @@ export default function StoryModalAdditional(props) {
 
         {/* copies sent */}
         <Grid item xs={3}>
-          <FormControlLabel control={<Checkbox onChange={handleCopies} />} label='copies sent' />
         </Grid>
         <Grid item xs={9}>
           {inputValues.copies_required && <TextField

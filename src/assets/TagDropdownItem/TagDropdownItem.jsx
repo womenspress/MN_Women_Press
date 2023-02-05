@@ -6,7 +6,7 @@ export default function TagDropdownItem({ handleClose, tag, setInputValues, inpu
 
   const handleClick = () => {
     console.log('clicked tag no.', tag.id);
-    setInputValues({...setInputValues, tags: [...inputValues.tags, tag]})
+    setInputValues({...inputValues, tags: [...inputValues.tags, tag]})
     handleClose()
   }
 

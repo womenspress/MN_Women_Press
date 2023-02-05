@@ -6,7 +6,7 @@ export default function ContactDropdownItem({ handleClose, contact, setInputValu
 
   const handleClick = () => {
     console.log('clicked contact no.', contact.id);
-    setInputValues({...setInputValues, contacts: [...inputValues.contacts, contact]})
+    setInputValues({...inputValues, contacts: [...inputValues.contacts, contact]})
     handleClose()
   }
 

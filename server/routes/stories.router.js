@@ -423,12 +423,11 @@ router.delete('/tag/:id', (req, res) => {
     'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
   pool
     .query(deleteTagQueryText, [storyId, tagId])
-    .then(sendStatus(200))
+    .then(res.sendStatus(200))
     .catch((err) => {
       console.log(err);
       res.sendStatus(500);
     });
-  res.sendStatus(200);
 });
 
 // search is happening on front end, looking at store items

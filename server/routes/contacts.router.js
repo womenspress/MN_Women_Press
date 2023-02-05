@@ -7,12 +7,14 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   // GET route code here
-  console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
+  console.log(
+    'In contacts router GET, getting all contacts. URL: /api/contacts'
+  );
 
-  const client = await pool.connect()
+  const client = await pool.connect();
   try {
-    await client.query('BEGIN')
-    let allContacts = []
+    await client.query('BEGIN');
+    let allContacts = [];
 
     //* 1. general info: all info in teh contact table
 
@@ -25,10 +27,10 @@ router.get('/', async (req, res) => {
     LEFT JOIN "story" ON "story_contact"."story_id" = "story"."id"
     GROUP BY "contact"."id"
     ORDER BY "contact"."date_added" ASC
-    ;`
+    ;`;
     const generalInfoResults = await client.query(generalInfoQuery);
 
-    allContacts = generalInfoResults.rows
+    allContacts = generalInfoResults.rows;
 
     //* 2. stories. query returns array of objects:
     /* 
@@ -69,7 +71,6 @@ router.get('/', async (req, res) => {
     //   if (!contact.themes) contact.themes = []
     // }
 
-
     //* 4. roles
 
     // const rolesQuery = '~~~ enter SQL stuff here ~~~'
@@ -96,20 +97,17 @@ router.get('/', async (req, res) => {
     //   if (!contact.tags) contact.tags = []
     // }
 
-
-    await client.query('COMMIT')
-    res.send(allContacts)
-  }
-  catch (error) {
-    await client.query('ROLLBACK')
-    console.log('could not get all contacts info', error)
-    res.sendStatus(500)
-  }
-  finally {
-    client.release()
+    await client.query('COMMIT');
+    res.send(allContacts);
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.log('could not get all contacts info', error);
+    res.sendStatus(500);
+  } finally {
+    client.release();
   }
 
-  res.sendStatus(200);
+  //res.sendStatus(200);
 });
 
 //* ------------- GET BY ID --------------**TENTATIVELY BEING MANAGED BY PULLING OUT OF STATE**
@@ -135,10 +133,10 @@ router.post('/', (req, res) => {
 });
 
 //* --------------- PUT - update contact -----------------
-// based on wireframes, this should 
+// based on wireframes, this should
 
 router.put('/:id', async (req, res) => {
-  console.log('editing project. req.body: ', req.body)
+  console.log('editing project. req.body: ', req.body);
   const client = await pool.connect();
 
   try {
@@ -158,21 +156,26 @@ router.put('/:id', async (req, res) => {
       instagram,
       facebook,
       tags,
-      roles
+      roles,
     } = req.body;
 
-    await client.query('BEGIN')
+    await client.query('BEGIN');
 
     //* 1. delete existing tags and roles
 
-    const deleteRolesQuery = client.query(`DELETE FROM "contact_role" WHERE "contact_id" = $1;`, [req.params.id])
+    const deleteRolesQuery = client.query(
+      `DELETE FROM "contact_role" WHERE "contact_id" = $1;`,
+      [req.params.id]
+    );
 
-    const deleteTagsQuery = client.query(`DELETE FROM "tag_contact" WHERE "contact_id" = $1;`, [req.params.id])
+    const deleteTagsQuery = client.query(
+      `DELETE FROM "tag_contact" WHERE "contact_id" = $1;`,
+      [req.params.id]
+    );
 
-    await Promise.all([deleteRolesQuery, deleteTagsQuery])
+    await Promise.all([deleteRolesQuery, deleteTagsQuery]);
 
     //* 2. update general info (name, ensemble_name, description)
-
 
     const contactUpdateQuery = `UPDATE "contact" SET
     "name"=$1,
@@ -189,12 +192,10 @@ router.put('/:id', async (req, res) => {
     "twitter"=$12,
     "instagram"=$13,
     "facebook"=$14
-    WHERE "id"=$15`
+    WHERE "id"=$15;`;
 
-
-
-    await client.query(contactUpdateQuery,
-      [name,
+    await client.query(contactUpdateQuery, [
+      name,
       pronouns,
       expertise,
       photo,
@@ -207,83 +208,74 @@ router.put('/:id', async (req, res) => {
       linkedin,
       twitter,
       instagram,
-      facebook,req.params.id])
-
-
-
-
-
-
-
-
+      facebook,
+      req.params.id,
+    ]);
 
     // //* 3. insert tags and roles info WILL DO THIS NEXT
     // // 3a. tags
-    const tagsPromises = tags.map(tag => {
+    const tagsPromises = tags.map((tag) => {
       const insertTagText = `UPDATE "tag_contact" SET "tag_id"=$1 WHERE "contact_id"=$2;`;
       const insertTagValues = [tag.id, req.params.id];
-      return client.query(insertTagText, insertTagValues)
+      return client.query(insertTagText, insertTagValues);
     });
 
     // // 3b. roles
-    const rolesPromises =roles.map(role => {
+    const rolesPromises = roles.map((role) => {
       const insertRoleText = `UPDATE "contact_role" SET "role_id"=$1 WHERE "contact_id"=$2;`;
       const insertRoleValues = [role.id, req.params.id];
       return client.query(insertRoleText, insertRoleValues);
-    })
+    });
 
     //* 4. execute promises
-    await Promise.all([...tagsPromises, ...rolesPromises])
+    await Promise.all([...tagsPromises, ...rolesPromises]);
 
-    await client.query('COMMIT')
+    await client.query('COMMIT');
     res.sendStatus(201);
   } catch (error) {
-    await client.query('ROLLBACK')
+    await client.query('ROLLBACK');
     console.log('Error PUT /api/contacts', error);
     res.sendStatus(500);
   } finally {
-    client.release()
+    client.release();
   }
-  
-})
+});
 
 router.delete('/:id', (req, res) => {
   // DELETE route goes here. straightforward thanks to ON DELETE CASCADE
-  const deleteContactQuery = `DELETE FROM "contact" WHERE id=$1`
-  pool.query(deleteContactQuery, [req.params.id])
-  .then(() => res.sendStatus(200))
-  .catch((err) => {
-    console.log('delete contact failed: ', err);
-    res.sendStatus(500);
-  })
-})
-
+  const deleteContactQuery = `DELETE FROM "contact" WHERE id=$1`;
+  pool
+    .query(deleteContactQuery, [req.params.id])
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      console.log('delete contact failed: ', err);
+      res.sendStatus(500);
+    });
+});
 
 // CREATE tags for a contact. just insert one row into the junction table
 // require ID for params and req.body to include tags
 router.post('/tag/:id', (req, res) => {
-  const createTagQuery = `INSERT INTO "tag_contact"("tag_id", "contact_id") VALUES($1, $2);`
-  pool.query(createTagQuery, [req.body.tag.id, req.params.id])//NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
-  .then(() => res.sendStatus(200))
-  .catch((err) => {
-    console.log('create contact tag failed: ', err);
-    res.sendStatus(500);
-  })
-})
+  const createTagQuery = `INSERT INTO "tag_contact"("tag_id", "contact_id") VALUES($1, $2);`;
+  pool
+    .query(createTagQuery, [req.body.tag.id, req.params.id]) //NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      console.log('create contact tag failed: ', err);
+      res.sendStatus(500);
+    });
+});
 
 router.delete('/tag/:id', (req, res) => {
   // DELETE a tag from a contact. delete a row from the junction table
-  const deleteTagContactQuery = `DELETE FROM "tag_contact" WHERE "contact_id" = $1 AND "tag_id" = $2;`
-  pool.query(deleteTagContactQuery, [req.body.tag.id, req.params.id])//NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
-  .then(() => res.sendStatus(200))
-  .catch((err) => {
-    console.log('delete contact tag failed: ', err);
-    res.sendStatus(500);
-  })
-
-
-
-})
-
+  const deleteTagContactQuery = `DELETE FROM "tag_contact" WHERE "contact_id" = $1 AND "tag_id" = $2;`;
+  pool
+    .query(deleteTagContactQuery, [req.body.tag.id, req.params.id]) //NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      console.log('delete contact tag failed: ', err);
+      res.sendStatus(500);
+    });
+});
 
 module.exports = router;

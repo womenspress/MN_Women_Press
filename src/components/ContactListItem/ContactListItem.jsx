@@ -22,11 +22,10 @@ export default function ContactListItem({ contact }) {
           <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
           <Typography>{contact.pronouns}</Typography>
         </Box>
-        <Typography>{contact.location}</Typography>
+        <Typography>{contact.mailing_address}</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {/* TODO: once roles are included we can uncomment the below */}
-          {/* <Typography sx={{ marginRight: 1 }}>{contact.roles[0]}</Typography> */}
-          {/* {contact.roles[1] && <Typography>• {contact.roles[1]}</Typography>} */}
+          <Typography sx={{ marginRight: 1 }}>{contact.roles[0]?.name}</Typography>
+          {contact.roles[1] && <Typography>• {contact.roles[1].name}</Typography>}
         </Box>
       </Box>
 

@@ -1,5 +1,7 @@
 const express = require('express');
-const { CommandCompleteMessage } = require('pg-protocol/dist/messages');
+const {
+  rejectUnauthenticated,
+} = require('../modules/authentication-middleware');
 const pool = require('../modules/pool');
 const router = express.Router();
 
@@ -83,9 +85,9 @@ router.get('/', async (req, res) => {
 router.get('/current/:id', async (req, res) => {
   // GET route code here
   let id = req.params.id;
-  console.log(
-    `In stories router GET by id, getting story details by id ${id}. URL: /api/stories/:id`
-  );
+  // console.log(
+  //   `In stories router GET by id, getting story details by id ${id}. URL: /api/stories/:id`
+  // );
   let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
   FROM "story"
   LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
@@ -146,8 +148,8 @@ router.get('/current/:id', async (req, res) => {
  * POST route template
  */
 router.post('/', async (req, res) => {
-  console.log('In post route', req.body);
-  console.log(req.body.tags);
+  // console.log('In post route', req.body);
+  // console.log(req.body.tags);
   // POST route code here
   const {
     title,
@@ -188,7 +190,7 @@ router.post('/', async (req, res) => {
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
-    console.log('In query');
+    // console.log('In query');
     let storyResponse = await connection.query(postStoryQuery, [
       title, //1
       subtitle, //2
@@ -214,7 +216,7 @@ router.post('/', async (req, res) => {
       //photo, // will put in when exisits in DB
       //copies_required, //will put in when exisits in DB
     ]);
-    console.log('StoryId:', storyResponse.rows[0].id);
+    // console.log('StoryId:', storyResponse.rows[0].id);
     let storyId = storyResponse.rows[0].id;
 
     //I am building this under the assumption that all tags and contacts that are attached are already in the tags table.
@@ -426,6 +428,36 @@ router.delete('/tag/:id', (req, res) => {
     .then(res.sendStatus(200))
     .catch((err) => {
       console.log(err);
+      res.sendStatus(500);
+    });
+});
+
+// updates notes, initiated at story details page
+router.put('/notes/:id', rejectUnauthenticated, (req, res) => {
+  const queryText = 'UPDATE "story" SET "notes"=$1 WHERE "id"=$2;';
+  const queryParams = [req.body.notes, req.params.id];
+
+  pool
+    .query(queryText, queryParams)
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
+
+router.put('/status/:id', rejectUnauthenticated, (req, res) => {
+  const statusToChange = req.body.statusToChange;
+  const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
+  const queryParams = [req.body.statusValue, req.body.story_id];
+
+  pool
+    .query(queryText, queryParams)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      console.log('error in update status query:', err);
       res.sendStatus(500);
     });
 });

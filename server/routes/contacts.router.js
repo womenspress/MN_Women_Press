@@ -7,9 +7,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   // GET route code here
-  console.log(
-    'In contacts router GET, getting all contacts. URL: /api/contacts'
-  );
+  // console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
 
   const client = await pool.connect();
   try {
@@ -18,13 +16,15 @@ router.get('/', async (req, res) => {
 
     //* 1. general info: all info in teh contact table
 
-    const generalInfoQuery = `SELECT "contact".*,  json_agg(DISTINCT "story") AS "stories", json_agg(DISTINCT "tag") AS "tags"
+    const generalInfoQuery = `SELECT "contact".*,  json_agg(DISTINCT "story") AS "stories", json_agg(DISTINCT "tag") AS "tags", json_agg(DISTINCT "role") AS "roles"
     FROM "contact" 
     LEFT JOIN "tag_contact" ON "tag_contact"."contact_id" = "contact"."id"
     LEFT JOIN "tag" ON "tag"."id" = "tag_contact"."tag_id"
     LEFT JOIN "story_tag" ON "tag"."id" = "story_tag"."tag_id"
     LEFT JOIN "story_contact" ON "contact"."id" = "story_contact"."contact_id"
     LEFT JOIN "story" ON "story_contact"."story_id" = "story"."id"
+    LEFT JOIN "contact_role" ON "contact"."id" = "contact_role"."contact_id"
+    LEFT JOIN "role" ON "contact_role"."role_id" = "role"."id"
     GROUP BY "contact"."id"
     ORDER BY "contact"."date_added" ASC
     ;`;
@@ -106,8 +106,6 @@ router.get('/', async (req, res) => {
   } finally {
     client.release();
   }
-
-  //res.sendStatus(200);
 });
 
 //* ------------- GET BY ID --------------**TENTATIVELY BEING MANAGED BY PULLING OUT OF STATE**
@@ -212,7 +210,7 @@ router.put('/:id', async (req, res) => {
       req.params.id,
     ]);
 
-    // //* 3. insert tags and roles info WILL DO THIS NEXT
+    // //* 3. insert tags and roles info
     // // 3a. tags
     const tagsPromises = tags.map((tag) => {
       const insertTagText = `UPDATE "tag_contact" SET "tag_id"=$1 WHERE "contact_id"=$2;`;

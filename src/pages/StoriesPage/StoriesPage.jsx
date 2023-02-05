@@ -9,19 +9,21 @@ import { Box, Button, IconButton, Typography, Modal } from '@mui/material'
 
 // internal
 import { largeModal } from '../../__style'
-import { story } from '../../sampleData';
+// import { story } from '../../sampleData';
 
 export default function StoriesPage() {
 
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch({ type: 'GET_ALL_STORIES' })
-  //   dispatch({ type: 'GET_ALL_CONTACTS' })
-  //   dispatch({ type: 'GET_ALL_THEMES' })
-  //   dispatch({ type: 'GET_ALL_TAGS' })
-  // }
-  //   , [])
+  useEffect(() => {
+    dispatch({ type: 'GET_ALL_STORIES' })
+    dispatch({ type: 'GET_ALL_CONTACTS' })
+    // dispatch({ type: 'GET_ALL_THEMES' })
+    // dispatch({ type: 'GET_ALL_TAGS' })
+  }
+    , [])
+
+  const allStories = useSelector(story=>story.stories.allStories)
 
   //! temporary fix. const allStories = useSelector(store => store.stories.allStories);
 
@@ -46,12 +48,11 @@ export default function StoriesPage() {
           <ControlPointIcon />
         </IconButton>
       </Box>
-
-      {/* //! temporary fix - reinstate when data is right. {allStories.length && allStories?.map(story => {
+{allStories.length && allStories?.map(story => {
         return (
           <StoryListItem key = {story.title} story={story} createMode={createMode} setCreateMode={setCreateMode} />
         )
-      })} */}
+      })}
 
       <Modal
         open={modalOpen}

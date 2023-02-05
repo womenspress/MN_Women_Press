@@ -28,7 +28,7 @@ export function makeStatusColor(story) {
   // !!story.contacts?.filter(contact => contact.role === 'author').length
   // console.log('author?', hasAuthor)
 
-  const paymentRequired = !!story.contacts?.filter(contact=>contact.invoice_amount>0).length
+  // const paymentRequired = !!story.contacts?.filter(contact=>contact.invoice_amount>0).length
   console.log('payment required?', paymentRequired)
 
   const piecesToTrack = [
@@ -67,7 +67,7 @@ export function makeStatusColor(story) {
 
   const piecesReady = !piecesToTrack.filter(piece => !piece.complete).length
   // console.log('pieces ready', piecesReady);
-  const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
+  // const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
   // console.log('pieces ready', piecesReady);
 
   if (story.publication_date < DateTime.now().toISO()) return { color: 'grey', notes: 'story is complete and past' }

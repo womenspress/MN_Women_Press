@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Typography, Grid, Button, TextField, Menu } from '@mui/material';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
 import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
+import ContactSearchCard from '../../assets/ContactSearchCard/ContactSearchCard';
+import TagSearchCard from '../../assets/TagSearchCard/TagSearchCard';
 
 //internal
-import { contacts, tags } from '../../sampleData'
+import { tags } from '../../sampleData'
 
 export default function StoryModalGeneral(props) {
 
@@ -25,13 +27,14 @@ export default function StoryModalGeneral(props) {
   const dispatch = useDispatch()
 
   const currentStory = useSelector(store => store.stories.tempStory)
-  //! const contacts = useSelector(store => store.contacts.allContacts)
+  const contacts = useSelector(store => store.contacts.allContacts)
   // const tags = useSelector(store => store.tags.allTags)
 
 
   const [inputValues, setInputValues] = useState(currentStory);
   const [contactSearchTerm, setContactSearchTerm] = useState('');
   const [tagSearchTerm, setTagSearchTerm] = useState('');
+  const [themeSearchTerm, setThemeSearchTerm] = useState('');
 
   // useEffect(() => {
   //   setInputValues(currentStory)
@@ -93,10 +96,11 @@ export default function StoryModalGeneral(props) {
 
   return (
     <Box>
-      input values: {JSON.stringify(inputValues)}
+      {/* input values: {JSON.stringify(inputValues)}
       contactId: {JSON.stringify(contactIds)}
       contactResults: {JSON.stringify(contactResults)}
-      tags: {JSON.stringify(tags)}
+      tags: {JSON.stringify(tags)} */}
+      {JSON.stringify(inputValues.contacts.map(contact => contact.name))}
       <Typography variant='h4'>New Story - general</Typography>
       <Grid container spacing={1}>
 
@@ -108,6 +112,7 @@ export default function StoryModalGeneral(props) {
         </Grid>
         <Grid item xs={9}>
           <TextField
+            size='small'
             value={inputValues.title}
             onChange={(e) => setInputValues({ ...inputValues, title: e.target.value })}
           />
@@ -122,6 +127,7 @@ export default function StoryModalGeneral(props) {
         <Grid item xs={9}>
 
           <TextField
+            size='small'
             value={contactSearchTerm}
             onChange={(e) => setContactSearchTerm(e.target.value)}
           />
@@ -133,19 +139,23 @@ export default function StoryModalGeneral(props) {
             open={contactOpen}
             onClose={handleContactsClose}
           >
-            {contacts.map(contact => {
+            {contacts?.map(contact => {
               return (
-                <ContactDropdownItem key={contact.id} handleClose={handleContactsClose} contact={contact} setInputValues={setInputValues} inputValues={inputValues} />
+                <ContactDropdownItem
+                  key={contact.id}
+                  handleClose={handleContactsClose}
+                  contact={contact}
+                  setInputValues={setInputValues}
+                  inputValues={inputValues} />
               )
             })}
           </Menu>
           <Box sx={{ bgcolor: 'grey.100' }}>
-            contacts go here
-            {/* {inputValues.contacts.map(contact=>{
+            {inputValues.contacts?.map(contact => {
               return (
-                <ContactElement/>
+                <ContactSearchCard key={contact.id} contact={contact} />
               )
-            })} */}
+            })}
           </Box>
 
         </Grid>
@@ -158,6 +168,7 @@ export default function StoryModalGeneral(props) {
         </Grid>
         <Grid item xs={9}>
           <TextField
+            size='small'
             value={inputValues.notes}
             onChange={(e) => setInputValues({ ...inputValues, notes: e.target.value })}
           />
@@ -169,6 +180,7 @@ export default function StoryModalGeneral(props) {
         </Grid>
         <Grid item xs={9}>
           <TextField
+            size='small'
             value={tagSearchTerm}
             onChange={(e) => setTagSearchTerm(e.target.value)}
           />
@@ -182,20 +194,47 @@ export default function StoryModalGeneral(props) {
           >
             {tags.map(tag => {
               return (
-                <TagDropdownItem key={tag.id} handleClose={handleTagsClose} tag={tag} setInputValues={setInputValues} inputValues={inputValues} />
+                <TagDropdownItem
+                  key={tag.id}
+                  handleClose={handleTagsClose}
+                  tag={tag}
+                  setInputValues={setInputValues}
+                  inputValues={inputValues}
+                />
               )
             })}
           </Menu>
           <Box sx={{ bgcolor: 'grey.100' }}>
-            tags go here
-            {/* {inputValues.tags.map(tag=>{
+            {inputValues.tags.map(tag => {
               return (
-                <TagElement/>
+                <TagSearchCard key={tag.id} tag={tag} />
+              )
+            })}
+          </Box>
+        </Grid>
+
+        {/* theme */}
+        <Grid item xs={3}>
+          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+            theme
+          </Typography>
+        </Grid>
+        <Grid item xs={9}>
+
+          <TextField
+            size='small'
+            value={themeSearchTerm}
+            onChange={(e) => setThemeSearchTerm(e.target.value)}
+          />
+          <Box sx={{ bgcolor: 'grey.100' }}>
+            themes go here
+            {/* {inputValues.contacts.map(contact=>{
+              return (
+                <ContactElement/>
               )
             })} */}
           </Box>
         </Grid>
-
       </Grid>
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>

@@ -33,6 +33,19 @@ export default function StoryModalNeeds(props) {
     copies_sent: false,
   });
 
+  const inputValuesSample = {
+    id: 1,
+    title: 'blah blah',
+    contacts: [{
+      id: 1,
+      name: '',
+      payment_required: true,
+      story_association: 'author',
+      payment_amount: 124
+    }],
+    tags: [],
+  }
+
   /* add once data is flowing
     const contacts = inputValues.contacts
    */
@@ -47,8 +60,11 @@ export default function StoryModalNeeds(props) {
     /* 
     setInputValues({...inputValues, contacts: [...contacts, ]})
     */
-
   }
+
+  contactsOnStory.map(contact=><ContactDisplay contact = {contact}
+    onClick = {()=>setInputValues({...inputValues, contacts: [...inputValues.contacts, ???]})}/>)
+
 
 
   const handleGraphic = (e) => {
@@ -120,6 +136,7 @@ export default function StoryModalNeeds(props) {
           */}
           </FormGroup>
           <TextField
+            size='small'
             value={inputValues.title}
             onChange={(e) => setInputValues({ ...inputValues, title: e.target.value })}
           />

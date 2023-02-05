@@ -6,10 +6,12 @@ const router = express.Router();
 /**
  * GET route template
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // GET route code here
   console.log('In stories router GET, getting all stories. URL: /api/stories');
-  let getAllQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
+
+  let getAllQueryText = `
+  SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
   FROM "story"
   LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
   LEFT JOIN "tag" ON "tag"."id" = "story_tag"."tag_id"
@@ -20,14 +22,62 @@ router.get('/', (req, res) => {
   GROUP BY "story"."id"
   ORDER BY "story"."publication_date" ASC
   ;`;
+  const connection = await pool.connect();
 
-  pool
-    .query(getAllQueryText)
-    .then((response) => res.send(response.rows))
-    .catch((err) => {
-      res.sendStatus(200);
-      console.log(err);
-    });
+  try {
+    let response = await connection.query(getAllQueryText);
+    let storiesArray = response.rows;
+
+    let getContactDetails = `
+    SELECT "contact"."id" , json_agg( "story_contact") AS "invoice"
+    FROM "contact"
+    LEFT JOIN "story_contact" ON "story_contact"."contact_id" = "contact"."id"
+    GROUP BY "contact"."id";`;
+    let contactQueryResponse = await connection.query(getContactDetails);
+    let contactResponse = contactQueryResponse.rows;
+
+    for (let i = 0; i < storiesArray.length; i++) {
+      const story = storiesArray[i];
+      for (let j = 0; j < story.contacts.length; j++) {
+        const contactObj = story.contacts[j];
+        for (let contactForInvoice of contactResponse) {
+          for (invoice of contactForInvoice.invoice) {
+            if (story.id && contactForInvoice.id && contactObj && invoice) {
+              console.log(
+                'Story:',
+                story.id,
+                'Contact:',
+                contactObj.id,
+                'InvoiceContact:',
+                contactForInvoice.id,
+                'STORY_CONTACT:',
+                invoice.story_id
+              );
+              // if id matches add info to currentStoryDetails array
+              if (
+                contactObj.id === contactForInvoice.id &&
+                story.id === invoice.story_id
+              ) {
+                console.log('IM HERE');
+                const { project_association, invoice_total, invoice_paid } =
+                  invoice;
+                contactObj.project_association = project_association;
+                contactObj.invoice_paid = invoice_paid;
+                contactObj.invoice_total = invoice_total;
+              }
+            }
+          }
+        }
+      }
+    }
+    connection.query('');
+    res.send(response.rows);
+  } catch (err) {
+    res.sendStatus(500);
+    console.log(err);
+  } finally {
+    connection.release();
+  }
 });
 
 router.get('/current/:id', async (req, res) => {
@@ -85,7 +135,6 @@ router.get('/current/:id', async (req, res) => {
     //5. Send modified array as response
     res.send(currentStoryDetails);
   } catch (err) {
-    connection.query('ROLLBACK;');
     console.log(err);
     res.sendStatus(500);
   } finally {

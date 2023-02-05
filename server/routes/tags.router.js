@@ -1,0 +1,42 @@
+const express = require('express');
+const pool = require('../modules/pool');
+const router = express.Router();
+
+
+router.get('/', (req, res) => {
+    const getAllTagsQuery = `SELECT * FROM "tag" ORDER BY "name" ASC;`;
+    pool.query(getAllTagsQuery).then((results) => {
+        res.send(results.rows);
+    }).catch((err) => {
+        console.log('error in get all tags query: ', err)
+        res.sendStatus(500)
+    })
+})
+
+
+router.post('/', (req, res) => {
+    const getAllTagsQuery = `INSERT INTO "tag"("name", "description") VALUES ($1,$2);`;
+    pool.query(getAllTagsQuery, [req.body.name, req.body.description]).then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.log('error in add tag query: ', err)
+        res.sendStatus(500)
+    })
+})
+
+
+router.delete('/deletetag/:id', (req, res) => {
+    const deleteTagQuery = `DELETE FROM "tag" WHERE "id" = $1;`;
+    pool.query(deleteTagQuery, [req.params.id]).then(() => {
+        res.sendStatus(200);
+    }).catch((err) => {
+        console.log('error in delete tag query: ', err)
+        res.sendStatus(500)
+    })
+})
+
+
+
+
+
+module.exports = router;

@@ -19,13 +19,13 @@ const bull = (
 
 export default function BasicCard(props) {
     let theme = props.theme;
-    let id = props.id || -1;
-    let name = props.name || "undefined";
-    let description = props.description || "undefined description";
-    let month = props.month || "month undefined";
-    let year =props.year || -1;
-    let stories = props.stories || [{id: -1, title: "title not found"}];
-    let contacts = props.contacts || [{id: -1, name: "contact not found"}];
+    let id = props.theme.id;
+    let name = props.theme.name;
+    let description = props.theme.description;
+    let month = props.theme.month;
+    let year =props.theme.year;
+    let stories = props.theme.stories 
+    let contacts = props.theme.contacts
 
     const openThemeModule = (id) => {
         console.log('Open module for theme id: ', id);

@@ -44,7 +44,7 @@ export default function StatusDropdown({ story }) {
   // get list of required elements to populate into the dropdown
 
   // returns boolean: true if any contact requires payment, false otherwise
-  const payment_required = !!story.contacts?.filter(contact => contact.invoice_amount > 0).length
+  const payment_required = !!story.contacts?.filter(contact => contact?.invoice_amount > 0).length
 
   // const payment_required = story.contacts.filter(contact=>contact.invoice_amount>0).length > 0;
 

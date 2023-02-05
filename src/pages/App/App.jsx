@@ -51,7 +51,7 @@ function App() {
         <div>
           <Header user={user}/>
             <div id='main'>
-              <Nav />
+              {user.access ? <Nav /> : <></>}
               <div id='pages'>
               <Switch>
                 {/* Visiting localhost:3000 will redirect to localhost:3000/home */}

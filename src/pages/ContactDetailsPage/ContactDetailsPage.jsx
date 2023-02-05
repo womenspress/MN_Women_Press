@@ -79,8 +79,8 @@ export default function ContactDetailsPage() {
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Bio</Typography>
             <Typography variant='body1'>{contact[0]?.bio}</Typography>
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Role(s)</Typography>
-            {contact[0]?.roles?.map((role) => {
-              return <Typography key={role.id} variant='body1'>{role.name}</Typography>
+            {contact[0]?.roles?.map((role, i) => {
+              return <Typography key={i} variant='body1'>{role?.name}</Typography>
             })}
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Mailing Address</Typography>
             <Typography variant='body1'>{contact[0]?.mailing_address}</Typography>

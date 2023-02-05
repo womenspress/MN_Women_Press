@@ -7,15 +7,34 @@ const router = express.Router();
  */
 router.get('/', (req, res) => {
   // GET route code here
-  console.log('In themes router GET, getting all themes. URL: /api/themes');
-  res.send([]);
+  //const getAllThemesQuery = `SELECT * FROM "theme" ORDER BY "name" ASC;`
+  const getAllThemesQuery = `SELECT "theme".*,  json_agg( DISTINCT"story") AS "stories", json_agg( DISTINCT "contact") AS "contacts" 
+  FROM "theme"
+  LEFT JOIN "theme_story" ON "theme"."id" = "theme_story"."theme_id"
+  LEFT JOIN "story" ON "theme_story"."story_id" = "story"."id"
+  LEFT JOIN "story_contact" ON "story_contact"."story_id" = "story"."id"
+  LEFT JOIN "contact" ON "contact"."id" = "story_contact"."contact_id"
+  GROUP BY "theme"."id"
+  ;`
+  pool.query(getAllThemesQuery).then((results) => {
+    res.send(results.rows);
+  }).catch((err) => {
+    console.log('error in get all themes query: ', err)
+    res.sendStatus(500)
+  })
 });
 
-
+//CAN/WILL THIS BE MANAGED BY PULLING ID FROM STATE?
 router.get('/current/:id', (req, res) => {
   // GET route for contact detail
-  console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id');
-  res.sendStatus(200);
+  console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id',[req.params.id]);
+  const getCurrentThemeQuery = `SELECT * FROM "theme" WHERE "id" = $1;`
+  pool.query(getCurrentThemeQuery,[req.params.id]).then((results) => {
+    res.send(results.rows);
+  }).catch((err) => {
+    console.log('error in get current theme query: ', err)
+    res.sendStatus(500);
+  })
 });
 
 
@@ -24,7 +43,14 @@ router.get('/current/:id', (req, res) => {
  */
 router.put('/edit/:id', (req, res) => {
   // EDIT here (this will handle "create" "delete" and "edit", but actually just edit all of the rows we created)
-  res.sendStatus(200);
+  const {name, description, month, year} = req.body;
+  const updateThemeQuery = `UPDATE "theme" SET "name" = $1, "description"= $2, "month"= $3, "year" = $4 WHERE "id" = $5;`
+  pool.query(updateThemeQuery, [name, description, month, year, req.params.id]).then(() => {
+    res.sendStatus(200);
+  }).catch((err) => {
+    console.log('error in edit current theme query: ', err)
+    res.sendStatus(500);
+  })
 });
 
 

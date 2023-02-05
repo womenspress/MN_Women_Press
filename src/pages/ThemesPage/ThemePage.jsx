@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
 import ThemeCalendar from '../../components/ThemeCalendar/ThemeCalendar';
 import { Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 export default function ThemesPage(){
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch({type:'GET_ALL_THEMES'});
+    }, [])
 
     const ThemeArrayDB = useSelector(store => store.allThemes);
 

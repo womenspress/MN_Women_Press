@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // components
-import { Box, Typography, Grid, Button, TextField, Menu } from '@mui/material';
+import { Box, Typography, Grid, Button, TextField, Menu, Autocomplete } from '@mui/material';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
 import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
 import ThemeDropdownItem from '../../assets/ThemeDropdownItem/ThemeDropdownItem';
@@ -185,6 +185,12 @@ export default function StoryModalGeneral(props) {
           <Typography sx={{ textAlign: 'right', marginRight: 3 }}>contacts</Typography>
         </Grid>
         <Grid item xs={9}>
+          {/* <Autocomplete
+          disablePortal
+          options = {['hello world']}
+          /> */}
+
+
           <TextField
             size='small'
             value={contactSearchTerm}

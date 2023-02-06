@@ -26,8 +26,9 @@ export default function StoryModalAdditional(props) {
   const currentStory = useSelector(store => store.stories.tempStory)
   const themes = useSelector(store => store.themes.allThemes)
 
-
   const [inputValues, setInputValues] = useState(currentStory);
+
+  const [photographerSearchTerm, setPhotographerSearchTerm] = useState('')
 
   const handleRoughDraft = (value) => {
     setInputValues({ ...inputValues, rough_draft_deadline: value })
@@ -175,66 +176,32 @@ export default function StoryModalAdditional(props) {
             onChange={(e) => setInputValues({ ...inputValues, word_count: e.target.value })} />
         </Grid>
 
-
-        {/* payment */}
-        <Grid item xs={2}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            payment
-          </Typography>
-        </Grid>
-        <Grid item xs={10}>
-          <Box sx={{ bgcolor: 'grey.100' }}>contacts with checkboxes here</Box>
-          <FormGroup>
-            {/* 
-          {contacts.map(contact=>{
-            setCheckboxStatus({...checkboxStatus, payment: [...payment, {[contact.name]: 0}]})
-            return(
-              <FormControlLabel key = contact.name label = {contact.name} control = {<Checkbox id = {contact.id} onChange={handleCheck}/>}/>
-            )
-          })}
-          */}
-          </FormGroup>
-          <TextField
-            size='small'
-            value={inputValues.title}
-            onChange={(e) => setInputValues({ ...inputValues, title: e.target.value })}
-          />
-        </Grid>
-
         {/* more options */}
         <Grid item xs={2}>
           <Typography>additional needs</Typography>
         </Grid>
-        <Grid item xs={9}>
-          <FormControlLabel control={<Checkbox onChange={handleGraphic} />} label='graphic' />
-          <FormControlLabel control={<Checkbox onChange={handlePhoto} />} label='photo' />
-          <FormControlLabel control={<Checkbox onChange={handleCopies} />} label='copies sent' />
+        <Grid item xs={10}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <FormControlLabel control={<Checkbox onChange={handleGraphic} />} label='graphic' />
+            <FormControlLabel control={<Checkbox onChange={handlePhoto} />} label='photo' />
+            {inputValues.photo_required && <TextField
+              value={photographerSearchTerm}
+              onChange={(e) => setPhotographerSearch(e.target.value)}
+            />}
+            <FormControlLabel control={<Checkbox onChange={handleCopies} />} label='copies sent' />
+
+
+
+            {inputValues.copies_required && <TextField
+              type='number'
+              placeholder='number of copies'
+              value={inputValues.number_of_copies}
+              onChange={handleCopyNumber}
+            />}
+          </Box>
         </Grid>
 
-        {/* photo */}
-        <Grid item xs={3}>
-
-        </Grid>
-        <Grid item xs={9}>
-          {inputValues.photo_required && <TextField
-            value={photographerSearch}
-            onChange={(e) => setPhotographerSearch(e.target.value)}
-          />}
-
-        </Grid>
-
-        {/* copies sent */}
-        <Grid item xs={3}>
-        </Grid>
-        <Grid item xs={9}>
-          {inputValues.copies_required && <TextField
-            type='number'
-            placeholder='number of copies'
-            value={inputValues.number_of_copies}
-            onChange={handleCopyNumber}
-          />}
-        </Grid>
-      </Grid>
+      </Grid >
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Button
@@ -249,7 +216,7 @@ export default function StoryModalAdditional(props) {
           onClick={navigateNeeds}
         >story needs</Button> */}
       </Box>
-    </Box>
+    </Box >
 
   )
 }

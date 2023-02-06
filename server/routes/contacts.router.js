@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
     ;`
     const generalInfoResults = await client.query(generalInfoQuery);
 
-//     allContacts = generalInfoResults.rows
+    allContacts = generalInfoResults.rows
 
 //     //* 2. stories. query returns array of objects:
 //     /* 
@@ -99,17 +99,17 @@ router.get('/', async (req, res) => {
     // }
 
 
-//     await client.query('COMMIT')
-//     res.send(allContacts)
-//   }
-//   catch (error) {
-//     await client.query('ROLLBACK')
-//     console.log('could not get all contacts info', error)
-//     res.sendStatus(500)
-//   }
-//   finally {
-//     client.release()
-//   }
+    await client.query('COMMIT')
+    res.send(allContacts)
+  }
+  catch (error) {
+    await client.query('ROLLBACK')
+    console.log('could not get all contacts info', error)
+    res.sendStatus(500)
+  }
+  finally {
+    client.release()
+  }
 
 });
 

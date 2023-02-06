@@ -11,7 +11,7 @@ import {DateTime} from 'luxon'
 
 // components
 import {Box, Typography, Paper, Tabs, Button} from '@mui/material';
-import StoryArchive from '../../components/StoryArchive/StoryArchive'
+import StoryArchive from '../../components/StoryArchive/StoryArchive';
 import ThemeArchive from '../../components/ThemeArchive/ThemeArchive';
 
 export default function ArchivePage(){

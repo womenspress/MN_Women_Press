@@ -17,7 +17,7 @@ export default function StoryArchive() {
   const [sortDirection, setSortDirection] = useState('ascending')
   const [filterMethod, setFilterMethod] = useState('none');
   const sortOptions = ['date', 'title']
-  const filterOptions = ['none','recent',]
+  const filterOptions = ['none', 'recent',]
 
   const allStories = useSelector(store => store.stories.allStories)
   console.log('all stories: ', allStories)
@@ -29,11 +29,11 @@ export default function StoryArchive() {
       case 'none':
         return arr;
         break;
-        // recent sets to the past three months
+      // recent sets to the past three months
       case 'recent':
-        return arr.filter(story=>story.publication_date>DateTime.now().minus({months: 3}))
+        return arr.filter(story => story.publication_date > DateTime.now().minus({ months: 3 }))
         break;
-      default: 
+      default:
         return arr
     }
   }
@@ -46,16 +46,16 @@ export default function StoryArchive() {
 
     switch (sortMethod) {
       case 'date':
-        return outputArray.sort((a,b)=>{
-          if (DateTime.fromISO(a.publication_date)>DateTime.fromISO(b.publication_date)) return -1
-          if (DateTime.fromISO(a.publication_date)<DateTime.fromISO(b.publication_date)) return 1
+        return outputArray?.sort((a, b) => {
+          if (DateTime.fromISO(a.publication_date) > DateTime.fromISO(b.publication_date)) return -1
+          if (DateTime.fromISO(a.publication_date) < DateTime.fromISO(b.publication_date)) return 1
           else return 0
         })
         break;
       case 'title':
-        return outputArray.sort((a,b)=>{
-          if (a.title>b.title) return -1
-          if (a.title<b.title) return 1
+        return outputArray.sort((a, b) => {
+          if (a.title > b.title) return -1
+          if (a.title < b.title) return 1
           else return 0
         })
         break;
@@ -71,14 +71,14 @@ export default function StoryArchive() {
     // const arrThemes = arr.map(story=>story.theme.name)
 
     function getContactsString(story) {
-      return story.contacts.map(contact=>contact.name.toLowerCase()).join('')
+      return story.contacts.map(contact => contact.name.toLowerCase()).join('')
     }
 
     function getTabsString(story) {
-      return story.tags.map(tag=>tag.name.toLowerCase()).join('')
+      return story.tags.map(tag => tag.name.toLowerCase()).join('')
     }
 
-    return arr.filter(story=>story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTabsString(story).includes(searchTerm) || story.theme[0].name.toLowerCase().includes(searchTerm))
+    return arr.filter(story => story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTabsString(story).includes(searchTerm) || story.theme[0].name.toLowerCase().includes(searchTerm))
   }
 
   const storyResults = filterResults(sortResults(searchResults(archiveStories)))
@@ -101,9 +101,9 @@ export default function StoryArchive() {
           setSearchTerm={setSearchTerm}
         />
       </Box>
-      {storyResults?.map(story => {
+      {allStories.map(story => {
         return (
-          <StoryListItem story={story} />
+          <StoryListItem key = {story.id} story={story} />
         )
       })}
     </Box>

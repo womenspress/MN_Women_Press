@@ -33,9 +33,7 @@ function Nav() {
               Stories
             </Link>
 
-            <Link className="navLink" to="/ArchivePage">
-              Archive
-            </Link>
+
 
             <Link className="navLink" to="/ContactsPage">
               Contacts
@@ -45,9 +43,13 @@ function Nav() {
               Themes
             </Link>
 
-            <Link className="navLink" to="/AdminPage">
-              Admin
+            <Link className="navLink" to="/ArchivePage">
+              Archive
             </Link>
+
+            {/* <Link className="navLink" to="/AdminPage">
+              Admin
+            </Link> */}
 
             {/* <LogOutButton className="navLink" /> */}
           </>

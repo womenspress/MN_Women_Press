@@ -62,6 +62,7 @@ export default function StoriesPage() {
     setCopiesRequired(currentStory.copies_required);
     setPaymentStatus(currentStory.payment_completed);
     setPaymentRequired(currentStory.payment_required);
+    dispatch({ type: 'SET_TEMP_STORY', payload: currentStory });
   }, [currentStory])
 
 
@@ -130,18 +131,18 @@ export default function StoriesPage() {
     alignItems: 'center',
   }
 
-    // createMode: will the big story modal be in create or edit mode?
-    const [createMode, setCreateMode] = useState(true);
-    const [modalOpen, setModalOpen] = useState(false);
-  
-    const handleClickPlus = () => {
-      setModalOpen(true)
-    }
-  
-    const handleClose = () => {
-      setModalOpen(false)
-      dispatch({ type: 'CLEAR_TEMP_STORY' })
-    }
+  // createMode: will the big story modal be in create or edit mode?
+  const [createMode, setCreateMode] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleClickPlus = () => {
+    setModalOpen(true);
+  }
+
+  const handleClose = () => {
+    setModalOpen(false)
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
+  }
 
   return (
     <Box>
@@ -180,7 +181,7 @@ export default function StoriesPage() {
             </Grid>
             <Grid item xs={1}>
 
-              <EditIcon sx={{ '&:hover': { cursor: 'pointer' } }} />
+              <EditIcon onClick={handleClickPlus} sx={{ '&:hover': { cursor: 'pointer' } }} />
 
 
             </Grid>

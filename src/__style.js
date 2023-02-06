@@ -1,4 +1,9 @@
-
+export const mainContentBox = {
+  bgcolor: 'grey.100',
+  padding: 1,
+  margin: 1,
+  borderRadius: 2
+}
 
 export const largeModal = {
   position: 'absolute',
@@ -13,7 +18,7 @@ export const largeModal = {
   padding: 2,
 }
 
-export const smallModal={
+export const smallModal = {
   position: 'absolute',
   transform: 'translate(-5%, 5%)',
   width: 180,

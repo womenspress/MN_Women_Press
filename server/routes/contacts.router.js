@@ -9,12 +9,12 @@ router.get('/', async (req, res) => {
   // GET route code here
   // console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
 
-  const client = await pool.connect()
-  try {
-    await client.query('BEGIN')
-    let allContacts = []
+//   const client = await pool.connect()
+//   try {
+//     await client.query('BEGIN')
+//     let allContacts = []
 
-    //* 1. general info: all info in teh contact table
+//     //* 1. general info: all info in the contact table
 
     const generalInfoQuery = `SELECT "contact".*,  json_agg(DISTINCT "story") AS "stories", json_agg(DISTINCT "tag") AS "tags", json_agg(DISTINCT "role") AS "roles"
     FROM "contact" 
@@ -30,15 +30,15 @@ router.get('/', async (req, res) => {
     ;`
     const generalInfoResults = await client.query(generalInfoQuery);
 
-    allContacts = generalInfoResults.rows
+//     allContacts = generalInfoResults.rows
 
-    //* 2. stories. query returns array of objects:
-    /* 
-      {
-        id (contact id): 
-        stories: [{},{}]
-      }
-    */
+//     //* 2. stories. query returns array of objects:
+//     /* 
+//       {
+//         id (contact id): 
+//         stories: [{},{}]
+//       }
+//     */
 
     // const storyQuery = '~~~ enter SQL stuff here ~~~'
     // const storyResults = await client.query(storyQuery);
@@ -52,13 +52,13 @@ router.get('/', async (req, res) => {
     //   if (!contact.stories) contact.stories = []
     // }
 
-    //* 3. themes. query returns array of objects:
-    /* 
-    {
-      id (contact id):
-      themes: [{},{}]
-    }
-    */
+//     //* 3. themes. query returns array of objects:
+//     /* 
+//     {
+//       id (contact id):
+//       themes: [{},{}]
+//     }
+//     */
 
     // const themeQuery = '~~~ enter SQL stuff here ~~~'
     // const themeResults = await client.query(themeQuery)
@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
     // }
 
 
-    //* 4. roles
+//     //* 4. roles
 
     // const rolesQuery = '~~~ enter SQL stuff here ~~~'
     // const rolesResults = await client.query(rolesQuery)
@@ -85,7 +85,7 @@ router.get('/', async (req, res) => {
     //   if (!contact.roles) contact.roles = []
     // }
 
-    //* 5. tags
+//     //* 5. tags
 
     // const tagsQuery = '~~~ enter SQL stuff here ~~~'
     // const tagsResults = await client.query(tagsQuery)
@@ -99,17 +99,17 @@ router.get('/', async (req, res) => {
     // }
 
 
-    await client.query('COMMIT')
-    res.send(allContacts)
-  }
-  catch (error) {
-    await client.query('ROLLBACK')
-    console.log('could not get all contacts info', error)
-    res.sendStatus(500)
-  }
-  finally {
-    client.release()
-  }
+//     await client.query('COMMIT')
+//     res.send(allContacts)
+//   }
+//   catch (error) {
+//     await client.query('ROLLBACK')
+//     console.log('could not get all contacts info', error)
+//     res.sendStatus(500)
+//   }
+//   finally {
+//     client.release()
+//   }
 
 });
 

@@ -45,6 +45,7 @@ export default function CreateNewContactModal(){
     const [tagsArray, setTagsArray] = React.useState([]);
     const [location, setLocation] = React.useState('');
     const [notes, setNotes] = React.useState('')
+    const [rolesArray, setRolesArray] = React.useState([]);
     // page 2
     const [address, setAddress] = React.useState('');
     const [billingAddress, setBillingAddress] = React.useState('');
@@ -89,48 +90,33 @@ export default function CreateNewContactModal(){
 
     // submit new contact
     const submitContact = () => {
-        // construct contact object
-            /* EXAMPLE: 
-            {
-                name: 'Folasade Adesanya',
-                pronouns: 'she/her',
-                expertise: 'da bomb',
-                photo: 'https://xsgames.co/randomusers/assets/images/favicon.png',
-                email: 'email@email.com',
-                phone: '(999) 999-9999',
-                billing_address: '1234 Main St, Minneapolis, MN 55403',
-                mailing_address: '1234 Main St, Minneapolis, MN 55403',
-                location: 'Minneapolis, MN',
-                bio: `Folasade Adesanya is a queer agender writer and scholar living in Minneapolis. Their writing consists of historical fiction, creative nonfiction, essays, and poetry (you can find writing samples here). Folasade is additionally the founder of The Black Syllabus, an organization that promotes literacy and alternative education in the Black community, and is working toward a PhD in Media Studies.`,
-                note: '',
-                linkedIn: '',
-                twitter: '',
-                instagram: '',
-                facebook: '',
-                ...
-                tags: [
-                    {
-                    id: 1,
-                    name: 'books',
-                    description: '',
-                    },
-                    {
-                    id: 2,
-                    name: 'front page',
-                    description: '',
-                    },
-                ],
-            }
-            */
+        // const {
+        //     name,
+        //     pronouns,
+        //     expertise,
+        //     photo,
+        //     email,
+        //     phone,
+        //     billing_address,
+        //     mailing_address,
+        //     bio,
+        //     note,
+        //     linkedin,
+        //     twitter,
+        //     instagram,
+        //     facebook,
+        //     tags,
+        //     roles
+        //   } = req.body;
+
         let newContact = {
             name: name,
             pronouns: pronouns,
             expertise: expertise,
             email: email,
             phone: phone,
-            billingAddress: billingAddress,
-            mailingAddress: mailingAddress,
-            location: location,
+            billing_address: billingAddress,
+            mailing_address: mailingAddress,
             bio: bio,
             note: notes,
             linkedIn: linkedIn,
@@ -138,6 +124,7 @@ export default function CreateNewContactModal(){
             instagram: instagram,
             facebook: facebook,
             tags: tagsArray,
+            roles: rolesArray,
         }
         console.log('Send new contact: ', newContact);
         dispatch({type: 'CREATE_NEW_CONTACT', payload: newContact});

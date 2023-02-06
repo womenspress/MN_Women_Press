@@ -90,18 +90,18 @@ export default function ThemeModal(props) {
     const [filteredStoriesArray, setFilteredStoryArray] = React.useState(stories);
 
     React.useEffect(() => {
-        setFilteredStoryArray(stories.filter(function(obj) {
-                if (
-                    obj.title?.includes(searchStoryText) || 
-                    obj.subtitle?.includes(searchStoryText) || 
-                    obj.article_text?.includes(searchStoryText) ||
-                    obj.notes?.includes(searchStoryText)
-                    ){
-                    console.log('passed filter:', obj);
-                    return obj;
-                }
-            }
-        ))
+        // setFilteredStoryArray(stories.filter(function(obj) {
+        //         if (
+        //             obj.title?.includes(searchStoryText) || 
+        //             obj.subtitle?.includes(searchStoryText) || 
+        //             obj.article_text?.includes(searchStoryText) ||
+        //             obj.notes?.includes(searchStoryText)
+        //             ){
+        //             console.log('passed filter:', obj);
+        //             return obj;
+        //         }
+        //     }
+        // ))
     }, [searchStoryText]);
 
 // search contact function
@@ -109,24 +109,24 @@ export default function ThemeModal(props) {
     const [filteredContactsArray, setFilteredContactsArray] = React.useState(contacts);
 
     React.useEffect(() => {
-        setFilteredContactsArray(contacts.filter(function(obj) {
-                if (
-                    obj.name?.includes(searchContactText) || 
-                    obj.pronouns?.includes(searchContactText) || 
-                    obj.expertise?.includes(searchContactText) ||
-                    obj.bio?.includes(searchContactText) ||
-                    obj.note?.includes(searchContactText)
-                    ){
-                    console.log('passed filter:', obj);
-                    return obj;
-                }
-            }
-        ))
+        // setFilteredContactsArray(contacts.filter(function(obj) {
+        //         if (
+        //             obj.name?.includes(searchContactText) || 
+        //             obj.pronouns?.includes(searchContactText) || 
+        //             obj.expertise?.includes(searchContactText) ||
+        //             obj.bio?.includes(searchContactText) ||
+        //             obj.note?.includes(searchContactText)
+        //             ){
+        //             console.log('passed filter:', obj);
+        //             return obj;
+        //         }
+        //     }
+        // ))
     }, [searchContactText]);
 
     return (
         <>
-        <Button onClick={handleOpen}>View Move</Button>
+        <Button onClick={handleOpen}>View More</Button>
     
         <Modal
             open={open}

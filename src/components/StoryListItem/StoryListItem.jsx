@@ -1,15 +1,16 @@
 import React from 'react';
 import { useState } from 'react';
+
+// libraries
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
 
+// components
 import { Box, Collapse, Button, Typography, Paper, Modal, IconButton, Tooltip } from '@mui/material';
-
 import StatusDropdown from '../../assets/StatusDropdown/StatusDropdown';
 import CreateStory from '../CreateStory/CreateStory';
 import ColorStatusHover from '../../assets/ColorStatusHover/ColorStatusHover';
 
-import { largeModal, smallModal } from '../../__style';
-import { makeStatusColor } from '../../modules/makeStatusColor';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -17,13 +18,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+// internal
+import { largeModal, smallModal } from '../../__style';
+import { makeStatusColor } from '../../modules/makeStatusColor';
+
 /* 
 elements to display in the 
 
 
 */
 
-export default function StoryListItem({ story, createMode, setCreateMode }) {
+export default function StoryListItem(props) {
+
+  const {
+    story,
+    createMode,
+    setCreateMode,
+    setModalOpen
+  } = props
+
+  const dispatch = useDispatch();
+
   const history = useHistory();
 
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -58,7 +73,9 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
     return 'translate(-5%,5%)'
   }
 
-  const author = story.contacts?.filter(contact => contact?.role === 'author');
+  const author = [{ name: 'paolo' }]
+
+  //! temporary fix. reinstate this once data is right. fstory.contacts?.filter(contact => contact.role === 'author');
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -66,15 +83,17 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
   }
 
   const handleEditOpen = () => {
-    setEditOpen(true);
+    dispatch({type: 'SET_TEMP_STORY', payload: story})
+    setModalOpen(true);
+    setCreateMode(false);
   }
 
   return (
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title = {statusColor.notes}>
-          <Box sx={statusStyle}></Box>
+          <Tooltip title={statusColor.notes}>
+            <Box sx={statusStyle}></Box>
           </Tooltip>
           <IconButton
             size='small'
@@ -83,7 +102,7 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
           </IconButton>
           <Typography>{story.title}</Typography>
         </Box>
-        <Typography>{author ? author[0]?.name : null}</Typography>
+        <Typography>{author.length ? author[0].name : null}</Typography>
         <StatusDropdown story={story} />
       </Box>
 
@@ -111,7 +130,6 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
 
       {/* ------------------ modals -------------------- */}
       <Modal
-
         open={editOpen}
         onClose={() => {
           setCreateMode(false)
@@ -120,8 +138,8 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
       >
         <Box
           sx={largeModal}>
-            <CreateStory createMode = {createMode}/>
-            </Box>
+          <CreateStory createMode={createMode} />
+        </Box>
       </Modal>
       <Modal
         open={deleteOpen}

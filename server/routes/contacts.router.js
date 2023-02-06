@@ -2,9 +2,6 @@ const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
 
-/**
- * GET route template
- */
 router.get('/', async (req, res) => {
   // GET route code here
   // console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
@@ -32,13 +29,13 @@ router.get('/', async (req, res) => {
 
     allContacts = generalInfoResults.rows;
 
-    //* 2. stories. query returns array of objects:
-    /* 
-      {
-        id (contact id): 
-        stories: [{},{}]
-      }
-    */
+    //     //* 2. stories. query returns array of objects:
+    //     /*
+    //       {
+    //         id (contact id):
+    //         stories: [{},{}]
+    //       }
+    //     */
 
     // const storyQuery = '~~~ enter SQL stuff here ~~~'
     // const storyResults = await client.query(storyQuery);
@@ -52,13 +49,13 @@ router.get('/', async (req, res) => {
     //   if (!contact.stories) contact.stories = []
     // }
 
-    //* 3. themes. query returns array of objects:
-    /* 
-    {
-      id (contact id):
-      themes: [{},{}]
-    }
-    */
+    //     //* 3. themes. query returns array of objects:
+    //     /*
+    //     {
+    //       id (contact id):
+    //       themes: [{},{}]
+    //     }
+    //     */
 
     // const themeQuery = '~~~ enter SQL stuff here ~~~'
     // const themeResults = await client.query(themeQuery)
@@ -84,7 +81,7 @@ router.get('/', async (req, res) => {
     //   if (!contact.roles) contact.roles = []
     // }
 
-    //* 5. tags
+    //     //* 5. tags
 
     // const tagsQuery = '~~~ enter SQL stuff here ~~~'
     // const tagsResults = await client.query(tagsQuery)
@@ -119,19 +116,86 @@ router.get('/', async (req, res) => {
 //   res.sendStatus(200);
 // });
 
-/**
- * POST route template
- */
-router.post('/', (req, res) => {
-  // POST route code here
-  console.log(
-    'In contacts router search POST, making contact. URL: /api/contacts'
-  );
-  res.sendStatus(200);
+router.post('/', async (req, res) => {
+  //console.log('editing project. req.body: ', req.body)
+  const client = await pool.connect();
+
+  try {
+    const {
+      name,
+      pronouns,
+      expertise,
+      photo,
+      email,
+      phone,
+      billing_address,
+      mailing_address,
+      bio,
+      note,
+      linkedin,
+      twitter,
+      instagram,
+      facebook,
+      tags,
+      roles,
+    } = req.body;
+
+    await client.query('BEGIN');
+
+    //* 1. Update contact table
+    const contactInsertQuery = `INSERT INTO "contact"
+    ("name" ,"pronouns" ,"expertise" ,"photo","email" ,"phone" ,"billing_address" , "mailing_address" , "bio" ,"note" ,"linkedIn" ,"twitter" ,"instagram" , "facebook" ) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING "id";`;
+    let contactResponse = await client.query(contactInsertQuery, [
+      name,
+      pronouns,
+      expertise,
+      photo,
+      email,
+      phone,
+      billing_address,
+      mailing_address,
+      bio,
+      note,
+      linkedin,
+      twitter,
+      instagram,
+      facebook,
+    ]);
+
+    //let contactId = contactInsertQuery.rows[0].id;
+    console.log(contactResponse.rows[0].id);
+    let contactId = contactResponse.rows[0].id;
+
+    // // //* 3. insert tags and roles info WILL DO THIS NEXT
+    const tagsPromises = tags.map((tag) => {
+      const insertTagText = `INSERT INTO "tag_contact" ("tag_id","contact_id") VALUES ($1,$2);`;
+      const insertTagValues = [tag, contactId]; //this may have to change based on tag vs tag.id if an array of object
+      return client.query(insertTagText, insertTagValues);
+    });
+
+    // // // // 3b. roles
+    const rolesPromises = roles.map((role) => {
+      const insertRoleText = `INSERT INTO "contact_role" ("role_id","contact_id") VALUES ($1,$2);`;
+      const insertRoleValues = [role, contactId];
+      return client.query(insertRoleText, insertRoleValues);
+    });
+
+    // //* 4. execute promises
+    await Promise.all([...tagsPromises, ...rolesPromises]);
+
+    await client.query('COMMIT');
+    res.sendStatus(201);
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.log('Error PUT /api/contacts', error);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
 });
 
 //* --------------- PUT - update contact -----------------
-// based on wireframes, this should
 
 router.put('/:id', async (req, res) => {
   console.log('editing project. req.body: ', req.body);

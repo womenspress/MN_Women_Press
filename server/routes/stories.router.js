@@ -72,6 +72,11 @@ router.get('/', async (req, res) => {
         }
       }
     }
+    for (let story of results.rows) {
+      if (story.tags[0] === null) story.tags = [];
+      if (story.contacts[0] === null) story.contacts = [];
+      if (story.theme[0] === null) story.theme = [];
+    }
     connection.query('');
     res.send(response.rows);
   } catch (err) {

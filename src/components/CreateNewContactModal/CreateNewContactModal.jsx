@@ -71,8 +71,7 @@ export default function CreateNewContactModal(){
 
         // sets found tag to a tag containing searchTagValue && is the shorted in array.
         setFoundTag(dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tag.toLowerCase())){return dbTag;}}).reduce(function(a, b) {return a.name.length <= b.name.length ? a : b;}))
-        // setFoundTag(dbTagsArray.filter(dbTag => dbTag.name.contains(tag))[0]);
-        // console.log(tag);
+        
     }
 
     const createNewTag = (searchTag) => {

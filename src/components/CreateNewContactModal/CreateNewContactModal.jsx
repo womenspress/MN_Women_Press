@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -27,6 +27,10 @@ import { Email } from '@mui/icons-material';
 export default function CreateNewContactModal(){
     const dispatch = useDispatch();
 
+    React.useEffect(() => {
+        dispatch({type: "GET_ALL_TAGS"});
+    }, []);
+
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -53,12 +57,21 @@ export default function CreateNewContactModal(){
     const [linkedIn, setLinkedIn] = React.useState('');
 
     // add contact tag actions
+
+    const dbTagsArray = useSelector(store => store.tags.allTags);
     
     const [searchTag, setSearchTag] = React.useState('');
+    const [foundTag, setFoundTag] = React.useState('');
 
     const setSearchTagValue = (tag) => {
         setSearchTag(tag);
         // search of filter method
+        console.log('db array',dbTagsArray);
+        console.log('found tag:', dbTagsArray.filter(function(dbTag) {if(dbTag.name?.includes(tag)){return dbTag;}})[0]);
+
+        // sets found tag to a tag containing searchTagValue && is the shorted in array.
+        setFoundTag(dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tag.toLowerCase())){return dbTag;}}).reduce(function(a, b) {return a.name.length <= b.name.length ? a : b;}))
+        // setFoundTag(dbTagsArray.filter(dbTag => dbTag.name.contains(tag))[0]);
         // console.log(tag);
     }
 
@@ -67,6 +80,7 @@ export default function CreateNewContactModal(){
         // dispatch({type: "INSERT_TAG", payload: {tag: tag}});
         console.log('Insert new tag into tagsArray');
         setTagsArray([...tagsArray, {id: -1, name: searchTag, description: ''}]);
+        
         setSearchTag('')
         // console.log(tagsArray);
     }
@@ -144,6 +158,9 @@ export default function CreateNewContactModal(){
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Expertise" variant="outlined" value={expertise} onChange={(event)=> setExpertise(event.target.value)}/>
                         <Box sx={{ display: 'flex' }}>
                             <TextField sx={{ width: .75}} id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
+                            <Typography id="modal-modal-title" variant="h4" component="h2">
+                                {foundTag.name}
+                            </Typography>                            
                             <Button onClick={() => createNewTag(searchTag)}>
                                 <AddCircleOutlineIcon/>
                             </Button>

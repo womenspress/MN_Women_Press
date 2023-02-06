@@ -31,7 +31,7 @@ export default function ThemeContactListItem(props){
                     
                     {contact?.roles[1].name && <Typography>• {contact?.roles[1].name}</Typography>}
                 </Box>  */}
-                <Typography>{contact.location}</Typography>
+                <Typography>{contact.location ? contact.location : 'no location'}</Typography>
             </Box>
 
             <Collapse

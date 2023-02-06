@@ -9,12 +9,12 @@ router.get('/', async (req, res) => {
   // GET route code here
   // console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
 
-//   const client = await pool.connect()
-//   try {
-//     await client.query('BEGIN')
-//     let allContacts = []
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    let allContacts = []
 
-//     //* 1. general info: all info in the contact table
+    //* 1. general info: all info in teh contact table
 
     const generalInfoQuery = `SELECT "contact".*,  json_agg(DISTINCT "story") AS "stories", json_agg(DISTINCT "tag") AS "tags", json_agg(DISTINCT "role") AS "roles"
     FROM "contact" 
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
     ;`
     const generalInfoResults = await client.query(generalInfoQuery);
 
-//     allContacts = generalInfoResults.rows
+    allContacts = generalInfoResults.rows
 
 //     //* 2. stories. query returns array of objects:
 //     /* 
@@ -99,17 +99,17 @@ router.get('/', async (req, res) => {
     // }
 
 
-//     await client.query('COMMIT')
-//     res.send(allContacts)
-//   }
-//   catch (error) {
-//     await client.query('ROLLBACK')
-//     console.log('could not get all contacts info', error)
-//     res.sendStatus(500)
-//   }
-//   finally {
-//     client.release()
-//   }
+    await client.query('COMMIT')
+    res.send(allContacts)
+  }
+  catch (error) {
+    await client.query('ROLLBACK')
+    console.log('could not get all contacts info', error)
+    res.sendStatus(500)
+  }
+  finally {
+    client.release()
+  }
 
 });
 

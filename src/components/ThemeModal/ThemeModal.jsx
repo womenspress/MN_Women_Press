@@ -126,7 +126,7 @@ export default function ThemeModal(props) {
 
     return (
         <>
-        <Button onClick={handleOpen}>View Move</Button>
+        <Button onClick={handleOpen}>View More</Button>
     
         <Modal
             open={open}

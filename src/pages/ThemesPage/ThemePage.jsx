@@ -8,7 +8,8 @@ export default function ThemesPage(){
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const response = dispatch({type:'GET_ALL_THEMES'});
+        dispatch({type:'GET_ALL_THEMES'});
+        dispatch({type: 'GET_ALL_CONTACTS'})
     }, [])
 
     let ThemeArrayDB = useSelector(store => store.themes.allThemes);

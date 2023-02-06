@@ -13,7 +13,6 @@ import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
 
 export default function StoryModalAdditional(props) {
 
-  //! todo: make dropdown tag and contact search functionality
 
   const {
     setModalOpen,
@@ -54,6 +53,12 @@ export default function StoryModalAdditional(props) {
     else setInputValues({ ...inputValues, photo_required: false })
   }
 
+  const handleFactCheck = (e) => {
+    console.log('in handle fact check')
+    if (e.target.checked) setInputValues({ ...inputValues, fact_check_required: true });
+    else setInputValues({ ...inputValues, fact_check_required: false })
+  }
+
   const handleCopies = (e) => {
     console.log('in handleCopies');
     if (e.target.checked) setInputValues({ ...inputValues, copies_required: true })
@@ -65,16 +70,18 @@ export default function StoryModalAdditional(props) {
     setInputValues({ ...inputValues, number_of_copies: e.target.value })
   }
 
+  const handleCopyDestination = (e) => {
+    console.log('handling copy destination');
+    setInputValues({ ...inputValues, copies_destination: e.target.value })
+  }
 
 
 
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    if (createMode) {
-      dispatch({ type: 'CLEAR_TEMP_STORY' })
-      dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
-    }
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
+    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
     else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } });
     setModalOpen(false);
   }
@@ -96,7 +103,7 @@ export default function StoryModalAdditional(props) {
 
   return (
     <Box>
-      {JSON.stringify(inputValues)}
+      {/* {JSON.stringify(inputValues)} */}
       <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
       <Grid container spacing={1}>
 
@@ -106,8 +113,9 @@ export default function StoryModalAdditional(props) {
             subtitle
           </Typography>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={9}>
           <TextField
+            fullWidth
             size='small'
             value={inputValues.subtitle}
             onChange={(e) => setInputValues({ ...inputValues, subtitle: e.target.value })}
@@ -158,6 +166,7 @@ export default function StoryModalAdditional(props) {
         </Grid>
         <Grid item xs={4}>
           <TextField
+            fullWidth
             size='small'
             value={inputValues.article_link}
             onChange={(e) => setInputValues({ ...inputValues, article_link: e.target.value })}
@@ -182,22 +191,33 @@ export default function StoryModalAdditional(props) {
         </Grid>
         <Grid item xs={10}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <FormControlLabel control={<Checkbox onChange={handleGraphic} />} label='graphic' />
-            <FormControlLabel control={<Checkbox onChange={handlePhoto} />} label='photo' />
-            {inputValues.photo_required && <TextField
-              value={photographerSearchTerm}
-              onChange={(e) => setPhotographerSearch(e.target.value)}
-            />}
-            <FormControlLabel control={<Checkbox onChange={handleCopies} />} label='copies sent' />
+            <FormControlLabel control={<Checkbox checked={inputValues.graphic_image_required} onChange={handleGraphic} />} label='graphic' />
+            <FormControlLabel control={<Checkbox checked={inputValues.fact_check_required} onChange={handleFactCheck} />} label='fact check' />
+            <FormControlLabel control={<Checkbox checked={inputValues.photo_required} onChange={handlePhoto} />} label='photo' />
 
-
-
-            {inputValues.copies_required && <TextField
-              type='number'
-              placeholder='number of copies'
-              value={inputValues.number_of_copies}
-              onChange={handleCopyNumber}
-            />}
+            <Box>
+              <FormControlLabel control={<Checkbox checked={inputValues.copies_required} onChange={handleCopies} />} label='copies sent' />
+              {inputValues.copies_required &&
+                <>
+                  <TextField
+                    sx={{ display: 'inline-block', width: 60 }}
+                    type='number'
+                    size='small'
+                    placeholder='number of copies'
+                    value={inputValues.number_of_copies}
+                    onChange={handleCopyNumber}
+                  />
+                  <Typography sx={{ display: 'inline-block' }}>&nbsp; to &nbsp;</Typography>
+                  <TextField
+                    sx={{ display: 'inline-block', width: 500 }}
+                    size='small'
+                    placeholder='destination'
+                    value={inputValues.copies_destination}
+                    onChange={handleCopyDestination}
+                  />
+                </>
+              }
+            </Box>
           </Box>
         </Grid>
 

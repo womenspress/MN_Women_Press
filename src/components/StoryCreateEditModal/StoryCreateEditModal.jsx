@@ -15,7 +15,8 @@ export default function StoryCreateEditModal(props) {
 
   const {
     setModalOpen,
-    createMode
+    createMode,
+
   } = props
 
 

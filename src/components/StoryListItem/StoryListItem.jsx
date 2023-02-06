@@ -1,6 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
+
+// libraries
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
 
 import {DateTime} from 'luxon';
 
@@ -11,8 +14,6 @@ import StatusDropdown from '../../assets/StatusDropdown/StatusDropdown';
 import CreateStory from '../CreateStory/CreateStory';
 import ColorStatusHover from '../../assets/ColorStatusHover/ColorStatusHover';
 
-import { largeModal, smallModal } from '../../__style';
-import { makeStatusColor } from '../../modules/makeStatusColor';
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -20,13 +21,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+// internal
+import { largeModal, smallModal } from '../../__style';
+import { makeStatusColor } from '../../modules/makeStatusColor';
+
 /* 
 elements to display in the 
 
 
 */
 
-export default function StoryListItem({ story, createMode, setCreateMode }) {
+export default function StoryListItem(props) {
+
+  const {
+    story,
+    createMode,
+    setCreateMode,
+    setModalOpen
+  } = props
+
+  const dispatch = useDispatch();
+
   const history = useHistory();
 
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -76,7 +91,9 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
   }
 
   const handleEditOpen = () => {
-    setEditOpen(true);
+    dispatch({type: 'SET_TEMP_STORY', payload: story})
+    setModalOpen(true);
+    setCreateMode(false);
   }
 
   return (
@@ -135,7 +152,6 @@ export default function StoryListItem({ story, createMode, setCreateMode }) {
 
       {/* ------------------ modals -------------------- */}
       <Modal
-
         open={editOpen}
         onClose={() => {
           setCreateMode(false)

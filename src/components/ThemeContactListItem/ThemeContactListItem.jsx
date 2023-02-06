@@ -31,16 +31,16 @@ export default function ThemeContactListItem(props){
                     
                     {contact?.roles[1].name && <Typography>• {contact?.roles[1].name}</Typography>}
                 </Box>  */}
-                <Typography>{contact.location ? contact.location : 'no location'}</Typography>
+                <Typography>{contact?.mailing_address}</Typography>
             </Box>
 
             <Collapse
                 in={detailsOpen}
             >
                 <Box sx={{display: 'flex'}}>
-                    <Avatar src = {contact.photo}/>
-                    <Typography variant = 'body2'>{contact.bio}</Typography>
-                    <Link to={"/ContactDetails/"+contact.id}>
+                    <Avatar src = {contact?.photo}/>
+                    <Typography variant = 'body2'>{contact?.bio}</Typography>
+                    <Link to={"/ContactDetails/"+contact?.id}>
                         <OpenInNewIcon/>
                     </Link>
                 </Box>

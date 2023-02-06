@@ -23,11 +23,20 @@ router.get('/', (req, res) => {
 
   pool
     .query(getAllQueryText)
-    .then((response) => res.send(response.rows))
-    .catch((err) => {
-      res.sendStatus(200);
-      console.log(err);
-    });
+    .then((results) => {
+      console.log(results.rows)
+      for (let story of results.rows) {
+        if (story.tags[0]===null) story.tags=[]
+        if (story.contacts[0]===null) story.contacts=[]
+        if (story.theme[0]===null) story.theme=[]
+      }
+      res.send(results.rows)
+    })
+    .catch(err => {
+      console.log('error:', err)
+      res.sendStatus(500)
+    })
+
 });
 
 router.get('/current/:id', (req, res) => {
@@ -359,7 +368,7 @@ router.put('/status/:id', rejectUnauthenticated, (req, res) => {
   const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
   const queryParams = [req.body.statusValue, req.body.story_id]
 
-  pool.query(queryText, queryParams).then(()=> {
+  pool.query(queryText, queryParams).then(() => {
     res.sendStatus(200);
   }).catch(err => {
     console.log('error in update status query:', err);

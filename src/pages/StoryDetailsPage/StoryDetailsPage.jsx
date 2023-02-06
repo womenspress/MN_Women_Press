@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-// import { story } from '../../sampleStoryData';
-import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, styled, TextField, Tooltip } from '@mui/material';
+import { DateTime } from 'luxon';
+import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, Modal, styled, TextField, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import ListTags from '../../components/ListTags/ListTags';
@@ -8,7 +8,10 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+// internal
+import { largeModal } from '../../__style'
 import { makeStatusColor } from '../../modules/makeStatusColor';
+import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 
 
 export default function StoriesPage() {
@@ -38,7 +41,7 @@ export default function StoriesPage() {
   const [notes, setNotes] = useState(currentStory.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
   const [statusColor, setStatusColor] = useState({});
-  
+
 
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
@@ -121,12 +124,38 @@ export default function StoriesPage() {
     dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })
   }
 
+  const displayFlex = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
+
+    // createMode: will the big story modal be in create or edit mode?
+    const [createMode, setCreateMode] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
+  
+    const handleClickPlus = () => {
+      setModalOpen(true)
+    }
+  
+    const handleClose = () => {
+      setModalOpen(false)
+      dispatch({ type: 'CLEAR_TEMP_STORY' })
+    }
 
   return (
     <Box>
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}>
+        <Box sx={largeModal}>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} />
+        </Box>
+      </Modal>
+
+
+
       <Grid container space={1}>
-
-
         {/*------- This grid row contains story header and tags---------- */}
         <Grid item xs={8}>
           <Box display='flex' flexDirection='row' alignItems='center'>
@@ -150,12 +179,15 @@ export default function StoriesPage() {
               <Typography variant='h6'>General Info</Typography>
             </Grid>
             <Grid item xs={1}>
-              <EditIcon onClick={handleStoryEdit} sx={{ '&:hover': { cursor: 'pointer' } }} />
+
+              <EditIcon sx={{ '&:hover': { cursor: 'pointer' } }} />
+
+
             </Grid>
 
             {/*--------- Maps contacts, order: author, photographer, fact checker, other ----------- */}
             <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+              <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                 Author
               </Typography>
             </Grid>
@@ -181,7 +213,7 @@ export default function StoriesPage() {
             {currentStory.photo_required || currentStory.contacts?.filter(e => e?.story_association === 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
-                  <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+                  <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Photographer
                   </Typography>
                 </Grid>
@@ -212,7 +244,7 @@ export default function StoriesPage() {
             {currentStory.fact_check_required || currentStory.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
               <>
                 <Grid item xs={3}>
-                  <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+                  <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Fact Checker
                   </Typography>
                 </Grid>
@@ -246,7 +278,7 @@ export default function StoriesPage() {
             {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
-                  <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+                  <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Other
                   </Typography>
                 </Grid>
@@ -254,7 +286,6 @@ export default function StoriesPage() {
                   {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').map((contact) => {
                     return (
                       <Grid container spacing={1} key={contact ? contact.id : 1}>
-                        {/* The below portion can be swapped out with a contact card component once created */}
                         <Grid item xs={12}>
                           <Box component={Paper} p={1} m={1}>
                             <Typography fontWeight='bold'>{contact?.name}</Typography>
@@ -271,32 +302,32 @@ export default function StoriesPage() {
             }
 
             {/* Theme */}
-            <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+            <Grid item xs={3} sx={{ ...displayFlex, flexDirection: 'row-reverse' }}>
+              <Typography variant='body1' sx={{ textAlign: 'right', p: 1 }}>
                 Theme
               </Typography>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={9} sx={displayFlex}>
               {currentStory.theme ? currentStory.theme[0]?.name : null}
             </Grid>
 
             {/* Publication date */}
-            <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+            <Grid item xs={3} sx={{ ...displayFlex, flexDirection: 'row-reverse' }}>
+              <Typography variant='body1' sx={{ textAlign: 'right', p: 1 }}>
                 Publication Date
               </Typography>
             </Grid>
-            <Grid item xs={9}>
-              {currentStory?.publication_date}
+            <Grid item xs={9} sx={displayFlex}>
+              {DateTime.fromISO(currentStory?.publication_date).toFormat('MMMM dd, yyyy')}
             </Grid>
 
             {/* link to story */}
-            <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+            <Grid item xs={3} sx={{ ...displayFlex, flexDirection: 'row-reverse' }}>
+              <Typography variant='body1' sx={{ textAlign: 'right', p: 1 }}>
                 link to story
               </Typography>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={9} sx={displayFlex}>
               <Link href={currentStory?.article_link}>{currentStory?.article_link}</Link>
             </Grid>
           </Grid>

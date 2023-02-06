@@ -44,6 +44,9 @@ router.get('/', async (req, res) => {
         const contactObj = story.contacts[j];
         for (let contactForInvoice of contactResponse) {
           for (invoice of contactForInvoice.invoice) {
+            if (story.tags[0] === null) story.tags = [];
+            if (story.contacts[0] === null) story.contacts = [];
+            if (story.theme[0] === null) story.theme = [];
             if (story.id && contactForInvoice.id && contactObj && invoice) {
               console.log(
                 'Story:',
@@ -72,11 +75,7 @@ router.get('/', async (req, res) => {
         }
       }
     }
-    for (let story of results.rows) {
-      if (story.tags[0] === null) story.tags = [];
-      if (story.contacts[0] === null) story.contacts = [];
-      if (story.theme[0] === null) story.theme = [];
-    }
+
     connection.query('');
     res.send(response.rows);
   } catch (err) {

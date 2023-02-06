@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // libraries
 
 // components
-import { Box, Typography, Paper, Button, Menu, MenuItem, Checkbox, FormControlLabel} from '@mui/material';
+import { Box, Typography, Paper, Button, Menu, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
@@ -25,7 +25,6 @@ export default function ContactSearchCard(props) {
 
   const handleRolesClick = (e) => {
     setRolesAnchor(e.currentTarget);
-
   }
 
   const handleRolesClose = () => {
@@ -33,8 +32,8 @@ export default function ContactSearchCard(props) {
   }
 
   return (
-    <Paper sx={{ ...smallCard, width: 300 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between'}} >
+    <Paper sx={{ ...smallCard, width: 300, height: 80 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }} >
         <Typography>{contact.name}</Typography>
         <Button
           sx={{ textTransform: 'none', p: 0, color: 'inherit' }}
@@ -62,8 +61,24 @@ export default function ContactSearchCard(props) {
         </Menu>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography fontSize={14}>payment?</Typography>
-        <Typography fontSize={14}>amount: $</Typography>
+        <FormControlLabel
+          sx={{ margin: 0 }}
+          control={<Checkbox
+            checked={inputValues.contacts.filter(el => el.id === contact.id).payment_required}
+            onChange={() => {
+              const thisPaymentRequired = inputValues.contacts.filter(el => el.id === contact.id).payment_required;
+              console.log('this payment required: ', thisPaymentRequired);
+              if (thisPaymentRequired) setInputValues({ ...inputValues, contacts: [...inputValues.contacts?.filter(el => el.id !== contact.id), { ...contact, payment_required: false }] });
+              else setInputValues({ ...inputValues, contacts: [...inputValues.contacts?.filter(el => el.id !== contact.id), { ...contact, payment_required: true }] })
+            }
+            }
+            size='small' />}
+          fontSize={14}
+          label={<Typography
+            fontSize={14}>
+            payment required?
+          </Typography>}
+        />
       </Box>
     </Paper>
   )

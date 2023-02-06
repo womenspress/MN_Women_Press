@@ -120,10 +120,8 @@ export default function StoryModalGeneral(props) {
   // on submit: close modal. create mode true => POST data, clear temp story. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    if (createMode) {
       dispatch({ type: 'CLEAR_TEMP_STORY' })
-      dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
-    }
+    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
     else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } })
     setModalOpen(false);
   }
@@ -146,7 +144,8 @@ export default function StoryModalGeneral(props) {
       {/* contactResults: {JSON.stringify(contactSearchResults)} */}
       {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
-      contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))}
+      {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
+      contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))}
       <Typography variant='h4'>New Story - general</Typography>
       <Grid container spacing={1}>
 

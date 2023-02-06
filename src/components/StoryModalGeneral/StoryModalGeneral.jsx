@@ -145,8 +145,8 @@ export default function StoryModalGeneral(props) {
       {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
       {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
-      contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))}
-      <Typography variant='h4'>New Story - general</Typography>
+      {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
+      <Typography variant='h4'>{createMode? 'New Story - general': 'Edit Story - general'}</Typography>
       <Grid container spacing={1}>
 
         {/* title */}

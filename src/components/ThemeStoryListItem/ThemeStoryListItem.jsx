@@ -57,7 +57,7 @@ export default function ThemeStoryListItem({ story}) {
         return 'translate(-5%,5%)'
     }
 
-    const author = story.contacts?.filter(contact => contact.role === 'author');
+    // const author = story.contacts?.filter(contact => contact.role === 'author');
 
     const handleDeleteOpen = (e) => {
         setMousePos({ x: e.clientX, y: e.clientY })
@@ -80,23 +80,23 @@ export default function ThemeStoryListItem({ story}) {
                     onClick={() => setCollapseOpen(!collapseOpen)}>
                     {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                 </IconButton>
-                <Typography>{story.title}</Typography>
+                <Typography>{story?.title}</Typography>
             </Box>
             {/* <Typography>{author[0]? author[0].name : 'Author Not Found'}</Typography> */}
-            <StatusDropdown story={story} />
+            {/* <StatusDropdown story={story} /> */}
         </Box>
         {/* --------------- collapse ---------------- */}
         <Collapse in={collapseOpen}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box>
                 <Typography>
-                    {story.subtitle}
+                    {story?.subtitle}
                 </Typography>
                 <Typography>
-                    {story.notes}
+                    {story?.notes}
                 </Typography>
             </Box>
-            <a href={story.article_link}><Typography>{story.article_link}</Typography></a>
+            <a href={story?.article_link}><Typography>{story?.article_link}</Typography></a>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Button
                 onClick={() => history.push(`/story/{story.id}`)}

@@ -30,7 +30,7 @@ CREATE TABLE "contact" (
     "twitter" VARCHAR (50),
     "instagram" VARCHAR (50),
     "facebook" VARCHAR (255),
-    "date_added" DATE
+    "date_added" DATE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "contact_role" (

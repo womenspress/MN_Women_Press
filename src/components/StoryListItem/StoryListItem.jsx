@@ -83,7 +83,7 @@ export default function StoryListItem(props) {
   }
 
   const handleEditOpen = () => {
-    dispatch({type: 'SET_TEMP_STORY', payload: story})
+    dispatch({ type: 'SET_TEMP_STORY', payload: story })
     setModalOpen(true);
     setCreateMode(false);
   }

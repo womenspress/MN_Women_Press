@@ -54,7 +54,7 @@ export default function StoryModalGeneral(props) {
     setContactAnchor(null)
   }
 
-  const contactIds = inputValues.contacts?.map(contact => contact.id);
+  const contactIds = inputValues.contacts?.map(contact => contact?.id);
 
   // these will populate upon search
   const contactSearchResults =
@@ -145,7 +145,7 @@ export default function StoryModalGeneral(props) {
       {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
       {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
-      contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))}
+      contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact?.payment_required, "name": contact?.name}}))}
       <Typography variant='h4'>New Story - general</Typography>
       <Grid container spacing={1}>
 
@@ -217,7 +217,7 @@ export default function StoryModalGeneral(props) {
           <Box sx={{ bgcolor: 'grey.100', padding: .5, display: 'flex', flexWrap: 'wrap' }}>
             {inputValues.contacts?.sort((a, b) => a.id - b.id).map(contact => {
               return (
-                <ContactSearchCard key={contact.id} contact={contact} inputValues={inputValues} setInputValues={setInputValues} />
+                <ContactSearchCard key={contact?.id} contact={contact} inputValues={inputValues} setInputValues={setInputValues} />
               )
             })}
           </Box>

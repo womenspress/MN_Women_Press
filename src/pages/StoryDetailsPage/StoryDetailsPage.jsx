@@ -150,7 +150,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} />
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={false} />
         </Box>
       </Modal>
 

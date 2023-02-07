@@ -6,11 +6,10 @@ const pool = require('../modules/pool');
 const router = express.Router();
 
 /**
- * GET route template
+ * GET ALL stories route
  */
 router.get('/', async (req, res) => {
-  // GET route code here
-  console.log('In stories router GET, getting all stories. URL: /api/stories');
+  console.log('GETTING ALL STORIES');
 
   let getAllQueryText = `
   SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
@@ -24,46 +23,60 @@ router.get('/', async (req, res) => {
   GROUP BY "story"."id"
   ORDER BY "story"."publication_date" ASC
   ;`;
-  const connection = await pool.connect();
 
+  // Open Connection to the database
+  const connection = await pool.connect();
   try {
+    //Step 1: Query the database for info from all stoires, including relational tables: contact, theme, and tag
     let response = await connection.query(getAllQueryText);
+    //Setting incoming data to variable 'storiesArray'
     let storiesArray = response.rows;
 
     let getContactDetails = `
-    SELECT "contact"."id" , json_agg( "story_contact") AS "invoice"
-    FROM "contact"
-    LEFT JOIN "story_contact" ON "story_contact"."contact_id" = "contact"."id"
-    GROUP BY "contact"."id";`;
+      SELECT "contact"."id" , json_agg( "story_contact") AS "invoice"
+      FROM "contact"
+      LEFT JOIN "story_contact" ON "story_contact"."contact_id" = "contact"."id"
+      GROUP BY "contact"."id";`;
+
+    //Step 2: Query database for contact details in the story_contact table in database
     let contactQueryResponse = await connection.query(getContactDetails);
+    //set response to variable contactResponse
     let contactResponse = contactQueryResponse.rows;
 
+    //Step 3.a: Loop over every story object in 'storiesArray
     for (let i = 0; i < storiesArray.length; i++) {
       const story = storiesArray[i];
+
+      //Step 3.b: In each story object, loop over every contact object in contacts array
       for (let j = 0; j < story.contacts.length; j++) {
         const contactObj = story.contacts[j];
+        //Step 3.c: Loop over every contact object in the contactResponse array (where the story_contact table info for each contact is)
         for (let contactForInvoice of contactResponse) {
+          //Step 3.d: Loop over every invoice information object in invoice array
           for (invoice of contactForInvoice.invoice) {
+            //for each story object, if tags, contacts, or theme array is null change to empty
             if (story.tags[0] === null) story.tags = [];
             if (story.contacts[0] === null) story.contacts = [];
             if (story.theme[0] === null) story.theme = [];
+            //for each story object, if all comparison data is present process below
             if (story.id && contactForInvoice.id && contactObj && invoice) {
               console.log(
-                'Story:',
+                'Story Object Id:',
                 story.id,
-                'Contact:',
+                'Invoice info story id:',
+                invoice.story_id,
+                'Contact Id:',
                 contactObj.id,
-                'InvoiceContact:',
-                contactForInvoice.id,
-                'STORY_CONTACT:',
-                invoice.story_id
+                'InvoiceContact Id:',
+                contactForInvoice.id
               );
-              // if id matches add info to currentStoryDetails array
+              // if contact id of story object and invoice object matches
+              //AND story id of story object and invoice object
+              //add invoice info to currentStoryDetails array
               if (
                 contactObj.id === contactForInvoice.id &&
                 story.id === invoice.story_id
               ) {
-                console.log('IM HERE');
                 const { story_association, invoice_amount, invoice_paid } =
                   invoice;
                 contactObj.story_association = story_association;
@@ -75,7 +88,7 @@ router.get('/', async (req, res) => {
         }
       }
     }
-
+    //Step 4: Send the modified array of data
     res.send(response.rows);
   } catch (err) {
     res.sendStatus(500);
@@ -477,24 +490,5 @@ router.put('/status/:id', rejectUnauthenticated, (req, res) => {
       res.sendStatus(500);
     });
 });
-
-// search is happening on front end, looking at store items
-// router.get('/search', (req, res) => {
-//   // GET route code here
-//   console.log(
-//     'In stories router GET search, getting all stories that match search. URL: /api/stories/search'
-//   );
-//   res.sendStatus(200);
-// });
-
-// Commenting this out because current plan is to handle archive story separation on the front-end
-
-// router.get('/archive', (req, res) => {
-//   // GET route code here
-//   console.log(
-//     'In stories router GET archive, getting all archive stories. URL: /api/stories/archive'
-//   );
-//   res.sendStatus(200);
-// });
 
 module.exports = router;

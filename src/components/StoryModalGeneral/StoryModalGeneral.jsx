@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 
 // libraries
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 
 // components
-import { Box, Typography, Grid, Button, TextField, Menu, Autocomplete } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Grid,
+  Button,
+  TextField,
+  Menu,
+  Autocomplete,
+} from '@mui/material';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
 import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
 import ThemeDropdownItem from '../../assets/ThemeDropdownItem/ThemeDropdownItem';
@@ -12,29 +20,52 @@ import ContactSearchCard from '../../assets/ContactSearchCard/ContactSearchCard'
 import TagSearchCard from '../../assets/TagSearchCard/TagSearchCard';
 import ThemeSearchCard from '../../assets/ThemeSearchCard/ThemeSearchCard';
 
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import Modal from '@mui/material/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 900,
+  height: 700,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  padding: 2,
+};
+
+const smallStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 300,
+  height: 'fit-content',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  padding: 2,
+};
 //internal
 // import { tags } from '../../sampleData'
 
 export default function StoryModalGeneral(props) {
-
-
   //! todo: make dropdown tag and contact search functionality
 
-  const {
-    setModalOpen,
-    setStep,
-    createMode
-  } = props
+  const { setModalOpen, setStep, createMode } = props;
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const currentStory = useSelector(store => store.stories.tempStory)
-  const contacts = useSelector(store => store.contacts.allContacts)
-  const tags = useSelector(store => store.tags.allTags)
-  const themes = useSelector(store => store.themes.allThemes)
+  const currentStory = useSelector((store) => store.stories.tempStory);
+  const contacts = useSelector((store) => store.contacts.allContacts);
+  const tags = useSelector((store) => store.tags.allTags);
+  const themes = useSelector((store) => store.themes.allThemes);
 
   const [inputValues, setInputValues] = useState(currentStory);
-  console.log('current story:', currentStory)
+
+  console.log('current story:', currentStory);
 
   // useEffect(() => {
   //   setInputValues(currentStory)
@@ -47,20 +78,21 @@ export default function StoryModalGeneral(props) {
   const contactOpen = Boolean(contactAnchor);
 
   const handleSearchContacts = (event) => {
-    setContactAnchor(event.currentTarget)
-  }
+    setContactAnchor(event.currentTarget);
+  };
 
   const handleContactsClose = () => {
-    setContactAnchor(null)
-  }
+    setContactAnchor(null);
+  };
 
-  const contactIds = inputValues.contacts?.map(contact => contact?.id);
+  const contactIds = inputValues.contacts?.map((contact) => contact?.id);
 
   // these will populate upon search
-  const contactSearchResults =
-    contacts?.filter(contact => !(contactIds.includes(contact.id)))
-      .filter(contact => contact.name.toLowerCase().includes(contactSearchTerm.toLowerCase()));
-
+  const contactSearchResults = contacts
+    ?.filter((contact) => !contactIds.includes(contact.id))
+    .filter((contact) =>
+      contact.name.toLowerCase().includes(contactSearchTerm.toLowerCase())
+    );
 
   //* -------- TAG search variables and functions ---------
 
@@ -68,19 +100,42 @@ export default function StoryModalGeneral(props) {
   const [tagAnchor, setTagAnchor] = useState(null);
   const tagOpen = Boolean(tagAnchor);
 
+  //create new tag modal
+  const [openCreateTag, setOpenCreateTag] = React.useState(false);
+  const handleOpenCreateTag = () => setOpenCreateTag(true);
+  const handleCloseCreateTag = () => setOpenCreateTag(false);
+  const [newTagDescription, setNewTagDescription] = React.useState('');
+
   const handleSearchTags = (event) => {
-    setTagAnchor(event.currentTarget)
-  }
+    setTagAnchor(event.currentTarget);
+  };
 
   const handleTagsClose = () => {
-    setTagAnchor(null)
-  }
+    setTagAnchor(null);
+  };
 
-  const tagIds = inputValues.tags?.map(tag => tag?.id);
+  const createNewTag = (tagName, tagDescription) => {
+    console.log(
+      'Create new tag{ name:',
+      tagName,
+      'description: ',
+      tagDescription,
+      '}'
+    );
+    dispatch({
+      type: 'CREATE_NEW_TAG',
+      payload: { name: tagName, description: tagDescription },
+    });
+    handleCloseCreateTag();
+  };
 
-  const tagSearchResults =
-    tags?.filter(tag => !(tagIds.includes(tag.id)))
-      .filter(tag => tag.name.toLowerCase().includes(tagSearchTerm.toLowerCase()))
+  const tagIds = inputValues.tags?.map((tag) => tag?.id);
+
+  const tagSearchResults = tags
+    ?.filter((tag) => !tagIds.includes(tag.id))
+    .filter((tag) =>
+      tag.name.toLowerCase().includes(tagSearchTerm.toLowerCase())
+    );
 
   //* -------- THEME search variables and functions ---------
 
@@ -89,19 +144,21 @@ export default function StoryModalGeneral(props) {
   const themeOpen = Boolean(themeAnchor);
 
   const handleSearchThemes = (event) => {
-    setThemeAnchor(event.currentTarget)
-  }
+    setThemeAnchor(event.currentTarget);
+  };
 
   const handleThemesClose = () => {
-    setThemeAnchor(null)
-  }
+    setThemeAnchor(null);
+  };
 
-  const themeIds = inputValues.theme?.map(theme => theme.id);
+  const themeIds = inputValues.theme?.map((theme) => theme.id);
 
   // these will populate upon search
-  const themeSearchResults =
-    themes?.filter(theme => !(themeIds.includes(theme.id)))
-      .filter(theme => theme.name.toLowerCase().includes(themeSearchTerm.toLowerCase()));
+  const themeSearchResults = themes
+    ?.filter((theme) => !themeIds.includes(theme.id))
+    .filter((theme) =>
+      theme.name.toLowerCase().includes(themeSearchTerm.toLowerCase())
+    );
 
   // if contact search term exists, open the menu
   // const handleContactSearch = (e) => {
@@ -110,30 +167,36 @@ export default function StoryModalGeneral(props) {
   //   if (contactSearchTerm) setContactAnchor(e.target)
   // }
 
-
-
   // need ids of contacts on the story. results to populate into map are contacts who are not in the ids list
 
   // const contactResults = contacts.filter(contact => { !contactIds.includes(contact.id) })
 
-
   // on submit: close modal. create mode true => POST data, clear temp story. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    dispatch({ type: 'CLEAR_TEMP_STORY' })
-    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
-    else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } })
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
+    if (createMode)
+      dispatch({
+        type: 'CREATE_NEW_STORY',
+        payload: { ...currentStory, ...inputValues },
+      });
+    else
+      dispatch({
+        type: 'EDIT_STORY',
+        payload: { ...currentStory, ...inputValues },
+      });
     setModalOpen(false);
-  }
+  };
 
   // navigation: update temp story with input values, move to next step
   const navigateAdditional = () => {
     console.log('navigating to next page');
-    dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } });
+    dispatch({
+      type: 'SET_TEMP_STORY',
+      payload: { ...currentStory, ...inputValues },
+    });
     setStep('additional');
-  }
-
-
+  };
 
   return (
     <Box>
@@ -146,9 +209,10 @@ export default function StoryModalGeneral(props) {
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
       {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
       {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
-      <Typography variant='h4'>{createMode ? 'New Story - general' : 'Edit Story - general'}</Typography>
+      <Typography variant="h4">
+        {createMode ? 'New Story - general' : 'Edit Story - general'}
+      </Typography>
       <Grid container spacing={1}>
-
         {/* title */}
         <Grid item xs={3}>
           <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
@@ -157,12 +221,13 @@ export default function StoryModalGeneral(props) {
         </Grid>
         <Grid item xs={9}>
           <TextField
-            size='small'
+            size="small"
             value={inputValues.title}
-            onChange={(e) => setInputValues({ ...inputValues, title: e.target.value })}
+            onChange={(e) =>
+              setInputValues({ ...inputValues, title: e.target.value })
+            }
           />
         </Grid>
-
 
         {/* notes */}
         <Grid item xs={3}>
@@ -172,16 +237,19 @@ export default function StoryModalGeneral(props) {
         </Grid>
         <Grid item xs={9}>
           <TextField
-            size='small'
+            size="small"
             value={inputValues.notes}
-            onChange={(e) => setInputValues({ ...inputValues, notes: e.target.value })}
+            onChange={(e) =>
+              setInputValues({ ...inputValues, notes: e.target.value })
+            }
           />
         </Grid>
 
-
         {/* contact(s) */}
         <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>contacts</Typography>
+          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+            contacts
+          </Typography>
         </Grid>
         <Grid item xs={9}>
           {/* <Autocomplete
@@ -189,65 +257,104 @@ export default function StoryModalGeneral(props) {
           options = {['hello world']}
           /> */}
 
-
           <TextField
-            size='small'
+            size="small"
             value={contactSearchTerm}
             onChange={(e) => setContactSearchTerm(e.target.value)}
           />
-          <Button
-            onClick={handleSearchContacts}
-          >search</Button>
+          <Button onClick={handleSearchContacts}>search</Button>
           <Menu
             anchorEl={contactAnchor}
             open={contactOpen}
             onClose={handleContactsClose}
           >
-            {contactSearchResults?.map(contact => {
+            {contactSearchResults?.map((contact) => {
               return (
                 <ContactDropdownItem
                   key={contact.id}
                   handleClose={handleContactsClose}
                   contact={contact}
                   setInputValues={setInputValues}
-                  inputValues={inputValues} />
-              )
+                  inputValues={inputValues}
+                />
+              );
             })}
           </Menu>
-          <Box sx={{ bgcolor: 'grey.100', padding: .5, display: 'flex', flexWrap: 'wrap' }}>
-            {inputValues.contacts?.sort((a, b) => a.id - b.id).map(contact => {
-              return (
-                <ContactSearchCard
-                  key={contact.id}
-                  contact={contact}
-                  inputValues={inputValues}
-                  setInputValues={setInputValues}
-                />
-              )
-            })}
+          <Box
+            sx={{
+              bgcolor: 'grey.100',
+              padding: 0.5,
+              display: 'flex',
+              flexWrap: 'wrap',
+            }}
+          >
+            {inputValues.contacts
+              ?.sort((a, b) => a.id - b.id)
+              .map((contact) => {
+                return (
+                  <ContactSearchCard
+                    key={contact.id}
+                    contact={contact}
+                    inputValues={inputValues}
+                    setInputValues={setInputValues}
+                  />
+                );
+              })}
           </Box>
-
         </Grid>
 
         {/* tags */}
         <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>tags</Typography>
+          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+            tags
+          </Typography>
         </Grid>
         <Grid item xs={9}>
           <TextField
-            size='small'
+            size="small"
             value={tagSearchTerm}
             onChange={(e) => setTagSearchTerm(e.target.value)}
           />
-          <Button
-            onClick={handleSearchTags}
-          >search</Button>
-          <Menu
-            anchorEl={tagAnchor}
-            open={tagOpen}
-            onClose={handleTagsClose}
+          <Button onClick={handleSearchTags}>search</Button>
+          <Button onClick={handleOpenCreateTag}>
+            <AddCircleOutlineIcon />
+          </Button>
+          <Modal
+            open={openCreateTag}
+            onClose={handleCloseCreateTag}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
           >
-            {tagSearchResults?.map(tag => {
+            <Box sx={smallStyle}>
+              <Typography
+                sx={{ width: 1 }}
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+              >
+                Create Tag of {tagSearchTerm}
+              </Typography>
+              <TextField
+                sx={{ width: 1 }}
+                autoComplete="off"
+                id="outlined-basic"
+                label="Tag Description"
+                variant="outlined"
+                value={newTagDescription}
+                onChange={(event) => setNewTagDescription(event.target.value)}
+              />
+              <Box sx={{ width: 1 }}>
+                <Button onClick={() => handleCloseCreateTag()}>Cancel</Button>
+                <Button
+                  onClick={() => createNewTag(tagSearchTerm, newTagDescription)}
+                >
+                  Create A New Tag
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
+          <Menu anchorEl={tagAnchor} open={tagOpen} onClose={handleTagsClose}>
+            {tagSearchResults?.map((tag) => {
               return (
                 <TagDropdownItem
                   key={tag.id}
@@ -256,15 +363,14 @@ export default function StoryModalGeneral(props) {
                   setInputValues={setInputValues}
                   inputValues={inputValues}
                 />
-              )
+              );
             })}
           </Menu>
-          <Box sx={{ bgcolor: 'grey.100', padding: .5 }}>
-            {inputValues.tags?.map(tag => {
-              if(tag){
-              return (
-                <TagSearchCard key={tag?.id} tag={tag} />
-              )}
+          <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
+            {inputValues.tags?.map((tag) => {
+              if (tag) {
+                return <TagSearchCard key={tag?.id} tag={tag} />;
+              }
             })}
           </Box>
         </Grid>
@@ -276,21 +382,18 @@ export default function StoryModalGeneral(props) {
           </Typography>
         </Grid>
         <Grid item xs={9}>
-
           <TextField
-            size='small'
+            size="small"
             value={themeSearchTerm}
             onChange={(e) => setThemeSearchTerm(e.target.value)}
           />
-          <Button
-            onClick={handleSearchThemes}
-          >search</Button>
+          <Button onClick={handleSearchThemes}>search</Button>
           <Menu
             anchorEl={themeAnchor}
             open={themeOpen}
             onClose={handleThemesClose}
           >
-            {themeSearchResults?.map(theme => {
+            {themeSearchResults?.map((theme) => {
               return (
                 <ThemeDropdownItem
                   key={theme.id}
@@ -299,27 +402,21 @@ export default function StoryModalGeneral(props) {
                   setInputValues={setInputValues}
                   inputValues={inputValues}
                 />
-              )
+              );
             })}
           </Menu>
-          <Box sx={{ bgcolor: 'grey.100', padding: .5 }}>
-            {inputValues.themes?.map(theme => {
-              return (
-                <ThemeSearchCard key={theme.id} theme={theme} />
-              )
+          <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
+            {inputValues.themes?.map((theme) => {
+              return <ThemeSearchCard key={theme.id} theme={theme} />;
             })}
           </Box>
         </Grid>
       </Grid>
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Button
-          onClick={handleSubmit}
-        >save and submit</Button>
-        <Button
-          onClick={navigateAdditional}
-        >additional info</Button>
+        <Button onClick={handleSubmit}>save and submit</Button>
+        <Button onClick={navigateAdditional}>additional info</Button>
       </Box>
     </Box>
-  )
+  );
 }

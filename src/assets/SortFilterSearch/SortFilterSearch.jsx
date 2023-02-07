@@ -5,6 +5,7 @@ import { Box, Typography, TextField, Button, Menu, MenuItem, IconButton, ButtonG
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ReplayIcon from '@mui/icons-material/Replay';
 
 export default function SortFilterSearch(props) {
 
@@ -48,6 +49,14 @@ export default function SortFilterSearch(props) {
     setFilterMethod
   } = props
 
+  const handleReset = () => {
+    setSortMethod(sortOptions[0]);
+    setFilterMethod(filterOptions[0]);
+    setSortDirection('ascending');
+    setSearchTerm('');
+  }
+
+
   const openFilterMenu = (e) => {
     console.log('opening filter menu');
     setFilterAnchor(e.currentTarget)
@@ -64,21 +73,27 @@ export default function SortFilterSearch(props) {
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Box sx={{ mr: 1 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center',}}>
+      <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+        <Button
+          size='small'
+          onClick={handleReset}
+        >
+          <ReplayIcon sx={{ height: 20, width: 20 }} />
+        </Button>
         <ButtonGroup>
           <Button
             onClick={openSortMenu}
             sx={{ textTransform: 'none' }}
-            variant = 'text'
-            size = 'small'
+            variant='text'
+            size='small'
           >{sortMethod}
           </Button>
           <Button
             onClick={toggleSortDirection}
-            variant = 'text'
-            sx = {{paddingLeft: 0}}
-            size = 'small'
+            variant='text'
+            sx={{ paddingLeft: 0 }}
+            size='small'
           >
             {sortDirection === 'ascending' && <ArrowDropDownIcon />}
             {sortDirection === 'descending' && <ArrowDropUpIcon />}
@@ -90,7 +105,7 @@ export default function SortFilterSearch(props) {
           endIcon={<FilterListIcon />}
           onClick={openFilterMenu}
           sx={{ textTransform: 'none' }}
-          size = 'small'
+          size='small'
         >{filterMethod}</Button>
       </Box>
       <Menu

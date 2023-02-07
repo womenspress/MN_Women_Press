@@ -1,7 +1,10 @@
 import React from 'react'
+import { Box } from '@mui/material'
 
 export default function CreateStory({createMode}) {
   return (
-    <div>{createMode? 'Create Story': 'Edit Story'}</div>
+    <Box display='flex' flexDirection='row' justifyContent='space-between'>
+      {createMode? 'Create Story': 'Edit Story'}
+    </Box>
   )
 }

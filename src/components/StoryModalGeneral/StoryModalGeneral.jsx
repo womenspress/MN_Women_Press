@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // components
 import { Box, Typography, Grid, Button, TextField, Menu, Autocomplete } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
 import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
 import ThemeDropdownItem from '../../assets/ThemeDropdownItem/ThemeDropdownItem';
@@ -23,7 +24,8 @@ export default function StoryModalGeneral(props) {
   const {
     setModalOpen,
     setStep,
-    createMode
+    createMode,
+    setCreateMode
   } = props
 
   const dispatch = useDispatch()
@@ -34,7 +36,7 @@ export default function StoryModalGeneral(props) {
   const themes = useSelector(store => store.themes.allThemes)
 
   const [inputValues, setInputValues] = useState(currentStory);
-  console.log('current story:', currentStory)
+  // console.log('current story:', currentStory)
 
   // useEffect(() => {
   //   setInputValues(currentStory)
@@ -126,6 +128,12 @@ export default function StoryModalGeneral(props) {
     setModalOpen(false);
   }
 
+  const handleClose = () => {
+    setModalOpen(false);
+    setCreateMode(true);
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
+  }
+
   // navigation: update temp story with input values, move to next step
   const navigateAdditional = () => {
     console.log('navigating to next page');
@@ -146,7 +154,18 @@ export default function StoryModalGeneral(props) {
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
       {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
       {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
-      <Typography variant='h4'>{createMode ? 'New Story - general' : 'Edit Story - general'}</Typography>
+      <Box display='flex' flexDirection='row' justifyContent='space-between'>
+        <Typography variant='h4'>{createMode ? 'New Story - general' : 'Edit Story - general'}</Typography>
+        <CloseIcon
+          onClick={handleClose}
+          sx={{
+            '&:hover': {
+              cursor: 'pointer',
+              backgroundColor: 'lightgrey'
+            }
+          }}
+        />
+      </Box>
       <Grid container spacing={1}>
 
         {/* title */}
@@ -261,10 +280,11 @@ export default function StoryModalGeneral(props) {
           </Menu>
           <Box sx={{ bgcolor: 'grey.100', padding: .5 }}>
             {inputValues.tags?.map(tag => {
-              if(tag){
-              return (
-                <TagSearchCard key={tag?.id} tag={tag} />
-              )}
+              if (tag) {
+                return (
+                  <TagSearchCard key={tag?.id} tag={tag} />
+                )
+              }
             })}
           </Box>
         </Grid>

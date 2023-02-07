@@ -225,3 +225,7 @@ INSERT INTO "contact_role"
 VALUES
 (2,1), 
 (1, 3); 
+
+ALTER TABLE story
+ADD COLUMN copies_destination VARCHAR
+; 

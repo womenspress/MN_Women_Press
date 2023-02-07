@@ -174,20 +174,13 @@ router.post('/', async (req, res) => {
       return client.query(insertTagText, insertTagValues);
     });
 
-    // // // // 3b. roles
-<<<<<<< HEAD
+    // 3b. roles
+
     const rolesPromises = roles.map((role) => {
       const insertRoleText = `INSERT INTO "contact_role" ("role_id","contact_id") VALUES ($1,$2);`;
       const insertRoleValues = [role, contactId];
       return client.query(insertRoleText, insertRoleValues);
     });
-=======
-    const rolesPromises =roles.map(role => {
-    const insertRoleText = `INSERT INTO "contact_role" ("role_id","contact_id") VALUES ($1,$2);`;
-    const insertRoleValues = [role.id, contactId];
-    return client.query(insertRoleText, insertRoleValues);
-    })
->>>>>>> main
 
     // //* 4. execute promises
     await Promise.all([...tagsPromises, ...rolesPromises]);

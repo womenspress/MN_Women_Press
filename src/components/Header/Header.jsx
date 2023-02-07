@@ -13,7 +13,7 @@ export default function Header(props){
         <div className='header'>
             <div >
                 <Link to="/home">
-                    <h2 className="title">Prime Solo Project</h2>
+                    <h2 className="title">Women's Press of Minnesota Working Title</h2>
                 </Link>
             </div>
             <div>
@@ -27,9 +27,12 @@ export default function Header(props){
 
                 {/* If a user is logged in, show these links */}
                 {user.id && (
-                <>
+                <div className='headerButtons'>
                     <LogOutButton className="navLink" />
-                </>
+                    <Link className="navLink" to="/AdminPage">
+                        Admin
+                    </Link>
+                </div>
                 )}
             </div>
         </div>

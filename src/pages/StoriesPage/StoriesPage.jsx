@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+
+// libraries
 import { useDispatch, useSelector } from 'react-redux';
 
 // components
@@ -23,7 +25,7 @@ export default function StoriesPage() {
   }
     , [])
 
-  const allStories = useSelector(story=>story.stories.allStories)
+  const allStories = useSelector(story => story.stories.allStories)
 
   //! temporary fix. const allStories = useSelector(store => store.stories.allStories);
 
@@ -35,9 +37,9 @@ export default function StoriesPage() {
     setModalOpen(true)
   }
 
-  const handleClose = () =>{
+  const handleClose = () => {
     setModalOpen(false)
-    dispatch({type: 'CLEAR_TEMP_STORY'})
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
 
   return (
@@ -48,9 +50,16 @@ export default function StoriesPage() {
           <ControlPointIcon />
         </IconButton>
       </Box>
-{allStories.length && allStories?.map(story => {
+      {allStories.length && allStories?.map(story => {
         return (
-          <StoryListItem key = {story.title} story={story} createMode={createMode} setCreateMode={setCreateMode} />
+          <StoryListItem
+            key={story.title}
+            story={story}
+            createMode={createMode}
+            setCreateMode={setCreateMode} 
+            setModalOpen = {setModalOpen}
+            
+            />
         )
       })}
 
@@ -58,7 +67,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen = {setModalOpen} createMode={createMode} />
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} />
         </Box>
       </Modal>
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -8,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import ListTags from '../ListTags/ListTags';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Switch } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -45,8 +47,9 @@ export default function CreateNewContactModal(){
     const [tagsArray, setTagsArray] = React.useState([]);
     const [location, setLocation] = React.useState('');
     const [notes, setNotes] = React.useState('')
+    const [rolesArray, setRolesArray] = React.useState([]);
+    
     // page 2
-    const [address, setAddress] = React.useState('');
     const [billingAddress, setBillingAddress] = React.useState('');
     const [mailingAddress, setMailingAddress] = React.useState('');
     const [bio, setBio] = React.useState('');
@@ -59,7 +62,6 @@ export default function CreateNewContactModal(){
     // add contact tag actions
 
     const dbTagsArray = useSelector(store => store.tags.allTags);
-    
     const [searchTag, setSearchTag] = React.useState('');
     const [foundTag, setFoundTag] = React.useState('');
 
@@ -71,17 +73,46 @@ export default function CreateNewContactModal(){
 
         // sets found tag to a tag containing searchTagValue && is the shorted in array.
         setFoundTag(dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tag.toLowerCase())){return dbTag;}}).reduce(function(a, b) {return a.name.length <= b.name.length ? a : b;}))
-        
     }
 
     const createNewTag = (searchTag) => {
         console.log('Create new tag:', searchTag);
         // dispatch({type: "INSERT_TAG", payload: {tag: tag}});
         console.log('Insert new tag into tagsArray');
-        setTagsArray([...tagsArray, {id: -1, name: searchTag, description: ''}]);
+        // setTagsArray([...tagsArray, {id: -1, name: searchTag, description: ''}]);
         
         setSearchTag('')
         // console.log(tagsArray);
+    }
+
+    // Roles
+    let availableRoles = [
+        {id: 1, name: 'Photographer'},
+        {id: 2, name: 'Illustrator'},
+        {id: 3, name: 'Editor'},
+        {id: 4, name: 'Expert'},
+        {id: 5, name: 'Fact checker'},
+        {id: 6, name: "Printer"}
+    ]
+
+    const [check1, setCheck1] = useState(false);
+    const [check2, setCheck2] = useState(false);
+    const [check3, setCheck3] = useState(false);
+    const [check4, setCheck4] = useState(false);
+    const [check5, setCheck5] = useState(false);
+    const [check6, setCheck6] = useState(false);
+
+    const changeRoleStatus = (checked,id) => {
+        console.log(checked);
+        // if true add to array
+        if(checked){
+            setRolesArray([...rolesArray, ...availableRoles.filter(x => x.id === id)])
+            console.log(rolesArray);
+            // setRolesArray(...rolesArray, availableRoles.filter(x => x.id === id))
+        } else {
+            setRolesArray(rolesArray.filter(x => x.id !== id));
+        }
+        console.log('role array',rolesArray);
     }
 
     // create contact modal pages
@@ -89,48 +120,14 @@ export default function CreateNewContactModal(){
 
     // submit new contact
     const submitContact = () => {
-        // construct contact object
-            /* EXAMPLE: 
-            {
-                name: 'Folasade Adesanya',
-                pronouns: 'she/her',
-                expertise: 'da bomb',
-                photo: 'https://xsgames.co/randomusers/assets/images/favicon.png',
-                email: 'email@email.com',
-                phone: '(999) 999-9999',
-                billing_address: '1234 Main St, Minneapolis, MN 55403',
-                mailing_address: '1234 Main St, Minneapolis, MN 55403',
-                location: 'Minneapolis, MN',
-                bio: `Folasade Adesanya is a queer agender writer and scholar living in Minneapolis. Their writing consists of historical fiction, creative nonfiction, essays, and poetry (you can find writing samples here). Folasade is additionally the founder of The Black Syllabus, an organization that promotes literacy and alternative education in the Black community, and is working toward a PhD in Media Studies.`,
-                note: '',
-                linkedIn: '',
-                twitter: '',
-                instagram: '',
-                facebook: '',
-                ...
-                tags: [
-                    {
-                    id: 1,
-                    name: 'books',
-                    description: '',
-                    },
-                    {
-                    id: 2,
-                    name: 'front page',
-                    description: '',
-                    },
-                ],
-            }
-            */
         let newContact = {
             name: name,
             pronouns: pronouns,
             expertise: expertise,
             email: email,
             phone: phone,
-            billingAddress: billingAddress,
-            mailingAddress: mailingAddress,
-            location: location,
+            billing_address: billingAddress,
+            mailing_address: mailingAddress,
             bio: bio,
             note: notes,
             linkedIn: linkedIn,
@@ -138,6 +135,7 @@ export default function CreateNewContactModal(){
             instagram: instagram,
             facebook: facebook,
             tags: tagsArray,
+            roles: rolesArray,
         }
         console.log('Send new contact: ', newContact);
         dispatch({type: 'CREATE_NEW_CONTACT', payload: newContact});
@@ -154,7 +152,58 @@ export default function CreateNewContactModal(){
                         <TextField sx={{width: .70}} id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event)=> setName(event.target.value)} />
                         <TextField sx={{ width: .30}} id="outlined-basic" label="Pronouns" variant="outlined" value={pronouns} onChange={(event)=> setPronouns(event.target.value)}/>
                         <TextField sx={{ width: 1}} id="outlined-basic" label="Email" variant="outlined" value={email} onChange={(event)=> setEmail(event.target.value)}/>
+                        <TextField sx={{ width: 1}} id="outlined-basic" label="Phone" variant="outlined" value={phone} onChange={(event)=> setPhone(event.target.value)}/>
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Expertise" variant="outlined" value={expertise} onChange={(event)=> setExpertise(event.target.value)}/>
+                        <Box sx={{display: 'flex', width: 1}}>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[0].name}
+                                <Switch 
+                                    checked={check1} 
+                                    onClick={() => setCheck1(!check1)}
+                                    onChange={() => changeRoleStatus(!check1, availableRoles[0].id)}
+                                />
+                            </Typography>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[1].name}
+                                <Switch 
+                                    checked={check2} 
+                                    onClick={() => setCheck2(!check2)}
+                                    onChange={() => changeRoleStatus(!check2, availableRoles[1].id)}
+                                />
+                            </Typography>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[2].name}
+                                <Switch 
+                                    checked={check3} 
+                                    onClick={() => setCheck3(!check3)}
+                                    onChange={() => changeRoleStatus(!check3, availableRoles[2].id)}
+                                />
+                            </Typography>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[3].name}
+                                <Switch 
+                                    checked={check4} 
+                                    onClick={() => setCheck4(!check4)}
+                                    onChange={() => changeRoleStatus(!check4, availableRoles[3].id)}
+                                />
+                            </Typography>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[4].name}
+                                <Switch 
+                                    checked={check5} 
+                                    onClick={() => setCheck5(!check5)}
+                                    onChange={() => changeRoleStatus(check5, availableRoles[4].id)}
+                                />
+                            </Typography>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[5].name}
+                                <Switch 
+                                    checked={check6} 
+                                    onClick={() => setCheck6(!check6)}
+                                    onChange={() => changeRoleStatus(check6, availableRoles[5].id)}
+                                />
+                            </Typography>
+                        </Box>
                         <Box sx={{ display: 'flex' }}>
                             <TextField sx={{ width: .75}} id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
                             <Typography id="modal-modal-title" variant="h4" component="h2">

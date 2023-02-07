@@ -33,8 +33,8 @@ export default function StoryModalGeneral(props) {
   const tags = useSelector(store => store.tags.allTags)
   const themes = useSelector(store => store.themes.allThemes)
 
-
   const [inputValues, setInputValues] = useState(currentStory);
+  console.log('current story:', currentStory)
 
   // useEffect(() => {
   //   setInputValues(currentStory)
@@ -96,7 +96,7 @@ export default function StoryModalGeneral(props) {
     setThemeAnchor(null)
   }
 
-  const themeIds = inputValues.themes?.map(theme => theme.id);
+  const themeIds = inputValues.theme?.map(theme => theme.id);
 
   // these will populate upon search
   const themeSearchResults =
@@ -120,7 +120,7 @@ export default function StoryModalGeneral(props) {
   // on submit: close modal. create mode true => POST data, clear temp story. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-      dispatch({ type: 'CLEAR_TEMP_STORY' })
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
     if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
     else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } })
     setModalOpen(false);
@@ -145,8 +145,8 @@ export default function StoryModalGeneral(props) {
       {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
       {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
-      contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))}
-      <Typography variant='h4'>New Story - general</Typography>
+      {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
+      <Typography variant='h4'>{createMode ? 'New Story - general' : 'Edit Story - general'}</Typography>
       <Grid container spacing={1}>
 
         {/* title */}
@@ -217,7 +217,12 @@ export default function StoryModalGeneral(props) {
           <Box sx={{ bgcolor: 'grey.100', padding: .5, display: 'flex', flexWrap: 'wrap' }}>
             {inputValues.contacts?.sort((a, b) => a.id - b.id).map(contact => {
               return (
-                <ContactSearchCard key={contact.id} contact={contact} inputValues={inputValues} setInputValues={setInputValues} />
+                <ContactSearchCard
+                  key={contact.id}
+                  contact={contact}
+                  inputValues={inputValues}
+                  setInputValues={setInputValues}
+                />
               )
             })}
           </Box>

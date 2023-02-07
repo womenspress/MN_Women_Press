@@ -91,6 +91,8 @@ export default function ThemeArchive() {
           sortOptions={sortOptions}
           filterOptions={filterOptions}
           sortMethod={sortMethod}
+          sortDirection = {sortDirection}
+          setSortDirection= {setSortDirection}
           setSortMethod={setSortMethod}
           filterMethod={filterMethod}
           setFilterMethod={setFilterMethod}

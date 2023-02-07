@@ -203,7 +203,7 @@ export default function StoryModalAdditional(props) {
                     sx={{ display: 'inline-block', width: 60 }}
                     type='number'
                     size='small'
-                    placeholder='number of copies'
+                    placeholder='#'
                     value={inputValues.number_of_copies}
                     onChange={handleCopyNumber}
                   />

@@ -126,11 +126,11 @@ router.get('/current/:id', async (req, res) => {
     for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
       //4. For each contact in story, loop over each contactPayment detail
       for (let paymentDetail of contactPaymentDetails) {
-        console.log('RES:', paymentDetail.contact_id);
+        // console.log('RES:', paymentDetail.contact_id);
         // if id matches add info to currentStoryDetails array
 
         if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
-          console.log('IM HERE');
+          // console.log('IM HERE');
           const { story_association, invoice_total, invoice_paid } =
             paymentDetail;
           currentStoryDetails.contacts[i].story_association = story_association;
@@ -198,7 +198,7 @@ router.post('/', async (req, res) => {
   //Query
   const connection = await pool.connect();
   try {
-    console.log('IM HERE');
+    // console.log('IM HERE');
     await connection.query('BEGIN;');
     // console.log('In query');
     let storyResponse = await connection.query(postStoryQuery, [

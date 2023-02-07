@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
 //CAN/WILL THIS BE MANAGED BY PULLING ID FROM STATE?
 router.get('/current/:id', (req, res) => {
   // GET route for contact detail
-  console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id',[req.params.id]);
+  // console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id',[req.params.id]);
   const getCurrentThemeQuery = `SELECT * FROM "theme" WHERE "id" = $1;`
   pool.query(getCurrentThemeQuery,[req.params.id]).then((results) => {
     res.send(results.rows);

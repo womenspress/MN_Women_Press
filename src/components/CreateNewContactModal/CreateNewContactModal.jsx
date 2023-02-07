@@ -26,6 +26,19 @@ const style = {
     padding: 2,
 };
 
+const smallStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 300,
+    height: "fit-content",
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    padding: 2,
+};
+
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Email } from '@mui/icons-material';
 
@@ -66,26 +79,26 @@ export default function CreateNewContactModal(){
 
     const dbTagsArray = useSelector(store => store.tags.allTags);
     const [searchTag, setSearchTag] = React.useState('');
+    const [newTagDescription, setNewTagDescription] = React.useState('');
     const [foundTag, setFoundTag] = React.useState([]);
 
-    const setSearchTagValue = (tag) => {
-        setSearchTag(tag);
+    const setSearchTagValue = (tagName) => {
+        setSearchTag(tagName);
         // search of filter method
         console.log('db array',dbTagsArray);
-        console.log('found tag:', dbTagsArray.filter(function(dbTag) {if(dbTag.name?.includes(tag)){return dbTag;}})[0]);
+        console.log('found tag:', dbTagsArray.filter(function(dbTag) {if(dbTag.name?.includes(tagName)){return dbTag;}})[0]);
 
         // sets found tag to a tag containing searchTagValue && is the shorted in array.
-        setFoundTag([...dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tag.toLowerCase())){return dbTag;}})])
+        setFoundTag([...dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tagName.toLowerCase())){return dbTag;}})])
+        if(tagName === ""){
+            setFoundTag([]);
+        }
     }
 
-    const createNewTag = (searchTag) => {
-        console.log('Create new tag:', searchTag);
-        // dispatch({type: "INSERT_TAG", payload: {tag: tag}});
-        console.log('Insert new tag into tagsArray');
-        // setTagsArray([...tagsArray, {id: -1, name: searchTag, description: ''}]);
-        
-        setSearchTag('')
-        // console.log(tagsArray);
+    const createNewTag = (tagName, tagDescription) => {
+        console.log('Create new tag{ name:', tagName, 'description: ', tagDescription,'}');
+        dispatch({type: "CREATE_NEW_TAG", payload: {name: tagName, description: tagDescription}});
+        handleCloseCreateTag();
     }
 
     const addExistingTag = (tag) => {
@@ -97,6 +110,11 @@ export default function CreateNewContactModal(){
         console.log('Remove existing tag');
         setTagsArray(tagsArray.filter(x => x.id !== tag.id));
     }
+
+    // create new tag modal
+    const [openCreateTag, setOpenCreateTag] = React.useState(false);
+    const handleOpenCreateTag = () => setOpenCreateTag(true);
+    const handleCloseCreateTag = () => setOpenCreateTag(false);
 
     // Roles
     let availableRoles = [
@@ -152,6 +170,7 @@ export default function CreateNewContactModal(){
         }
         console.log('Send new contact: ', newContact);
         dispatch({type: 'CREATE_NEW_CONTACT', payload: newContact});
+        handleClose()
     }
 
     const ModalPages = () => {
@@ -220,7 +239,32 @@ export default function CreateNewContactModal(){
                         <Box sx={{ display: 'flex' }}>
                             <Box sx={{ width: .75}}>
                                 <TextField sx={{ width: .75}}  autoComplete='off' id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
-                                <Box sx={{ padding: 1, position: "relative" }}>
+                                <Button onClick={handleOpenCreateTag}>
+                                    <AddCircleOutlineIcon/>
+                                </Button>
+                                <Modal
+                                    open={openCreateTag}
+                                    onClose={handleCloseCreateTag}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <Box sx={smallStyle}>
+                                        <Typography sx={{ width: 1}} id="modal-modal-title" variant="h6" component="h2">
+                                            Create Tag of {searchTag}
+                                        </Typography>
+                                        <TextField sx={{ width: 1}}  autoComplete='off' id="outlined-basic" label="Tag Description" variant="outlined" value={newTagDescription} onChange={(event)=> setNewTagDescription(event.target.value)} />
+                                        <Box sx={{ width: 1}}>
+                                            <Button onClick={() => handleCloseCreateTag()}>
+                                                Cancel
+                                            </Button>
+                                            <Button onClick={() => createNewTag(searchTag ,newTagDescription)}>
+                                                Create A New Tag
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </Modal>
+
+                                <Box sx={{ padding: 1, display: "flex" }}>
                                     {foundTag?.map(tag => {
                                         return (
                                             <ContactTagSearchCard key={tag.id} tag={tag} addTag={addExistingTag} />
@@ -228,14 +272,14 @@ export default function CreateNewContactModal(){
                                     })}
                                 </Box>
                             </Box>                         
-                            <Button onClick={() => createNewTag(searchTag)}>
-                                <AddCircleOutlineIcon/>
-                            </Button>
                         </Box>
                         <ListTags tags={tagsArray} numOfDisplay={tagsArray.length} removeTag={removeTag}/>
                         <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/>
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>
+                            <Button onClick={() => handleClose()}>
+                                Cancel
+                            </Button>
                             <Button onClick={() => submitContact()}>
                                 save and submit
                             </Button>
@@ -265,6 +309,9 @@ export default function CreateNewContactModal(){
                             </Button>
                             <Button onClick={() => submitContact()}>
                                 save and submit
+                            </Button>
+                            <Button onClick={() => handleClose()}>
+                                Cancel
                             </Button>
                         </Box>
                     </Box>

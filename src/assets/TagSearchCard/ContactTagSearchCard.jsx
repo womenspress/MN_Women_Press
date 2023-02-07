@@ -8,7 +8,7 @@ export default function TagSearchCard({tag, addTag}) {
 
 
     return (
-        <Paper sx={{ padding: .5, display: 'flex', width: 'fit-content' }}>
+        <Paper sx={{ padding: 1, margin: .2, display: 'flex', width: 'fit-content' }}>
             <Typography onClick={() => clickHandleAddTag(tag)}>
                 {tag.name}
             </Typography>

@@ -193,15 +193,16 @@ router.post('/', async (req, res) => {
     number_of_copies,
     contacts,
     tags,
+    copies_destination,
   } = req.body;
-
   let postStoryQuery = `
   INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
   "fact_check_completed", "graphic_image_required", "external_link", "word_count", "rough_draft_deadline",
-  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", "number_of_copies", "photo", "copies_required", "payment_required","payment_completed" )
+  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", 
+  "number_of_copies", "photo", "copies_required", "payment_required","payment_completed", "copies_destination" )
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
   RETURNING "id";`; //Return id of story
 
   //Database Query below
@@ -234,6 +235,7 @@ router.post('/', async (req, res) => {
       copies_required, //21
       payment_required, //22
       payment_completed, //23
+      copies_destination, //24
     ]);
 
     //**Step 2: Set returning id to storyId variable
@@ -328,6 +330,8 @@ router.put('/:id', async (req, res) => {
     copies_required,
     tags,
     contacts,
+    number_of_copies,
+    copies_destination,
   } = req.body;
 
   //Query

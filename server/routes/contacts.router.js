@@ -198,7 +198,7 @@ router.post('/', async (req, res) => {
 //* --------------- PUT - update contact -----------------
 
 router.put('/:id', async (req, res) => {
-  console.log('editing project. req.body: ', req.body);
+  // console.log('editing project. req.body: ', req.body);
   const client = await pool.connect();
 
   try {

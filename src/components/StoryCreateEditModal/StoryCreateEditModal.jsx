@@ -16,7 +16,6 @@ export default function StoryCreateEditModal(props) {
   const {
     setModalOpen,
     createMode,
-
   } = props
 
 
@@ -29,8 +28,6 @@ export default function StoryCreateEditModal(props) {
 
   const [step, setStep] = useState('general')
   const [inputValues, setInputValues] = useState({ title: '', contacts: [], notes: '', tags: [] })
-
-
 
   return (
     <Box>

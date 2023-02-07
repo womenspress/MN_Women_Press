@@ -9,7 +9,7 @@ const router = express.Router();
  * GET ALL stories route
  */
 router.get('/', async (req, res) => {
-  console.log('GETTING ALL STORIES');
+  // console.log('GETTING ALL STORIES');
 
   let getAllQueryText = `
   SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
@@ -60,16 +60,18 @@ router.get('/', async (req, res) => {
             //for each story object, if all comparison data is present process below
             if (story.id && contactForInvoice.id && contactObj && invoice) {
               // console.log(
-              //   'Story:',
+              //   'Story Object Id:',
               //   story.id,
-              //   'Contact:',
+              //   'Invoice info story id:',
+              //   invoice.story_id,
+              //   'Contact Id:',
               //   contactObj.id,
-              //   'InvoiceContact:',
-              //   contactForInvoice.id,
-              //   'STORY_CONTACT:',
-              //   invoice.story_id
+              //   'InvoiceContact Id:',
+              //   contactForInvoice.id
               // );
-              // if id matches add info to currentStoryDetails array
+              // IF contact id of story object and invoice object matches
+              //AND story id of story object and invoice object
+              //add invoice info to currentStoryDetails array
               if (
                 contactObj.id === contactForInvoice.id &&
                 story.id === invoice.story_id

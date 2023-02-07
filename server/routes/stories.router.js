@@ -423,7 +423,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-//POST route for adding a tag to a story, returning id of added tag
+//POST route for adding a tag to tag data table, returning id of added tag
 // written with assumption that tagId was in the params, and name and description was data in body of request.
 router.post('/tag/:id', (req, res) => {
   // CREATE tags for a story

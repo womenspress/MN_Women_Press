@@ -23,6 +23,11 @@ export default function StoryArchive() {
   //* ================= SORT/FILTER/SEARCH STUFF ===============
 
   // initialize all variables
+
+/* 
+  const [options, setOptions]= useState({search: '', sort: 'date', direction: 'ascending', filter: 'all'}) 
+  */
+
   const [searchTerm, setSearchTerm] = useState('');
   const [sortMethod, setSortMethod] = useState('date');
   const [sortDirection, setSortDirection] = useState('ascending')

@@ -298,32 +298,31 @@ router.delete('/:id', (req, res) => {
 });
 
 /**
- * EDIT route template
+ * EDIT route for story by id
  */
 router.put('/:id', async (req, res) => {
-  // EDIT route code here
   let id = req.params.id;
   const {
-    title, //1
-    subtitle, //2
-    article_text, //3
-    article_link, //4
-    notes, //5
-    type, //6
-    copies_sent, //7
-    photo_uploaded, //8
-    fact_check_completed, //9, same as fact_checked, different naming conventions in data
-    graphic_image_required, //10
-    external_link, //11
-    word_count, //12
-    //date_added, // Don't need, auto populating
-    rough_draft_deadline, //14
-    final_draft_deadline, //15
-    publication_date, //16
-    photo_required, //17
-    fact_check_required, //18
-    graphic_image_completed, //19
-    payment_required, // 20
+    title,
+    subtitle,
+    article_text,
+    article_link,
+    notes,
+    type,
+    copies_sent,
+    photo_uploaded,
+    fact_check_completed, // same as fact_checked, different naming conventions in data
+    graphic_image_required,
+    external_link,
+    word_count,
+    //date_added, // Don't need, auto populating with SQL
+    rough_draft_deadline,
+    final_draft_deadline,
+    publication_date,
+    photo_required,
+    fact_check_required,
+    graphic_image_completed,
+    payment_required,
     payment_completed,
     photo,
     copies_required,
@@ -331,58 +330,61 @@ router.put('/:id', async (req, res) => {
     contacts,
   } = req.body;
 
-  let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
-  let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
-  let updateStoryQueryText = `
-  UPDATE "story"
-  SET
-  "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
-  "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
-  "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-  "payment_completed" = $20, "photo" = $21, "copies_required" = $22
-  WHERE "id" = $23;`;
-  let updateStoryData = [
-    title, //1
-    subtitle, //2
-    article_text, //3
-    article_link, //4
-    notes, //5
-    type, //6
-    copies_sent, //7
-    photo_uploaded, //8
-    fact_check_completed, //9, same as fact_checked, different naming conventions in data
-    graphic_image_required, //10
-    external_link, //11
-    word_count, //12
-    //date_added, // don't need, auto populating
-    rough_draft_deadline, //13
-    final_draft_deadline, //14
-    publication_date, //15
-    photo_required, //16
-    fact_check_required, //17
-    graphic_image_completed, //18
-    payment_required, // 19
-    payment_completed, //20
-    photo, // 21
-    copies_required, //22
-    id, //23
-  ];
-
   //Query
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
 
-    //Step 1: delete all current tag and contact associations
+    //**Step 1: delete all current tags and contacts associations
+    let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
+
+    let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
+
     const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
     const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
 
     await Promise.all([deleteTagsPromise, deleteContactsPromise]);
 
-    //Step 2: update Story details
+    //**Step 2: update Story details with a put request
+    let updateStoryQueryText = `
+    UPDATE "story"
+    SET
+    "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
+    "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
+    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
+    "payment_completed" = $20, "photo" = $21, "copies_required" = $22
+    WHERE "id" = $23;`;
+
+    let updateStoryData = [
+      title, //1
+      subtitle, //2
+      article_text, //3
+      article_link, //4
+      notes, //5
+      type, //6
+      copies_sent, //7
+      photo_uploaded, //8
+      fact_check_completed, //9, same as fact_checked, different naming conventions in data
+      graphic_image_required, //10
+      external_link, //11
+      word_count, //12
+      //date_added, // don't need, auto populating with SQL
+      rough_draft_deadline, //13
+      final_draft_deadline, //14
+      publication_date, //15
+      photo_required, //16
+      fact_check_required, //17
+      graphic_image_completed, //18
+      payment_required, // 19
+      payment_completed, //20
+      photo, // 21
+      copies_required, //22
+      id, //23
+    ];
+
     await connection.query(updateStoryQueryText, updateStoryData);
 
-    //Step 3: re-attach tags and contacts
+    //**Step 3: re-attach tags and contacts
     const attachTagsPromise = tags.map((tag) => {
       let attachTagsQuery = `
       INSERT INTO "story_tag"
@@ -421,8 +423,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// require ID for params and req.body to include tags
-//I am uncertain what the id is for in this process. Made with the information in the body of request.
+//POST route for adding a tag to a story, returning id of added tag
+// written with assumption that tagId was in the params, and name and description was data in body of request.
 router.post('/tag/:id', (req, res) => {
   // CREATE tags for a story
   let tagId = req.params.id;
@@ -443,6 +445,7 @@ router.post('/tag/:id', (req, res) => {
 });
 
 //Created with the idea that the tag id was params and story id is in the body of the request
+//Is there a place for this route in our process? Currently embedded in the put route.
 router.delete('/tag/:id', (req, res) => {
   // DELETE a tag from a story
   let tagId = req.params.id;
@@ -472,6 +475,7 @@ router.put('/notes/:id', rejectUnauthenticated, (req, res) => {
     });
 });
 
+//Router put for updating the status of checked box on the DOM
 router.put('/status/:id', rejectUnauthenticated, (req, res) => {
   const statusToChange = req.body.statusToChange;
   const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;

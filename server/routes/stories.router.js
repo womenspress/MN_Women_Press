@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
   pool
     .query(getAllQueryText)
     .then((results) => {
-      console.log(results.rows)
+      // console.log(results.rows)
       for (let story of results.rows) {
         if (story.tags[0]===null) story.tags=[]
         if (story.contacts[0]===null) story.contacts=[]
@@ -58,7 +58,12 @@ router.get('/current/:id', (req, res) => {
   ;`;
   pool
     .query(getDetailsQueryText, [id])
-    .then((response) => res.send(response.rows[0]))
+    .then((response) => {
+      if (response.rows[0].tags[0] === null) response.rows[0].tags[0] = [];
+      if (response.rows[0].contacts[0] === null) response.rows[0].contacts[0] = [];
+      if (response.rows[0].theme[0] === null) {response.rows[0].theme[0] = []};
+      res.send(response.rows[0])
+    })
     .catch((err) => {
       res.sendStatus(200);
       console.log(err);

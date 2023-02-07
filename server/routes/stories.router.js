@@ -48,22 +48,22 @@ router.get('/', async (req, res) => {
             if (story.contacts[0] === null) story.contacts = [];
             if (story.theme[0] === null) story.theme = [];
             if (story.id && contactForInvoice.id && contactObj && invoice) {
-              console.log(
-                'Story:',
-                story.id,
-                'Contact:',
-                contactObj.id,
-                'InvoiceContact:',
-                contactForInvoice.id,
-                'STORY_CONTACT:',
-                invoice.story_id
-              );
+              // console.log(
+              //   'Story:',
+              //   story.id,
+              //   'Contact:',
+              //   contactObj.id,
+              //   'InvoiceContact:',
+              //   contactForInvoice.id,
+              //   'STORY_CONTACT:',
+              //   invoice.story_id
+              // );
               // if id matches add info to currentStoryDetails array
               if (
                 contactObj.id === contactForInvoice.id &&
                 story.id === invoice.story_id
               ) {
-                console.log('IM HERE');
+                // console.log('IM HERE');
                 const { story_association, invoice_amount, invoice_paid } =
                   invoice;
                 contactObj.story_association = story_association;
@@ -131,11 +131,11 @@ router.get('/current/:id', async (req, res) => {
 
         if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
           // console.log('IM HERE');
-          const { story_association, invoice_total, invoice_paid } =
+          const { story_association, invoice_amount, invoice_paid } =
             paymentDetail;
           currentStoryDetails.contacts[i].story_association = story_association;
           currentStoryDetails.contacts[i].invoice_paid = invoice_paid;
-          currentStoryDetails.contacts[i].invoice_total = invoice_total;
+          currentStoryDetails.contacts[i].invoice_amount = invoice_amount;
         }
       }
     }
@@ -186,6 +186,16 @@ router.post('/', async (req, res) => {
     tags,
     copies_destination,
   } = req.body;
+
+  // finds contacts who require payment
+  const contactsRequiringPayment = contacts.filter((contact) => contact?.invoice_amount > 0)
+  let payment_needed;
+  if (contactsRequiringPayment.reduce((sum, contact) => sum + contact.invoice_amount, 0) > 0) {
+    payment_needed = true;
+  } else {
+    payment_needed = false;
+  }
+
   let postStoryQuery = `
   INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
@@ -196,8 +206,10 @@ router.post('/', async (req, res) => {
   ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
   RETURNING "id";`; //Return id of story
 
+
+
   //Query
-  const connection = await pool.connect();
+  const connection = await pool.connect()
   try {
     // console.log('IM HERE');
     await connection.query('BEGIN;');
@@ -227,7 +239,7 @@ router.post('/', async (req, res) => {
       number_of_copies, //19
       photo, //20
       copies_required, //21
-      payment_required, //22
+      payment_needed, //22
       payment_completed, //23
       copies_destination, //24
     ]);
@@ -325,6 +337,14 @@ router.put('/:id', async (req, res) => {
     copies_destination,
   } = req.body;
 
+  const contactsRequiringPayment = contacts.filter((contact) => contact?.invoice_amount > 0)
+  let payment_needed;
+  if (contactsRequiringPayment.reduce((sum, contact) => sum + contact.invoice_amount, 0) > 0) {
+    payment_needed = true;
+  } else {
+    payment_needed = false;
+  }
+
   let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
   let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
   let updateStoryQueryText = `
@@ -355,7 +375,7 @@ router.put('/:id', async (req, res) => {
     photo_required, //16
     fact_check_required, //17
     graphic_image_completed, //18
-    payment_required, // 19
+    payment_needed, // 19
     payment_completed, //20
     photo, // 21
     copies_required, //22

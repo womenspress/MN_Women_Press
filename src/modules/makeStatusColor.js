@@ -29,7 +29,7 @@ export function makeStatusColor(story) {
   // console.log('author?', hasAuthor)
 
   // const paymentRequired = !!story.contacts?.filter(contact=>contact.invoice_amount>0).length
-  console.log('payment required?', paymentRequired)
+  // console.log('payment required?', paymentRequired)
 
   const piecesToTrack = [
     {

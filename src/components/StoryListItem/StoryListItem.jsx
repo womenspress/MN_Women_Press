@@ -88,8 +88,8 @@ export default function StoryListItem(props) {
     setCreateMode(false);
   }
 
-  const handleDelete = () =>{
-    dispatch({type: 'DELETE_STORY', payload: story.id})
+  const handleDelete = () => {
+    dispatch({ type: 'DELETE_STORY', payload: story.id })
     setDeleteOpen(false)
   }
 
@@ -115,7 +115,9 @@ export default function StoryListItem(props) {
       <Collapse in={collapseOpen}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <a href={story.article_link}><Typography>{story.article_link}</Typography></a>
+          pub date: {story.publication_date}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />
             </IconButton>
@@ -152,10 +154,10 @@ export default function StoryListItem(props) {
       >
         <Box
           sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete
-          
-          <Button onClick = {handleDelete}>delete</Button>
-          <Button onClick = {()=>setDeleteOpen(false)}>cancel</Button>
-          </Box>
+
+          <Button onClick={handleDelete}>delete</Button>
+          <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+        </Box>
       </Modal>
     </Paper>
   )

@@ -76,7 +76,6 @@ router.get('/', async (req, res) => {
       }
     }
 
-    connection.query('');
     res.send(response.rows);
   } catch (err) {
     res.sendStatus(500);
@@ -119,13 +118,17 @@ router.get('/current/:id', async (req, res) => {
     //2. get story contact details (invoice total, invoice paid, project_association)
     let storyContactResponse = await connection.query(getContactDetails, [id]);
     let contactPaymentDetails = storyContactResponse.rows;
-
+    if (currentStoryDetails.tags[0] === null) currentStoryDetails.tags = [];
+    if (currentStoryDetails.contacts[0] === null)
+      currentStoryDetails.contacts = [];
+    if (currentStoryDetails.theme[0] === null) currentStoryDetails.theme = [];
     //3. loop over every contact in the story
     for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
       //4. For each contact in story, loop over each contactPayment detail
       for (let paymentDetail of contactPaymentDetails) {
         console.log('RES:', paymentDetail.contact_id);
         // if id matches add info to currentStoryDetails array
+
         if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
           console.log('IM HERE');
           const { story_association, invoice_total, invoice_paid } =
@@ -163,19 +166,18 @@ router.post('/', async (req, res) => {
     type,
     copies_sent,
     photo_uploaded,
-    fact_check_completed /*9, same as fact_checked, different naming conventions in data*/,
+    fact_check_completed /*9, changed from name fact_checked, different naming conventions in original design*/,
     graphic_image_required,
     external_link,
     word_count,
-    //date_added, //does this need to be here?
+    //date_added, //does not need to be here?
     rough_draft_deadline,
     final_draft_deadline,
     publication_date,
-    //photo, // will put in when exisits in DB
-    //copies_required, //will put in when exisits in DB
-    //payment_required,
-    //payment_completed,
-    //external_link,
+    photo,
+    copies_required,
+    payment_required,
+    payment_completed,
     photo_required,
     fact_check_required,
     graphic_image_completed,
@@ -188,9 +190,9 @@ router.post('/', async (req, res) => {
   INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
   "fact_check_completed", "graphic_image_required", "external_link", "word_count", "rough_draft_deadline",
-  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", "number_of_copies")
+  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", "number_of_copies", "photo", "copies_required", "payment_required","payment_completed" )
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
   RETURNING "id";`; //Return id of story
 
   //Query
@@ -219,12 +221,13 @@ router.post('/', async (req, res) => {
       photo_required, //16
       fact_check_required, //17
       graphic_image_completed, //18
-      //payment_required,//will add when exisits in DB
-      //payment_completed, will add when exisits in DB
-      //photo, // will put in when exisits in DB
-      //copies_required, //will put in when exisits in DB
+
       //external_link,
       number_of_copies, //19
+      photo, //20
+      copies_required, //21
+      payment_required, //22
+      payment_completed, //23
     ]);
     // console.log('StoryId:', storyResponse.rows[0].id);
     let storyId = storyResponse.rows[0].id;
@@ -303,17 +306,17 @@ router.put('/:id', async (req, res) => {
     graphic_image_required, //10
     external_link, //11
     word_count, //12
-    date_added, //13
+    //date_added, // Don't need, auto populating
     rough_draft_deadline, //14
     final_draft_deadline, //15
     publication_date, //16
     photo_required, //17
     fact_check_required, //18
     graphic_image_completed, //19
-    //payment_required,//will add when exisits in DB
-    //payment_completed, will add when exisits in DB
-    //photo, // will put in when exisits in DB
-    //copies_required, //will put in when exisits in DB
+    payment_required, // 20
+    payment_completed,
+    photo,
+    copies_required,
     tags,
     contacts,
   } = req.body;
@@ -324,9 +327,10 @@ router.put('/:id', async (req, res) => {
   UPDATE "story"
   SET
   "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
-  "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "date_added"= $13, "rough_draft_deadline"= $14,
-  "final_draft_deadline"= $15, "publication_date"= $16, "photo_required"= $17, "fact_check_required"= $18,"graphic_image_completed"= $19
-  WHERE "id" = $20;`;
+  "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
+  "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
+  "payment_completed" = $20, "photo" = $21, "copies_required" = $22
+  WHERE "id" = $23;`;
   let updateStoryData = [
     title, //1
     subtitle, //2
@@ -340,24 +344,25 @@ router.put('/:id', async (req, res) => {
     graphic_image_required, //10
     external_link, //11
     word_count, //12
-    date_added, //13
-    rough_draft_deadline, //14
-    final_draft_deadline, //15
-    publication_date, //16
-    photo_required, //17
-    fact_check_required, //18
-    graphic_image_completed, //19
-    //payment_required,//will add when exisits in DB
-    //payment_completed, will add when exisits in DB
-    //photo, // will put in when exisits in DB
-    //copies_required, //will put in when exisits in DB
-    id,
+    //date_added, // don't need, auto populating
+    rough_draft_deadline, //13
+    final_draft_deadline, //14
+    publication_date, //15
+    photo_required, //16
+    fact_check_required, //17
+    graphic_image_completed, //18
+    payment_required, // 19
+    payment_completed, //20
+    photo, // 21
+    copies_required, //22
+    id, //23
   ];
 
   //Query
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
+
     //Step 1: delete all current tag and contact associations
     const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
     const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
@@ -380,7 +385,7 @@ router.put('/:id', async (req, res) => {
     const attachContactsPromise = contacts.map((contact) => {
       let attachContactsQuery = `
       INSERT INTO "story_contact" 
-      ("contact_id","story_id","invoice_paid", "invoice_amount", "project_association") 
+      ("contact_id","story_id","invoice_paid", "invoice_amount", "story_association") 
       VALUES 
       ($1, $2, $3, $4, $5);`;
 

@@ -2,11 +2,16 @@ import React from 'react';
 import { useState } from 'react';
 
 // libraries
+
+// libraries
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
 
-// components
-import { Box, Collapse, Button, Typography, Paper, Modal, IconButton, Tooltip } from '@mui/material';
+import {DateTime} from 'luxon';
+
+
+import { Box, Collapse, Button, Grid, Typography, Paper, Modal, IconButton, Tooltip } from '@mui/material';
+
 import StatusDropdown from '../../assets/StatusDropdown/StatusDropdown';
 import CreateStory from '../CreateStory/CreateStory';
 import ColorStatusHover from '../../assets/ColorStatusHover/ColorStatusHover';
@@ -46,6 +51,11 @@ export default function StoryListItem(props) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
+  // builds an array of deadlines on story for later use
+  const deadlines = [ {name: 'Rough Draft', date: DateTime.fromISO(story.rough_draft_deadline)}, {name: 'Final Draft', date: DateTime.fromISO(story.final_draft_deadline)}, {name: 'Publication Date', date: DateTime.fromISO(story.publication_date)}];
+  
+  const upcomingDeadlines = deadlines.filter((date) => date.date > DateTime.now())
+
   // function to determine color of the status circle
   /* 
    */
@@ -83,34 +93,54 @@ export default function StoryListItem(props) {
   }
 
   const handleEditOpen = () => {
-    dispatch({type: 'SET_TEMP_STORY', payload: story})
+    dispatch({ type: 'SET_TEMP_STORY', payload: story })
     setModalOpen(true);
     setCreateMode(false);
+  }
+
+  const handleDelete = () => {
+    dispatch({ type: 'DELETE_STORY', payload: story.id })
+    setDeleteOpen(false)
   }
 
   return (
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title={statusColor.notes}>
-            <Box sx={statusStyle}></Box>
-          </Tooltip>
-          <IconButton
-            size='small'
-            onClick={() => setCollapseOpen(!collapseOpen)}>
-            {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
-          </IconButton>
-          <Typography>{story.title}</Typography>
-        </Box>
-        <Typography>{author.length ? author[0].name : null}</Typography>
-        <StatusDropdown story={story} />
+        <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
+          <Grid item xs={7}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Tooltip title={statusColor.notes}>
+                <Box sx={statusStyle}></Box>
+              </Tooltip>
+              <IconButton
+                size='small'
+                onClick={() => setCollapseOpen(!collapseOpen)}>
+                {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+              </IconButton>
+              <Typography>{story.title}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography>{author.length ? author[0].name : null}</Typography>
+          </Grid>
+          <Grid item xs={2} display='flex' flexDirection='row-reverse'>
+            <StatusDropdown story={story} />
+            </Grid>
+        </Grid>
+
+        
       </Box>
 
       {/* --------------- collapse ---------------- */}
       <Collapse in={collapseOpen}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <a href={story.article_link}><Typography>{story.article_link}</Typography></a>
+          <Box>
+            <Typography>
+              {upcomingDeadlines[0]?.name}: {upcomingDeadlines[0]?.date.toFormat('MMMM dd, yyyy')}
+            </Typography>
+          </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />
             </IconButton>
@@ -146,7 +176,11 @@ export default function StoryListItem(props) {
         onClose={() => setDeleteOpen(false)}
       >
         <Box
-          sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete</Box>
+          sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete
+
+          <Button onClick={handleDelete}>delete</Button>
+          <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+        </Box>
       </Modal>
     </Paper>
   )

@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 // libraries
 
 // components
-import { Box, Typography, Paper, Button, Menu, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, Paper, Button, Menu, MenuItem, Checkbox, FormControlLabel, TextField, InputAdornment } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 // internal
 import { smallCard } from '../../__style'
@@ -19,6 +20,7 @@ export default function ContactSearchCard(props) {
   } = props
 
   const roles = ['author', 'photographer', 'fact-checker']
+  const [paymentRequired, setPaymentRequired] = useState(Boolean(contact.invoice_amount))
 
   const [rolesAnchor, setRolesAnchor] = useState(null)
   const rolesOpen = Boolean(rolesAnchor)
@@ -33,8 +35,9 @@ export default function ContactSearchCard(props) {
 
   return (
     <Paper sx={{ ...smallCard, width: 300, height: 80 }}>
+      {/* {JSON.stringify([contact.name, paymentRequired,])} */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }} >
-        <Typography>{contact.name}</Typography>
+        <Typography>{contact?.name}</Typography>
         <Button
           sx={{ textTransform: 'none', p: 0, color: 'inherit' }}
           endIcon={rolesOpen ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
@@ -64,12 +67,11 @@ export default function ContactSearchCard(props) {
         <FormControlLabel
           sx={{ margin: 0 }}
           control={<Checkbox
-            checked={inputValues.contacts.filter(el => el.id === contact.id).payment_required}
+            checked={paymentRequired}
             onChange={() => {
-              const thisPaymentRequired = inputValues.contacts.filter(el => el.id === contact.id).payment_required;
-              console.log('this payment required: ', thisPaymentRequired);
-              if (thisPaymentRequired) setInputValues({ ...inputValues, contacts: [...inputValues.contacts?.filter(el => el.id !== contact.id), { ...contact, payment_required: false }] });
-              else setInputValues({ ...inputValues, contacts: [...inputValues.contacts?.filter(el => el.id !== contact.id), { ...contact, payment_required: true }] })
+              if (paymentRequired) setInputValues({ ...inputValues, contacts: [...inputValues.contacts.filter(el => el.id !== contact.id), { ...contact, invoice_amount: 0 }] })
+              setPaymentRequired(!paymentRequired)
+
             }
             }
             size='small' />}
@@ -79,6 +81,17 @@ export default function ContactSearchCard(props) {
             payment required?
           </Typography>}
         />
+        {paymentRequired &&
+          <TextField
+            sx={{ width: 90, fontSize: 12 }}
+            type='tel'
+            size='small'
+            value={inputValues.contacts.filter(el => el.id === contact.id)[0].invoice_amount}
+            onChange={(e) => setInputValues({ ...inputValues, contacts: [...inputValues.contacts.filter(el => el.id !== contact.id), { ...contact, invoice_amount: e.target.value }] })}
+            InputProps={{
+              startAdornment: <InputAdornment position='start'>$</InputAdornment>
+            }}
+          />}
       </Box>
     </Paper>
   )

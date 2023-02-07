@@ -33,8 +33,6 @@ function Nav() {
               Stories
             </Link>
 
-
-
             <Link className="navLink" to="/ContactsPage">
               Contacts
             </Link>

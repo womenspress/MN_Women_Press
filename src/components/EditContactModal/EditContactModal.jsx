@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -11,8 +10,12 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Switch } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Email } from '@mui/icons-material';
+import {IconButton} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import ContactTagSearchCard from '../../assets/TagSearchCard/ContactTagSearchCard';
+
+
+
 
 const style = {
     position: 'absolute',
@@ -40,9 +43,7 @@ const smallStyle = {
     padding: 2,
 };
 
-
-
-export default function CreateNewContactModal(){
+export default function EditContactModal({contact}){
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -55,25 +56,25 @@ export default function CreateNewContactModal(){
 
     // contact info values
     // page 1
-    const [name, setName] = React.useState('');
-    const [pronouns, setPronouns] = React.useState('')
-    const [email, setEmail] = React.useState('');
-    const [phone, setPhone] = React.useState('');
-    const [expertise, setExpertise] = React.useState('');
-    const [tagsArray, setTagsArray] = React.useState([]);
-    const [location, setLocation] = React.useState('');
-    const [notes, setNotes] = React.useState('')
-    const [rolesArray, setRolesArray] = React.useState([]);
+    const [name, setName] = React.useState(contact.name);
+    const [pronouns, setPronouns] = React.useState(contact.pronouns)
+    const [email, setEmail] = React.useState(contact.email);
+    const [phone, setPhone] = React.useState(contact.phone);
+    const [expertise, setExpertise] = React.useState(contact.expertise);
+    const [tagsArray, setTagsArray] = React.useState(contact.tags[0] ? contact.tags : []);
+    // const [location, setLocation] = React.useState(contact.location);
+    const [notes, setNotes] = React.useState(contact.note)
+    const [rolesArray, setRolesArray] = React.useState(contact.roles[0] ? contact.roles : []);
     
     // page 2
-    const [billingAddress, setBillingAddress] = React.useState('');
-    const [mailingAddress, setMailingAddress] = React.useState('');
-    const [bio, setBio] = React.useState('');
-    const [website, setWebsite] = React.useState('');
-    const [twitter, setTwitter] = React.useState('');
-    const [facebook, setFacebook] = React.useState('');
-    const [instagram, setInstagram] = React.useState('');
-    const [linkedIn, setLinkedIn] = React.useState('');
+    const [billingAddress, setBillingAddress] = React.useState(contact.billing_address);
+    const [mailingAddress, setMailingAddress] = React.useState(contact.mailing_address);
+    const [bio, setBio] = React.useState(contact.bio);
+    const [website, setWebsite] = React.useState(contact.website);
+    const [twitter, setTwitter] = React.useState(contact.twitter);
+    const [facebook, setFacebook] = React.useState(contact.facebook);
+    const [instagram, setInstagram] = React.useState(contact.instagram);
+    const [linkedIn, setLinkedIn] = React.useState(contact.linkedIn);
 
     // add contact tag actions
 
@@ -126,12 +127,12 @@ export default function CreateNewContactModal(){
         {id: 6, name: "Printer"}
     ]
 
-    const [check1, setCheck1] = useState(false);
-    const [check2, setCheck2] = useState(false);
-    const [check3, setCheck3] = useState(false);
-    const [check4, setCheck4] = useState(false);
-    const [check5, setCheck5] = useState(false);
-    const [check6, setCheck6] = useState(false);
+    const [check1, setCheck1] = React.useState(contact.roles[0]?.name === availableRoles[0].name? true : false);
+    const [check2, setCheck2] = React.useState(contact.roles[1]?.name === availableRoles[1].name? true : false);
+    const [check3, setCheck3] = React.useState(contact.roles[2]?.name === availableRoles[2].name? true : false);
+    const [check4, setCheck4] = React.useState(contact.roles[3]?.name === availableRoles[3].name? true : false);
+    const [check5, setCheck5] = React.useState(contact.roles[4]?.name === availableRoles[4].name? true : false);
+    const [check6, setCheck6] = React.useState(contact.roles[5]?.name === availableRoles[5].name? true : false);
 
     const changeRoleStatus = (checked,id) => {
         console.log(checked);
@@ -141,7 +142,7 @@ export default function CreateNewContactModal(){
             console.log(rolesArray);
             // setRolesArray(...rolesArray, availableRoles.filter(x => x.id === id))
         } else {
-            setRolesArray(rolesArray.filter(x => x.id !== id));
+            setRolesArray(rolesArray.filter(x => x?.id !== id));
         }
         console.log('role array',rolesArray);
     }
@@ -152,6 +153,7 @@ export default function CreateNewContactModal(){
     // submit new contact
     const submitContact = () => {
         let newContact = {
+            id: contact.id,
             name: name,
             pronouns: pronouns,
             expertise: expertise,
@@ -169,7 +171,7 @@ export default function CreateNewContactModal(){
             roles: rolesArray,
         }
         console.log('Send new contact: ', newContact);
-        dispatch({type: 'CREATE_NEW_CONTACT', payload: newContact});
+        dispatch({type: 'EDIT_CONTACT', payload: newContact});
         handleClose()
     }
 
@@ -264,7 +266,7 @@ export default function CreateNewContactModal(){
                                     </Box>
                                 </Modal>
 
-                                <Box sx={{ padding: 1, display: "flex" }}>
+                                <Box sx={{ padding: 1, display: 'flex'}}>
                                     {foundTag?.map(tag => {
                                         return (
                                             <ContactTagSearchCard key={tag.id} tag={tag} addTag={addExistingTag} />
@@ -274,7 +276,7 @@ export default function CreateNewContactModal(){
                             </Box>                         
                         </Box>
                         <ListTags tags={tagsArray} numOfDisplay={tagsArray.length} removeTag={removeTag}/>
-                        <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/>
+                        {/* <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/> */}
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>
                             <Button onClick={() => handleClose()}>
@@ -321,9 +323,9 @@ export default function CreateNewContactModal(){
 
     return (
         <div id='create-contact-module'>
-            <Button onClick={handleOpen}>
-                <AddCircleOutlineIcon/>
-            </Button>
+            <IconButton size='small' onClick={() =>  handleOpen()}>
+                <EditIcon />
+            </IconButton>
             <Modal
                 open={open}
                 onClose={handleClose}

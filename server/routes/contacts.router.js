@@ -170,14 +170,15 @@ router.post('/', async (req, res) => {
     // // //* 3. insert tags and roles info WILL DO THIS NEXT
     const tagsPromises = tags.map((tag) => {
       const insertTagText = `INSERT INTO "tag_contact" ("tag_id","contact_id") VALUES ($1,$2);`;
-      const insertTagValues = [tag, contactId]; //this may have to change based on tag vs tag.id if an array of object
+      const insertTagValues = [tag.id, contactId]; //this may have to change based on tag vs tag.id if an array of object
       return client.query(insertTagText, insertTagValues);
     });
 
-    // // // // 3b. roles
+    // 3b. roles
+
     const rolesPromises = roles.map((role) => {
       const insertRoleText = `INSERT INTO "contact_role" ("role_id","contact_id") VALUES ($1,$2);`;
-      const insertRoleValues = [role, contactId];
+      const insertRoleValues = [role.id, contactId];
       return client.query(insertRoleText, insertRoleValues);
     });
 

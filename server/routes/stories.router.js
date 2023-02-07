@@ -69,7 +69,7 @@ router.get('/', async (req, res) => {
                 'InvoiceContact Id:',
                 contactForInvoice.id
               );
-              // if contact id of story object and invoice object matches
+              // IF contact id of story object and invoice object matches
               //AND story id of story object and invoice object
               //add invoice info to currentStoryDetails array
               if (
@@ -97,12 +97,10 @@ router.get('/', async (req, res) => {
   }
 });
 
+//GET Story by ID
+
 router.get('/current/:id', async (req, res) => {
-  // GET route code here
   let id = req.params.id;
-  // console.log(
-  //   `In stories router GET by id, getting story details by id ${id}. URL: /api/stories/:id`
-  // );
   let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
   FROM "story"
   LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
@@ -122,32 +120,34 @@ router.get('/current/:id', async (req, res) => {
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
-    //1. get all details related to one story
+    //**Step 1: get all details related to the current story
     let response = await connection.query(getDetailsQueryText, [id]);
     // set story response to a variable
     let currentStoryDetails = response.rows[0];
 
-    //2. get story contact details (invoice total, invoice paid, project_association)
+    //**Step 2: get story contact invoice details (invoice total, invoice paid, project_association)
     let storyContactResponse = await connection.query(getContactDetails, [id]);
-    let contactPaymentDetails = storyContactResponse.rows;
+    let contactInvoiceDetails = storyContactResponse.rows;
+
+    //If tags, contacts, or theme array is null, change to empty array
     if (currentStoryDetails.tags[0] === null) currentStoryDetails.tags = [];
     if (currentStoryDetails.contacts[0] === null)
       currentStoryDetails.contacts = [];
     if (currentStoryDetails.theme[0] === null) currentStoryDetails.theme = [];
-    //3. loop over every contact in the story
-    for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
-      //4. For each contact in story, loop over each contactPayment detail
-      for (let paymentDetail of contactPaymentDetails) {
-        console.log('RES:', paymentDetail.contact_id);
-        // if id matches add info to currentStoryDetails array
 
-        if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
-          console.log('IM HERE');
+    //**Step 3: Loop over every contact object in the story contact array
+    for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
+      let storyContact = currentStoryDetails.contacts[i];
+      //**Step 4: For each contact object in story, loop over each contactInvoiceDetail
+      for (let invoiceDetail of contactInvoiceDetails) {
+        // if contact id for story contacts array and contact invoice match, add invoice info to currentStoryDetails array
+
+        if (invoiceDetail.contact_id === storyContact.id) {
           const { story_association, invoice_total, invoice_paid } =
-            paymentDetail;
-          currentStoryDetails.contacts[i].story_association = story_association;
-          currentStoryDetails.contacts[i].invoice_paid = invoice_paid;
-          currentStoryDetails.contacts[i].invoice_total = invoice_total;
+            invoiceDetail;
+          storyContact.story_association = story_association;
+          storyContact.invoice_paid = invoice_paid;
+          storyContact.invoice_total = invoice_total;
         }
       }
     }

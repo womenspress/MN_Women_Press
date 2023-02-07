@@ -61,10 +61,10 @@ export default function EditContactModal({contact}){
     const [email, setEmail] = React.useState(contact.email);
     const [phone, setPhone] = React.useState(contact.phone);
     const [expertise, setExpertise] = React.useState(contact.expertise);
-    const [tagsArray, setTagsArray] = React.useState(contact.tags);
+    const [tagsArray, setTagsArray] = React.useState(contact.tags[0] ? contact.tags : []);
     // const [location, setLocation] = React.useState(contact.location);
     const [notes, setNotes] = React.useState(contact.note)
-    const [rolesArray, setRolesArray] = React.useState(contact.roles);
+    const [rolesArray, setRolesArray] = React.useState(contact.roles[0] ? contact.roles : []);
     
     // page 2
     const [billingAddress, setBillingAddress] = React.useState(contact.billing_address);
@@ -127,12 +127,12 @@ export default function EditContactModal({contact}){
         {id: 6, name: "Printer"}
     ]
 
-    const [check1, setCheck1] = React.useState(false);
-    const [check2, setCheck2] = React.useState(false);
-    const [check3, setCheck3] = React.useState(false);
-    const [check4, setCheck4] = React.useState(false);
-    const [check5, setCheck5] = React.useState(false);
-    const [check6, setCheck6] = React.useState(false);
+    const [check1, setCheck1] = React.useState(contact.roles[0]?.name === availableRoles[0].name? true : false);
+    const [check2, setCheck2] = React.useState(contact.roles[1]?.name === availableRoles[1].name? true : false);
+    const [check3, setCheck3] = React.useState(contact.roles[2]?.name === availableRoles[2].name? true : false);
+    const [check4, setCheck4] = React.useState(contact.roles[3]?.name === availableRoles[3].name? true : false);
+    const [check5, setCheck5] = React.useState(contact.roles[4]?.name === availableRoles[4].name? true : false);
+    const [check6, setCheck6] = React.useState(contact.roles[5]?.name === availableRoles[5].name? true : false);
 
     const changeRoleStatus = (checked,id) => {
         console.log(checked);
@@ -142,7 +142,7 @@ export default function EditContactModal({contact}){
             console.log(rolesArray);
             // setRolesArray(...rolesArray, availableRoles.filter(x => x.id === id))
         } else {
-            setRolesArray(rolesArray.filter(x => x.id !== id));
+            setRolesArray(rolesArray.filter(x => x?.id !== id));
         }
         console.log('role array',rolesArray);
     }

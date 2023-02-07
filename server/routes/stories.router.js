@@ -163,12 +163,9 @@ router.get('/current/:id', async (req, res) => {
 });
 
 /**
- * POST route template
+ * POST story route
  */
 router.post('/', async (req, res) => {
-  // console.log('In post route', req.body);
-  // console.log(req.body.tags);
-  // POST route code here
   const {
     title,
     subtitle,
@@ -182,7 +179,7 @@ router.post('/', async (req, res) => {
     graphic_image_required,
     external_link,
     word_count,
-    //date_added, //does not need to be here?
+    //date_added, //Incoming data that will be handled by default in database.
     rough_draft_deadline,
     final_draft_deadline,
     publication_date,
@@ -207,12 +204,12 @@ router.post('/', async (req, res) => {
   ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
   RETURNING "id";`; //Return id of story
 
-  //Query
+  //Database Query below
   const connection = await pool.connect();
+
   try {
-    console.log('IM HERE');
     await connection.query('BEGIN;');
-    // console.log('In query');
+    // **Step 1: query database to post story information, returning the id of the story created
     let storyResponse = await connection.query(postStoryQuery, [
       title, //1
       subtitle, //2
@@ -222,29 +219,29 @@ router.post('/', async (req, res) => {
       type, //6
       copies_sent, //7
       photo_uploaded, //8
-      fact_check_completed, //9, same as fact_checked, different naming conventions in data
+      fact_check_completed, //9
       graphic_image_required, //10
       external_link, //11
       word_count, //12
-      //date_added, //13
       rough_draft_deadline, //13
       final_draft_deadline, //14
       publication_date, //15
       photo_required, //16
       fact_check_required, //17
       graphic_image_completed, //18
-
-      //external_link,
       number_of_copies, //19
       photo, //20
       copies_required, //21
       payment_required, //22
       payment_completed, //23
     ]);
-    // console.log('StoryId:', storyResponse.rows[0].id);
+
+    //**Step 2: Set returning id to storyId variable
     let storyId = storyResponse.rows[0].id;
 
-    //I am building this under the assumption that all tags and contacts that are attached are already in the tags table.
+    //**Step 3: query database to attach all tags and contacts to the story via joiner tables*/
+
+    //Reducing multiple tags queries down to run in sequence with contacts
     const tagPromises = tags.map((tag) => {
       const attachTagsQuery = `
       INSERT INTO "story_tag"
@@ -253,7 +250,7 @@ router.post('/', async (req, res) => {
       ($1,$2);`;
       return connection.query(attachTagsQuery, [tag.id, storyId]);
     });
-
+    //Reducing multiple contacts queries down to run in sequence with tags
     const contactPromises = contacts.map((contact) => {
       let postContactsQuery = `
       INSERT INTO "story_contact" 
@@ -271,6 +268,7 @@ router.post('/', async (req, res) => {
       ]);
     });
 
+    //Querying database to add contacts and tags to joiner tables
     await Promise.all([...tagPromises, ...contactPromises]);
     await connection.query('COMMIT;');
     res.sendStatus(200);

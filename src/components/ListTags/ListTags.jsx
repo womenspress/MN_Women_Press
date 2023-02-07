@@ -7,6 +7,10 @@ import Button from '@mui/material/Button';
 import Tag from '../Tag/Tag';
 
 export default function ListTags(props) {
+    const removeTag = (tag) => {
+        props.removeTag(tag)
+    }
+
     let defaultTags = [
         { id: 0, name: 'tag0', description: 'first tag' },
         { id: 1, name: 'tag1', description: 'second tag' },
@@ -27,7 +31,7 @@ export default function ListTags(props) {
             {tagsArray[0] != null ?
                 <>{tagsArray.slice(0, numToDisplay).map((tag, index) => {
                     return (
-                        <Tag tag={tag} index={index} key={tag.id} />
+                        <Tag tag={tag} index={index} key={tag.id} removeTag ={removeTag} />
                         // create new component and prop down. also click away
                     )
                 })}

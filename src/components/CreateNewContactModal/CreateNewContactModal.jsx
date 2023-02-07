@@ -11,6 +11,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Switch } from '@mui/material';
 
+import ContactTagSearchCard from '../../assets/TagSearchCard/ContactTagSearchCard';
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -23,6 +25,7 @@ const style = {
     boxShadow: 24,
     padding: 2,
 };
+
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Email } from '@mui/icons-material';
 
@@ -63,7 +66,7 @@ export default function CreateNewContactModal(){
 
     const dbTagsArray = useSelector(store => store.tags.allTags);
     const [searchTag, setSearchTag] = React.useState('');
-    const [foundTag, setFoundTag] = React.useState('');
+    const [foundTag, setFoundTag] = React.useState([]);
 
     const setSearchTagValue = (tag) => {
         setSearchTag(tag);
@@ -72,7 +75,7 @@ export default function CreateNewContactModal(){
         console.log('found tag:', dbTagsArray.filter(function(dbTag) {if(dbTag.name?.includes(tag)){return dbTag;}})[0]);
 
         // sets found tag to a tag containing searchTagValue && is the shorted in array.
-        setFoundTag(dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tag.toLowerCase())){return dbTag;}}).reduce(function(a, b) {return a.name.length <= b.name.length ? a : b;}))
+        setFoundTag([...dbTagsArray.filter(function(dbTag) {if(dbTag.name.toLowerCase().includes(tag.toLowerCase())){return dbTag;}})])
     }
 
     const createNewTag = (searchTag) => {
@@ -83,6 +86,16 @@ export default function CreateNewContactModal(){
         
         setSearchTag('')
         // console.log(tagsArray);
+    }
+
+    const addExistingTag = (tag) => {
+        console.log('Add existing tag');
+        setTagsArray([...tagsArray, tag]);
+    }
+
+    const removeTag = (tag) => {
+        console.log('Remove existing tag');
+        setTagsArray(tagsArray.filter(x => x.id !== tag.id));
     }
 
     // Roles
@@ -205,15 +218,21 @@ export default function CreateNewContactModal(){
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex' }}>
-                            <TextField sx={{ width: .75}} id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
-                            <Typography id="modal-modal-title" variant="h4" component="h2">
-                                {foundTag.name}
-                            </Typography>                            
+                            <Box sx={{ width: .75}}>
+                                <TextField sx={{ width: .75}}  autoComplete='off' id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
+                                <Box sx={{ padding: 1, position: "relative" }}>
+                                    {foundTag?.map(tag => {
+                                        return (
+                                            <ContactTagSearchCard key={tag.id} tag={tag} addTag={addExistingTag} />
+                                        )
+                                    })}
+                                </Box>
+                            </Box>                         
                             <Button onClick={() => createNewTag(searchTag)}>
                                 <AddCircleOutlineIcon/>
                             </Button>
                         </Box>
-                        <ListTags tags={tagsArray} numOfDisplay={tagsArray.length}/>
+                        <ListTags tags={tagsArray} numOfDisplay={tagsArray.length} removeTag={removeTag}/>
                         <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/>
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>

@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
 
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 
 
 import { Box, Collapse, Button, Grid, Typography, Paper, Modal, IconButton, Tooltip } from '@mui/material';
@@ -26,6 +26,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 // internal
 import { largeModal, smallModal } from '../../__style';
 import { makeStatusColor } from '../../modules/makeStatusColor';
+import ListTags from '../ListTags/ListTags';
 
 /* 
 elements to display in the 
@@ -52,8 +53,8 @@ export default function StoryListItem(props) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   // builds an array of deadlines on story for later use
-  const deadlines = [ {name: 'Rough Draft', date: DateTime.fromISO(story.rough_draft_deadline)}, {name: 'Final Draft', date: DateTime.fromISO(story.final_draft_deadline)}, {name: 'Publication Date', date: DateTime.fromISO(story.publication_date)}];
-  
+  const deadlines = [{ name: 'Rough draft', date: DateTime.fromISO(story.rough_draft_deadline) }, { name: 'Final draft', date: DateTime.fromISO(story.final_draft_deadline) }, { name: 'Publication', date: DateTime.fromISO(story.publication_date) }];
+
   const upcomingDeadlines = deadlines.filter((date) => date.date > DateTime.now())
 
   // function to determine color of the status circle
@@ -83,9 +84,9 @@ export default function StoryListItem(props) {
     return 'translate(-5%,5%)'
   }
 
-  const author = [{ name: 'paolo' }]
+  const author = story.contacts?.filter(contact => contact.story_association === 'author');
 
-  //! temporary fix. reinstate this once data is right. fstory.contacts?.filter(contact => contact.role === 'author');
+
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -98,6 +99,13 @@ export default function StoryListItem(props) {
     setCreateMode(false);
   }
 
+  const handleEditClose = () => {
+    setCreateMode(true);
+    console.log('in handleEditClose')
+    dispatch({type: 'CLEAR_TEMP_STORY'});
+    setModalOpen(false);
+  }
+
   const handleDelete = () => {
     dispatch({ type: 'DELETE_STORY', payload: story.id })
     setDeleteOpen(false)
@@ -107,7 +115,7 @@ export default function StoryListItem(props) {
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
-          <Grid item xs={7}>
+          <Grid item xs={5}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Tooltip title={statusColor.notes}>
                 <Box sx={statusStyle}></Box>
@@ -120,15 +128,18 @@ export default function StoryListItem(props) {
               <Typography>{story.title}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={3}>
-            <Typography>{author.length ? author[0].name : null}</Typography>
+          <Grid item xs={2}>
+            <Typography>Theme: {story.theme[0]?.name}</Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Typography>{author.length ? <>Author: {author[0].name}</> : null}</Typography>
           </Grid>
           <Grid item xs={2} display='flex' flexDirection='row-reverse'>
             <StatusDropdown story={story} />
-            </Grid>
+          </Grid>
         </Grid>
 
-        
+
       </Box>
 
       {/* --------------- collapse ---------------- */}
@@ -136,11 +147,14 @@ export default function StoryListItem(props) {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box>
             <Typography>
-              {upcomingDeadlines[0]?.name}: {upcomingDeadlines[0]?.date.toFormat('MMMM dd, yyyy')}
+              {upcomingDeadlines[0] ? <>Upcoming: {upcomingDeadlines[0]?.name}-{upcomingDeadlines[0]?.date.toFormat('MMMM dd, yyyy')}</> : <></>}
             </Typography>
           </Box>
+          <Box>
+            <ListTags numOfDisplay={3} tags={story.tags} />
+          </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-
+            {JSON.stringify(createMode)}
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />
             </IconButton>
@@ -161,14 +175,11 @@ export default function StoryListItem(props) {
       {/* ------------------ modals -------------------- */}
       <Modal
         open={editOpen}
-        onClose={() => {
-          setCreateMode(false)
-          setEditOpen(false)
-        }}
+        onClose={handleEditClose}
       >
         <Box
           sx={largeModal}>
-          <CreateStory createMode={createMode} />
+          <CreateStory createMode={createMode} setCreateMode={setCreateMode} />
         </Box>
       </Modal>
       <Modal

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // components
 import { Box, Typography, Grid, Button, TextField, Checkbox, FormGroup, FormControlLabel } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function StoryModalNeeds(props) {
 
@@ -100,6 +101,12 @@ export default function StoryModalNeeds(props) {
     }
     else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } });
     setModalOpen(false);
+  }
+
+  const handleClose = () => {
+    setModalOpen(false);
+    setCreateMode(true);
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
 
   const navigateAdditional = () => {

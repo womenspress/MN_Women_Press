@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // internal
-import { largeModal } from '../../__style'
+import { largeModal, mainContentBox } from '../../__style'
 import { makeStatusColor } from '../../modules/makeStatusColor';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 import MatchingHeightComponent from '../../components/MatchComponentHeight/MatchComponentHeight';
@@ -37,7 +37,7 @@ export default function StoriesPage() {
   const [copiesRequired, setCopiesRequired] = useState(currentStory.copies_required);
   const [paymentStatus, setPaymentStatus] = useState(currentStory.payment_completed);
   const [paymentRequired, setPaymentRequired] = useState(currentStory.payment_required);
-  const [factChecked, setFactChecked] = useState(currentStory.fact_checked);
+  const [factChecked, setFactChecked] = useState(currentStory.fact_check_completed);
   const [factCheckRequired, setFactCheckRequired] = useState(currentStory.fact_check_required);
 
 
@@ -46,9 +46,10 @@ export default function StoriesPage() {
   const [statusColor, setStatusColor] = useState({});
   const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
 
+  // createMode: will the big story modal be in create or edit mode?
+  const [createMode, setCreateMode] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  useEffect(() => {
-  })
 
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function StoriesPage() {
     setStatusColor(makeStatusColor(currentStory))
     setPhotoStatus(currentStory.photo_uploaded);
     setPhotoRequired(currentStory.photo_required);
-    setFactChecked(currentStory.fact_checked);
+    setFactChecked(currentStory.fact_check_completed);
     setFactCheckRequired(currentStory.fact_check_required);
     setGraphicPhotoStatus(currentStory.graphic_image_completed);
     setGraphicPhotoRequired(currentStory.graphic_image_required);
@@ -97,8 +98,10 @@ export default function StoriesPage() {
   }
 
   const handleClose = () => {
-    setModalOpen(false)
-    dispatch({ type: 'GET_CURRENT_STORY', payload: id })
+    setModalOpen(false);
+    setCreateMode(true);
+    dispatch({ type: 'GET_CURRENT_STORY', payload: id });
+    dispatch({ type: 'CLEAR_TEMP_STORY'});
   }
 
   //------- handle the check/uncheck of todo list items --------------//
@@ -109,8 +112,8 @@ export default function StoriesPage() {
     switch (event.target.id) {
       case 'copies sent':
         statusToChange = 'copies_sent';
-        statusValue = !copiesSentStatus;
-        setCopiesSentStatus(!copiesSentStatus);
+        statusValue = !copiesStatus;
+        setCopiesStatus(!copiesStatus);
         break;
       case 'upload photo':
         statusToChange = 'photo_uploaded';
@@ -118,7 +121,7 @@ export default function StoriesPage() {
         setPhotoStatus(!photoStatus)
         break;
       case 'fact-check story':
-        statusToChange = 'fact_checked';
+        statusToChange = 'fact_check_completed';
         statusValue = !factChecked;
         setFactChecked(!factChecked)
         break;
@@ -142,9 +145,7 @@ export default function StoriesPage() {
     alignItems: 'center',
   }
 
-  // createMode: will the big story modal be in create or edit mode?
-  const [createMode, setCreateMode] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
+  
 
 
   return (
@@ -153,7 +154,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={false} />
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={false} setCreateMode={setCreateMode}/>
         </Box>
       </Modal>
 
@@ -177,7 +178,7 @@ export default function StoriesPage() {
 
 
         {/* This grid row contains 2 sections, 1 for general info and 1 that holds to-do + comments */}
-        <Grid item xs={6} id='storiesGeneralSection' sx={{ backgroundColor: 'lightgrey', mr: 2}}>
+        <Grid item xs={6} id='storiesGeneralSection' sx={mainContentBox}>
           <Grid container space={1} >
             <Grid item xs={11}>
               <Typography variant='h6'>General Info</Typography>
@@ -341,7 +342,7 @@ export default function StoriesPage() {
         
         {/* End general info section, next is the section that holds to-do and comments */}
         <Grid item xs={5}>
-          <Grid container spacing={1} sx={{ backgroundColor: 'lightgrey', mt: "1px" }}>
+          <Grid container spacing={1} sx={mainContentBox}>
             {/* Below is the to-do section */}
             <Grid item xs={12}>
               <Typography variant='h6'>To-Do Items</Typography>
@@ -351,7 +352,7 @@ export default function StoriesPage() {
 
             {/* using local state for a conditional before rendering the checkboxes, otherwise they 
             will have an issue with going from uncontrolled to controlled since redux is async*/}
-            {photoRequired || graphicPhotoRequired || factCheckRequired || copiesRequired ?
+            {photoRequired || graphicPhotoRequired || factCheckRequired || copiesRequired || paymentRequired ?
               <>
                 <Grid item xs={11}>
                   {/* photo required? */}
@@ -416,7 +417,7 @@ export default function StoriesPage() {
                     <FormGroup>
                       <FormControlLabel
                         label={'Copies sent, required: ' + (currentStory.number_of_copies !== null ? currentStory.number_of_copies : '')}
-                        control={<Checkbox id={'make payments'} checked={copiesStatus} />}
+                        control={<Checkbox id={'copies sent'} checked={copiesStatus} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -457,21 +458,7 @@ export default function StoriesPage() {
                   sx={{ backgroundColor: 'white' }}
                 />
                 :
-                <TextField
-                  id='notesEditField'
-                  variant='filled'
-                  multiline
-                  fullWidth
-                  disabled
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  sx={{
-                    backgroundColor: 'white',
-                    "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "black",
-                    },
-                  }}
-                />
+                <Typography component={TextField} value={notes} variant='filled' multiline fullWidth>{notes}</Typography>
               }
             </Grid>
           </Grid>

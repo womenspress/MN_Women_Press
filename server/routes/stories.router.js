@@ -6,11 +6,10 @@ const pool = require('../modules/pool');
 const router = express.Router();
 
 /**
- * GET route template
+ * GET ALL stories route
  */
 router.get('/', async (req, res) => {
-  // GET route code here
-  console.log('In stories router GET, getting all stories. URL: /api/stories');
+  console.log('GETTING ALL STORIES');
 
   let getAllQueryText = `
   SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
@@ -24,46 +23,59 @@ router.get('/', async (req, res) => {
   GROUP BY "story"."id"
   ORDER BY "story"."publication_date" ASC
   ;`;
-  const connection = await pool.connect();
 
+  // Open Connection to the database
+  const connection = await pool.connect();
   try {
+    //Step 1: Query the database for info from all stoires, including relational tables: contact, theme, and tag
     let response = await connection.query(getAllQueryText);
+    //Setting incoming data to variable 'storiesArray'
     let storiesArray = response.rows;
 
     let getContactDetails = `
-    SELECT "contact"."id" , json_agg( "story_contact") AS "invoice"
-    FROM "contact"
-    LEFT JOIN "story_contact" ON "story_contact"."contact_id" = "contact"."id"
-    GROUP BY "contact"."id";`;
-    let contactQueryResponse = await connection.query(getContactDetails);
-    let contactResponse = contactQueryResponse.rows;
+      SELECT "contact"."id" , json_agg( "story_contact") AS "invoice"
+      FROM "contact"
+      LEFT JOIN "story_contact" ON "story_contact"."contact_id" = "contact"."id"
+      GROUP BY "contact"."id";`;
 
+    //Step 2: Query database for contact details in the story_contact table in database
+    let contactQueryResponse = await connection.query(getContactDetails);
+    //set response to variable contactResponse
+    let contactsInvoiceResponse = contactQueryResponse.rows;
+
+    //Step 3.a: Loop over every story object in 'storiesArray
     for (let i = 0; i < storiesArray.length; i++) {
       const story = storiesArray[i];
+      //for each story object, if tags, contacts, or theme array is null change to empty
+      if (story.tags[0] === null) story.tags = [];
+      if (story.contacts[0] === null) story.contacts = [];
+      if (story.theme[0] === null) story.theme = [];
+      //Step 3.b: In each story object, loop over every contact object in contacts array
       for (let j = 0; j < story.contacts.length; j++) {
         const contactObj = story.contacts[j];
-        for (let contactForInvoice of contactResponse) {
+        //Step 3.c: Loop over every contact object in the contactsInvoiceResponse array (where the story_contact table info for each contact is)
+        for (let contactForInvoice of contactsInvoiceResponse) {
+          //Step 3.d: Loop over every invoice information object in invoice array
           for (invoice of contactForInvoice.invoice) {
-            if (story.tags[0] === null) story.tags = [];
-            if (story.contacts[0] === null) story.contacts = [];
-            if (story.theme[0] === null) story.theme = [];
+            //for each story object, if all comparison data is present process below
             if (story.id && contactForInvoice.id && contactObj && invoice) {
               console.log(
-                'Story:',
+                'Story Object Id:',
                 story.id,
-                'Contact:',
+                'Invoice info story id:',
+                invoice.story_id,
+                'Contact Id:',
                 contactObj.id,
-                'InvoiceContact:',
-                contactForInvoice.id,
-                'STORY_CONTACT:',
-                invoice.story_id
+                'InvoiceContact Id:',
+                contactForInvoice.id
               );
-              // if id matches add info to currentStoryDetails array
+              // IF contact id of story object and invoice object matches
+              //AND story id of story object and invoice object
+              //add invoice info to currentStoryDetails array
               if (
                 contactObj.id === contactForInvoice.id &&
                 story.id === invoice.story_id
               ) {
-                console.log('IM HERE');
                 const { story_association, invoice_amount, invoice_paid } =
                   invoice;
                 contactObj.story_association = story_association;
@@ -75,7 +87,7 @@ router.get('/', async (req, res) => {
         }
       }
     }
-
+    //Step 4: Send the modified array of data
     res.send(response.rows);
   } catch (err) {
     res.sendStatus(500);
@@ -85,12 +97,10 @@ router.get('/', async (req, res) => {
   }
 });
 
+//GET Story by ID
+
 router.get('/current/:id', async (req, res) => {
-  // GET route code here
   let id = req.params.id;
-  // console.log(
-  //   `In stories router GET by id, getting story details by id ${id}. URL: /api/stories/:id`
-  // );
   let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
   FROM "story"
   LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
@@ -110,32 +120,34 @@ router.get('/current/:id', async (req, res) => {
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
-    //1. get all details related to one story
+    //**Step 1: get all details related to the current story
     let response = await connection.query(getDetailsQueryText, [id]);
     // set story response to a variable
     let currentStoryDetails = response.rows[0];
 
-    //2. get story contact details (invoice total, invoice paid, project_association)
+    //**Step 2: get story contact invoice details (invoice total, invoice paid, project_association)
     let storyContactResponse = await connection.query(getContactDetails, [id]);
-    let contactPaymentDetails = storyContactResponse.rows;
+    let contactInvoiceDetails = storyContactResponse.rows;
+
+    //If tags, contacts, or theme array is null, change to empty array
     if (currentStoryDetails.tags[0] === null) currentStoryDetails.tags = [];
     if (currentStoryDetails.contacts[0] === null)
       currentStoryDetails.contacts = [];
     if (currentStoryDetails.theme[0] === null) currentStoryDetails.theme = [];
-    //3. loop over every contact in the story
-    for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
-      //4. For each contact in story, loop over each contactPayment detail
-      for (let paymentDetail of contactPaymentDetails) {
-        // console.log('RES:', paymentDetail.contact_id);
-        // if id matches add info to currentStoryDetails array
 
-        if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
-          // console.log('IM HERE');
+    //**Step 3: Loop over every contact object in the story contact array
+    for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
+      let storyContact = currentStoryDetails.contacts[i];
+      //**Step 4: For each contact object in story, loop over each contactInvoiceDetail
+      for (let invoiceDetail of contactInvoiceDetails) {
+        // if contact id for story contacts array and contact invoice match, add invoice info to currentStoryDetails array
+
+        if (invoiceDetail.contact_id === storyContact.id) {
           const { story_association, invoice_total, invoice_paid } =
-            paymentDetail;
-          currentStoryDetails.contacts[i].story_association = story_association;
-          currentStoryDetails.contacts[i].invoice_paid = invoice_paid;
-          currentStoryDetails.contacts[i].invoice_total = invoice_total;
+            invoiceDetail;
+          storyContact.story_association = story_association;
+          storyContact.invoice_paid = invoice_paid;
+          storyContact.invoice_total = invoice_total;
         }
       }
     }
@@ -151,12 +163,9 @@ router.get('/current/:id', async (req, res) => {
 });
 
 /**
- * POST route template
+ * POST story route
  */
 router.post('/', async (req, res) => {
-  // console.log('In post route', req.body);
-  // console.log(req.body.tags);
-  // POST route code here
   const {
     title,
     subtitle,
@@ -170,7 +179,7 @@ router.post('/', async (req, res) => {
     graphic_image_required,
     external_link,
     word_count,
-    //date_added, //does not need to be here?
+    //date_added, //Incoming data that will be handled by default in database.
     rough_draft_deadline,
     final_draft_deadline,
     publication_date,
@@ -196,12 +205,12 @@ router.post('/', async (req, res) => {
   ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
   RETURNING "id";`; //Return id of story
 
-  //Query
+  //Database Query below
   const connection = await pool.connect();
+
   try {
-    // console.log('IM HERE');
     await connection.query('BEGIN;');
-    // console.log('In query');
+    // **Step 1: query database to post story information, returning the id of the story created
     let storyResponse = await connection.query(postStoryQuery, [
       title, //1
       subtitle, //2
@@ -211,19 +220,16 @@ router.post('/', async (req, res) => {
       type, //6
       copies_sent, //7
       photo_uploaded, //8
-      fact_check_completed, //9, same as fact_checked, different naming conventions in data
+      fact_check_completed, //9
       graphic_image_required, //10
       external_link, //11
       word_count, //12
-      //date_added, //13
       rough_draft_deadline, //13
       final_draft_deadline, //14
       publication_date, //15
       photo_required, //16
       fact_check_required, //17
       graphic_image_completed, //18
-
-      //external_link,
       number_of_copies, //19
       photo, //20
       copies_required, //21
@@ -231,10 +237,13 @@ router.post('/', async (req, res) => {
       payment_completed, //23
       copies_destination, //24
     ]);
-    // console.log('StoryId:', storyResponse.rows[0].id);
+
+    //**Step 2: Set returning id to storyId variable
     let storyId = storyResponse.rows[0].id;
 
-    //I am building this under the assumption that all tags and contacts that are attached are already in the tags table.
+    //**Step 3: query database to attach all tags and contacts to the story via joiner tables*/
+
+    //Reducing multiple tags queries down to run in sequence with contacts
     const tagPromises = tags.map((tag) => {
       const attachTagsQuery = `
       INSERT INTO "story_tag"
@@ -243,7 +252,7 @@ router.post('/', async (req, res) => {
       ($1,$2);`;
       return connection.query(attachTagsQuery, [tag.id, storyId]);
     });
-
+    //Reducing multiple contacts queries down to run in sequence with tags
     const contactPromises = contacts.map((contact) => {
       let postContactsQuery = `
       INSERT INTO "story_contact" 
@@ -261,6 +270,7 @@ router.post('/', async (req, res) => {
       ]);
     });
 
+    //Querying database to add contacts and tags to joiner tables
     await Promise.all([...tagPromises, ...contactPromises]);
     await connection.query('COMMIT;');
     res.sendStatus(200);
@@ -290,32 +300,31 @@ router.delete('/:id', (req, res) => {
 });
 
 /**
- * EDIT route template
+ * EDIT route for story by id
  */
 router.put('/:id', async (req, res) => {
-  // EDIT route code here
   let id = req.params.id;
   const {
-    title, //1
-    subtitle, //2
-    article_text, //3
-    article_link, //4
-    notes, //5
-    type, //6
-    copies_sent, //7
-    photo_uploaded, //8
-    fact_check_completed, //9, same as fact_checked, different naming conventions in data
-    graphic_image_required, //10
-    external_link, //11
-    word_count, //12
-    //date_added, // Don't need, auto populating
-    rough_draft_deadline, //14
-    final_draft_deadline, //15
-    publication_date, //16
-    photo_required, //17
-    fact_check_required, //18
-    graphic_image_completed, //19
-    payment_required, // 20
+    title,
+    subtitle,
+    article_text,
+    article_link,
+    notes,
+    type,
+    copies_sent,
+    photo_uploaded,
+    fact_check_completed, // same as fact_checked, different naming conventions in data
+    graphic_image_required,
+    external_link,
+    word_count,
+    //date_added, // Don't need, auto populating with SQL
+    rough_draft_deadline,
+    final_draft_deadline,
+    publication_date,
+    photo_required,
+    fact_check_required,
+    graphic_image_completed,
+    payment_required,
     payment_completed,
     photo,
     copies_required,
@@ -325,60 +334,61 @@ router.put('/:id', async (req, res) => {
     copies_destination,
   } = req.body;
 
-  let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
-  let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
-  let updateStoryQueryText = `
-  UPDATE "story"
-  SET
-  "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
-  "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
-  "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-  "payment_completed" = $20, "photo" = $21, "copies_required" = $22, "number_of_copies" = $23, "copies_destination" = $24
-  WHERE "id" = $25;`;
-  let updateStoryData = [
-    title, //1
-    subtitle, //2
-    article_text, //3
-    article_link, //4
-    notes, //5
-    type, //6
-    copies_sent, //7
-    photo_uploaded, //8
-    fact_check_completed, //9, same as fact_checked, different naming conventions in data
-    graphic_image_required, //10
-    external_link, //11
-    word_count, //12
-    //date_added, // don't need, auto populating
-    rough_draft_deadline, //13
-    final_draft_deadline, //14
-    publication_date, //15
-    photo_required, //16
-    fact_check_required, //17
-    graphic_image_completed, //18
-    payment_required, // 19
-    payment_completed, //20
-    photo, // 21
-    copies_required, //22
-    number_of_copies, //23
-    copies_destination, //24
-    id, //25
-  ];
-
   //Query
   const connection = await pool.connect();
   try {
     await connection.query('BEGIN;');
 
-    //Step 1: delete all current tag and contact associations
+    //**Step 1: delete all current tags and contacts associations
+    let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
+
+    let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
+
     const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
     const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
 
     await Promise.all([deleteTagsPromise, deleteContactsPromise]);
 
-    //Step 2: update Story details
+    //**Step 2: update Story details with a put request
+    let updateStoryQueryText = `
+    UPDATE "story"
+    SET
+    "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
+    "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
+    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
+    "payment_completed" = $20, "photo" = $21, "copies_required" = $22
+    WHERE "id" = $23;`;
+
+    let updateStoryData = [
+      title, //1
+      subtitle, //2
+      article_text, //3
+      article_link, //4
+      notes, //5
+      type, //6
+      copies_sent, //7
+      photo_uploaded, //8
+      fact_check_completed, //9, same as fact_checked, different naming conventions in data
+      graphic_image_required, //10
+      external_link, //11
+      word_count, //12
+      //date_added, // don't need, auto populating with SQL
+      rough_draft_deadline, //13
+      final_draft_deadline, //14
+      publication_date, //15
+      photo_required, //16
+      fact_check_required, //17
+      graphic_image_completed, //18
+      payment_required, // 19
+      payment_completed, //20
+      photo, // 21
+      copies_required, //22
+      id, //23
+    ];
+
     await connection.query(updateStoryQueryText, updateStoryData);
 
-    //Step 3: re-attach tags and contacts
+    //**Step 3: re-attach tags and contacts
     const attachTagsPromise = tags.map((tag) => {
       let attachTagsQuery = `
       INSERT INTO "story_tag"
@@ -417,8 +427,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// require ID for params and req.body to include tags
-//I am uncertain what the id is for in this process. Made with the information in the body of request.
+//POST route for adding a tag to tag data table, returning id of added tag
+// written with assumption that tagId was in the params, and name and description was data in body of request.
 router.post('/tag/:id', (req, res) => {
   // CREATE tags for a story
   let tagId = req.params.id;
@@ -439,6 +449,7 @@ router.post('/tag/:id', (req, res) => {
 });
 
 //Created with the idea that the tag id was params and story id is in the body of the request
+//Is there a place for this route in our process? Currently embedded in the put route.
 router.delete('/tag/:id', (req, res) => {
   // DELETE a tag from a story
   let tagId = req.params.id;
@@ -468,6 +479,7 @@ router.put('/notes/:id', rejectUnauthenticated, (req, res) => {
     });
 });
 
+//Router put for updating the status of checked box on the DOM
 router.put('/status/:id', rejectUnauthenticated, (req, res) => {
   const statusToChange = req.body.statusToChange;
   const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
@@ -483,24 +495,5 @@ router.put('/status/:id', rejectUnauthenticated, (req, res) => {
       res.sendStatus(500);
     });
 });
-
-// search is happening on front end, looking at store items
-// router.get('/search', (req, res) => {
-//   // GET route code here
-//   console.log(
-//     'In stories router GET search, getting all stories that match search. URL: /api/stories/search'
-//   );
-//   res.sendStatus(200);
-// });
-
-// Commenting this out because current plan is to handle archive story separation on the front-end
-
-// router.get('/archive', (req, res) => {
-//   // GET route code here
-//   console.log(
-//     'In stories router GET archive, getting all archive stories. URL: /api/stories/archive'
-//   );
-//   res.sendStatus(200);
-// });
 
 module.exports = router;

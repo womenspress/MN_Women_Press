@@ -19,11 +19,11 @@ const parentContact = {
   instagram: '',
   facebook: '',
   date_added: '',
-  stories: [{},{},{}],
-  themes: [{},{}],
-  tags: [{},{}],
-  roles: [{},{}]
-}
+  stories: [{}, {}, {}],
+  //themes: [{},{}],
+  tags: [{}, {}],
+  roles: [{}, {}],
+};
 
 //* contact as child (in the body of a different object)
 
@@ -44,4 +44,4 @@ const childContact = {
   instagram: '',
   facebook: '',
   date_added: '',
-}
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, Modal, styled, TextField, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -12,10 +12,13 @@ import { useSelector } from 'react-redux';
 import { largeModal } from '../../__style'
 import { makeStatusColor } from '../../modules/makeStatusColor';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
+import MatchingHeightComponent from '../../components/MatchComponentHeight/MatchComponentHeight';
+
 
 
 export default function StoriesPage() {
   // hooks
+  const ref = useRef(null);
   const dispatch = useDispatch();
   const { id } = useParams();
 
@@ -75,11 +78,6 @@ export default function StoriesPage() {
     borderRadius: '50%'
   }
 
-  //---------TODO----------//
-  // add edit modal to handle story edit function
-  const handleStoryEdit = () => {
-    console.log('in handleStoryEdit')
-  }
 
   const handleCommentEdit = () => {
     //updates story notes if there are changes
@@ -89,6 +87,14 @@ export default function StoriesPage() {
     setEditNotesMode(!editNotesMode);
   };
 
+  const handleClickPlus = () => {
+    setModalOpen(true);
+  }
+
+  const handleClose = () => {
+    setModalOpen(false)
+    dispatch({ type: 'GET_CURRENT_STORY', payload: id })
+  }
 
   //------- handle the check/uncheck of todo list items --------------//
   const handleCheck = (event) => {
@@ -135,14 +141,6 @@ export default function StoriesPage() {
   const [createMode, setCreateMode] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleClickPlus = () => {
-    setModalOpen(true);
-  }
-
-  const handleClose = () => {
-    setModalOpen(false)
-    dispatch({ type: 'CLEAR_TEMP_STORY' })
-  }
 
   return (
     <Box>
@@ -175,7 +173,7 @@ export default function StoriesPage() {
 
         {/* This grid row contains 2 sections, 1 for general info and 1 that holds to-do + comments */}
         <Grid item xs={6} sx={{ backgroundColor: 'lightgrey', mr: 2 }}>
-          <Grid container space={1}>
+          <Grid container space={1} >
             <Grid item xs={11}>
               <Typography variant='h6'>General Info</Typography>
             </Grid>
@@ -335,7 +333,7 @@ export default function StoriesPage() {
         </Grid>
 
 
-
+        
         {/* End general info section, next is the section that holds to-do and comments */}
         <Grid item xs={5}>
           <Grid container spacing={1} sx={{ backgroundColor: 'lightgrey', mt: "1px" }}>
@@ -398,7 +396,7 @@ export default function StoriesPage() {
                     <FormGroup>
                       <FormControlLabel
                         label={'Payment(s) Sent'}
-                        control={<Checkbox id={'make payments'} checked={paymentRequired} />}
+                        control={<Checkbox id={'make payments'} checked={paymentStatus} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -421,21 +419,7 @@ export default function StoriesPage() {
                     null
                   }
                 </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* payment sent? */}
-                  {currentStory.payment_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Payment Sent'}
-                        control={<Checkbox id={'make payments'} checked={paymentStatus} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
+                
                 {/* end to-do items */}
               </>
               :

@@ -49,10 +49,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <div>
-          <Header user={user}/>
-            <div id='main'>
-              {user.access ? <Nav /> : <></>}
-              <div id='pages'>
+          <Header user={user} />
+          <div id='main'>
+            {user.access ? <Nav /> : <></>}
+            <div id='pages'>
               <Switch>
                 {/* Visiting localhost:3000 will redirect to localhost:3000/home */}
                 <Redirect exact from="/" to="/home" />
@@ -189,8 +189,8 @@ function App() {
                   <h1>404</h1>
                 </Route>
               </Switch>
-              </div>
             </div>
+          </div>
           <Footer />
         </div>
       </Router>

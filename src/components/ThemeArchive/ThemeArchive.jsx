@@ -7,10 +7,18 @@ import { DateTime } from 'luxon';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 
 // components
-import { Box, Typography } from '@mui/material';
-import ThemeCard from '../ThemeCard/ThemeCard'
+import { Box, Typography, Grid } from '@mui/material';
+import ThemeCard from '../ThemeCard/ThemeCard';
+import ArchiveThemeCard from '../../assets/ArchiveThemeCard/ArchiveThemeCard';
+import StoryListItem from '../StoryListItem/StoryListItem';
+import ContactListItem from '../ThemeContactListItem/ThemeContactListItem';
 
 export default function ThemeArchive() {
+
+
+  const [selectedTheme, setSelectedTheme] = useState(null);
+
+
 
   const [searchTerm, setSearchTerm] = useState('');
   const [sortMethod, setSortMethod] = useState('date');
@@ -30,7 +38,7 @@ export default function ThemeArchive() {
         break;
       // recent sets to the past three months
       case 'recent':
-        return arr.filter(theme => DateTime.fromObject({month: theme.month, year: theme.year}) > DateTime.now().minus({ months: 3 }))
+        return arr.filter(theme => DateTime.fromObject({ month: theme.month, year: theme.year }) > DateTime.now().minus({ months: 3 }))
         break;
       default:
         return arr
@@ -67,10 +75,13 @@ export default function ThemeArchive() {
     // const arrTitles = arr.map(story=>story.title)
     // const arrThemes = arr.map(story=>story.theme.name)
 
+
+
+
     return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm) || theme.description.toLowerCase().includes(searchTerm))
   }
 
-const themeResults = filterResults(sortResults(searchResults(archiveThemes)))
+  const themeResults = filterResults(sortResults(searchResults(archiveThemes)))
 
   return (
     <Box>
@@ -88,11 +99,41 @@ const themeResults = filterResults(sortResults(searchResults(archiveThemes)))
         />
 
       </Box>
-      {allThemes?.map(theme => {
-        return (
-          <ThemeCard theme={theme} />
-        )
-      })}
+      <Grid container spacing={1}>
+        <Grid item xs={2} sx = {{height: 600, overflow: 'hidden', overflowY: 'scroll'}}>
+          {allThemes?.map(theme => {
+            return (
+              <ArchiveThemeCard key={theme.name} theme={theme} setSelectedTheme={setSelectedTheme} />
+            )
+          })}
+        </Grid>
+        <Grid item xs={5} sx = {{height: 600, overflow: 'hidden', overflowY: 'scroll'}}>
+          {selectedTheme &&
+            <Box>
+<Typography variant='h6'>stories</Typography>
+              {selectedTheme.stories?.map(story => {
+                return (
+                  <StoryListItem key={story.title} story={story} />
+                )
+              })}
+            </Box>
+          }
+        </Grid>
+        <Grid item xs={5} sx = {{height: 600, overflow: 'hidden', overflowY: 'scroll'}}>
+          {selectedTheme &&
+            <Box>
+              <Typography variant='h6'>contacts</Typography>
+
+              {selectedTheme.contacts?.map(contact => {
+
+                return (
+                  contact && <ContactListItem key={contact.name} contact={contact} />
+                )
+              })}
+            </Box>
+          }
+        </Grid>
+      </Grid>
     </Box>
   )
 }

@@ -67,12 +67,14 @@ export default function StoryModalAdditional(props) {
 
   const handleCopyNumber = (e) => {
     console.log('handling copy number');
-    setInputValues({ ...inputValues, number_of_copies: e.target.value })
+    const numCopies = Number(e.target.value);
+    setInputValues({ ...inputValues, number_of_copies: numCopies })
   }
 
   const handleCopyDestination = (e) => {
     console.log('handling copy destination');
     setInputValues({ ...inputValues, copies_destination: e.target.value })
+    console.log('inputValues', inputValues)
   }
 
 
@@ -203,7 +205,7 @@ export default function StoryModalAdditional(props) {
                     sx={{ display: 'inline-block', width: 60 }}
                     type='number'
                     size='small'
-                    placeholder='number of copies'
+                    placeholder='#'
                     value={inputValues.number_of_copies}
                     onChange={handleCopyNumber}
                   />

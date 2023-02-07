@@ -44,7 +44,11 @@ export default function StoriesPage() {
   const [notes, setNotes] = useState(currentStory.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
   const [statusColor, setStatusColor] = useState({});
+  const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
 
+
+  useEffect(() => {
+  })
 
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
@@ -66,6 +70,7 @@ export default function StoriesPage() {
     setPaymentStatus(currentStory.payment_completed);
     setPaymentRequired(currentStory.payment_required);
     dispatch({ type: 'SET_TEMP_STORY', payload: currentStory });
+    setGeneralInfoHeight(document.getElementById("storiesGeneralSection").offsetHeight)
   }, [currentStory])
 
 
@@ -172,7 +177,7 @@ export default function StoriesPage() {
 
 
         {/* This grid row contains 2 sections, 1 for general info and 1 that holds to-do + comments */}
-        <Grid item xs={6} sx={{ backgroundColor: 'lightgrey', mr: 2 }}>
+        <Grid item xs={6} id='storiesGeneralSection' sx={{ backgroundColor: 'lightgrey', mr: 2}}>
           <Grid container space={1} >
             <Grid item xs={11}>
               <Typography variant='h6'>General Info</Typography>
@@ -410,7 +415,7 @@ export default function StoriesPage() {
                   {currentStory.copies_required > 0 ?
                     <FormGroup>
                       <FormControlLabel
-                        label={'Copies sent, required amount:' + currentStory.copies_required}
+                        label={'Copies sent, required: ' + (currentStory.number_of_copies !== null ? currentStory.number_of_copies : '')}
                         control={<Checkbox id={'make payments'} checked={copiesStatus} />}
                         onChange={handleCheck}
                       />
@@ -440,7 +445,7 @@ export default function StoriesPage() {
                 <Typography sx={{ '&:hover': { cursor: 'pointer' } }} >Edit <EditIcon /></Typography>
               }
             </Grid>
-            <Grid item xs={12} mr={1}>
+            <Grid item xs={12} mr={1} height={generalInfoHeight + 'px'}>
               {editNotesMode ?
                 <TextField
                   id='notesEditField'

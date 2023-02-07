@@ -126,11 +126,11 @@ router.get('/current/:id', async (req, res) => {
     for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
       //4. For each contact in story, loop over each contactPayment detail
       for (let paymentDetail of contactPaymentDetails) {
-        console.log('RES:', paymentDetail.contact_id);
+        // console.log('RES:', paymentDetail.contact_id);
         // if id matches add info to currentStoryDetails array
 
         if (paymentDetail.contact_id === currentStoryDetails.contacts[i].id) {
-          console.log('IM HERE');
+          // console.log('IM HERE');
           const { story_association, invoice_total, invoice_paid } =
             paymentDetail;
           currentStoryDetails.contacts[i].story_association = story_association;
@@ -184,21 +184,22 @@ router.post('/', async (req, res) => {
     number_of_copies,
     contacts,
     tags,
+    copies_destination,
   } = req.body;
-
   let postStoryQuery = `
   INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
   "fact_check_completed", "graphic_image_required", "external_link", "word_count", "rough_draft_deadline",
-  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", "number_of_copies", "photo", "copies_required", "payment_required","payment_completed" )
+  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", 
+  "number_of_copies", "photo", "copies_required", "payment_required","payment_completed", "copies_destination" )
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
   RETURNING "id";`; //Return id of story
 
   //Query
   const connection = await pool.connect();
   try {
-    console.log('IM HERE');
+    // console.log('IM HERE');
     await connection.query('BEGIN;');
     // console.log('In query');
     let storyResponse = await connection.query(postStoryQuery, [
@@ -228,6 +229,7 @@ router.post('/', async (req, res) => {
       copies_required, //21
       payment_required, //22
       payment_completed, //23
+      copies_destination, //24
     ]);
     // console.log('StoryId:', storyResponse.rows[0].id);
     let storyId = storyResponse.rows[0].id;
@@ -319,6 +321,8 @@ router.put('/:id', async (req, res) => {
     copies_required,
     tags,
     contacts,
+    number_of_copies,
+    copies_destination,
   } = req.body;
 
   let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
@@ -329,8 +333,8 @@ router.put('/:id', async (req, res) => {
   "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
   "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
   "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-  "payment_completed" = $20, "photo" = $21, "copies_required" = $22
-  WHERE "id" = $23;`;
+  "payment_completed" = $20, "photo" = $21, "copies_required" = $22, "number_of_copies" = $23, "copies_destination" = $24
+  WHERE "id" = $25;`;
   let updateStoryData = [
     title, //1
     subtitle, //2
@@ -355,7 +359,9 @@ router.put('/:id', async (req, res) => {
     payment_completed, //20
     photo, // 21
     copies_required, //22
-    id, //23
+    number_of_copies, //23
+    copies_destination, //24
+    id, //25
   ];
 
   //Query

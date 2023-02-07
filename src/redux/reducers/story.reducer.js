@@ -50,12 +50,33 @@ const currentStory = (state = storyObject, action) => {
 }
 
 const blankStory = {
-  rough_draft_deadline: DateTime.now().toISO(), 
-  final_draft_deadline: DateTime.now().toISO(), 
+  id: '',
+  title: '',
+  subtitle: '',
+  article_text: '',
+  article_link: '',
+  notes: '',
+  photo: '',
+  type: '',
+  copies_required: 0,
+  copies_sent: false,
+  photo_required: false,
+  photo_uploaded: false,
+  fact_check_required: false,
+  fact_check_completed: false,
+  graphic_image_required: false,
+  graphic_image_completed: false,
+  payment_required: false,
+  payment_completed: false,
+  external_link: '',
+  word_count: 0,
+  date_added: '',
+  rough_draft_deadline: DateTime.now(),
+  final_draft_deadline: DateTime.now().toISO(),
   publication_date: DateTime.now().toISO(),
   contacts: [],
-  tags: [],
-  themes: []
+  theme: [],
+  tags: []
 }
 //! staging area, not sure if we'll use
 

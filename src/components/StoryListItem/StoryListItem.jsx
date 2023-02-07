@@ -93,9 +93,14 @@ export default function StoryListItem(props) {
   }
 
   const handleEditOpen = () => {
-    dispatch({type: 'SET_TEMP_STORY', payload: story})
+    dispatch({ type: 'SET_TEMP_STORY', payload: story })
     setModalOpen(true);
     setCreateMode(false);
+  }
+
+  const handleDelete = () =>{
+    dispatch({type: 'DELETE_STORY', payload: story.id})
+    setDeleteOpen(false)
   }
 
   return (
@@ -170,7 +175,11 @@ export default function StoryListItem(props) {
         onClose={() => setDeleteOpen(false)}
       >
         <Box
-          sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete</Box>
+          sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete
+          
+          <Button onClick = {handleDelete}>delete</Button>
+          <Button onClick = {()=>setDeleteOpen(false)}>cancel</Button>
+          </Box>
       </Modal>
     </Paper>
   )

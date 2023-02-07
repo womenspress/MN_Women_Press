@@ -54,7 +54,7 @@ export default function StoryModalGeneral(props) {
     setContactAnchor(null)
   }
 
-  const contactIds = inputValues.contacts?.map(contact => contact.id);
+  const contactIds = inputValues.contacts?.map(contact => contact?.id);
 
   // these will populate upon search
   const contactSearchResults =
@@ -76,7 +76,7 @@ export default function StoryModalGeneral(props) {
     setTagAnchor(null)
   }
 
-  const tagIds = inputValues.tags?.map(tag => tag.id);
+  const tagIds = inputValues.tags?.map(tag => tag?.id);
 
   const tagSearchResults =
     tags?.filter(tag => !(tagIds.includes(tag.id)))
@@ -261,9 +261,10 @@ export default function StoryModalGeneral(props) {
           </Menu>
           <Box sx={{ bgcolor: 'grey.100', padding: .5 }}>
             {inputValues.tags?.map(tag => {
+              if(tag){
               return (
-                <TagSearchCard key={tag.id} tag={tag} />
-              )
+                <TagSearchCard key={tag?.id} tag={tag} />
+              )}
             })}
           </Box>
         </Grid>

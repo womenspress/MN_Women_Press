@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-// import { story } from '../../sampleStoryData';
-import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, styled, TextField, Tooltip } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import { DateTime } from 'luxon';
+import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, Modal, styled, TextField, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import ListTags from '../../components/ListTags/ListTags';
@@ -8,11 +8,17 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+// internal
+import { largeModal } from '../../__style'
 import { makeStatusColor } from '../../modules/makeStatusColor';
+import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
+import MatchingHeightComponent from '../../components/MatchComponentHeight/MatchComponentHeight';
+
 
 
 export default function StoriesPage() {
   // hooks
+  const ref = useRef(null);
   const dispatch = useDispatch();
   const { id } = useParams();
 
@@ -38,7 +44,11 @@ export default function StoriesPage() {
   const [notes, setNotes] = useState(currentStory.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
   const [statusColor, setStatusColor] = useState({});
-  
+  const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
+
+
+  useEffect(() => {
+  })
 
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
@@ -59,6 +69,8 @@ export default function StoriesPage() {
     setCopiesRequired(currentStory.copies_required);
     setPaymentStatus(currentStory.payment_completed);
     setPaymentRequired(currentStory.payment_required);
+    dispatch({ type: 'SET_TEMP_STORY', payload: currentStory });
+    setGeneralInfoHeight(document.getElementById("storiesGeneralSection").offsetHeight)
   }, [currentStory])
 
 
@@ -71,11 +83,6 @@ export default function StoriesPage() {
     borderRadius: '50%'
   }
 
-  //---------TODO----------//
-  // add edit modal to handle story edit function
-  const handleStoryEdit = () => {
-    console.log('in handleStoryEdit')
-  }
 
   const handleCommentEdit = () => {
     //updates story notes if there are changes
@@ -85,6 +92,14 @@ export default function StoriesPage() {
     setEditNotesMode(!editNotesMode);
   };
 
+  const handleClickPlus = () => {
+    setModalOpen(true);
+  }
+
+  const handleClose = () => {
+    setModalOpen(false)
+    dispatch({ type: 'GET_CURRENT_STORY', payload: id })
+  }
 
   //------- handle the check/uncheck of todo list items --------------//
   const handleCheck = (event) => {
@@ -121,12 +136,30 @@ export default function StoriesPage() {
     dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })
   }
 
+  const displayFlex = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
+
+  // createMode: will the big story modal be in create or edit mode?
+  const [createMode, setCreateMode] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
 
   return (
     <Box>
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}>
+        <Box sx={largeModal}>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={false} />
+        </Box>
+      </Modal>
+
+
+
       <Grid container space={1}>
-
-
         {/*------- This grid row contains story header and tags---------- */}
         <Grid item xs={8}>
           <Box display='flex' flexDirection='row' alignItems='center'>
@@ -144,18 +177,21 @@ export default function StoriesPage() {
 
 
         {/* This grid row contains 2 sections, 1 for general info and 1 that holds to-do + comments */}
-        <Grid item xs={6} sx={{ backgroundColor: 'lightgrey', mr: 2 }}>
-          <Grid container space={1}>
+        <Grid item xs={6} id='storiesGeneralSection' sx={{ backgroundColor: 'lightgrey', mr: 2}}>
+          <Grid container space={1} >
             <Grid item xs={11}>
               <Typography variant='h6'>General Info</Typography>
             </Grid>
             <Grid item xs={1}>
-              <EditIcon onClick={handleStoryEdit} sx={{ '&:hover': { cursor: 'pointer' } }} />
+
+              <EditIcon onClick={handleClickPlus} sx={{ '&:hover': { cursor: 'pointer' } }} />
+
+
             </Grid>
 
             {/*--------- Maps contacts, order: author, photographer, fact checker, other ----------- */}
             <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+              <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                 Author
               </Typography>
             </Grid>
@@ -181,7 +217,7 @@ export default function StoriesPage() {
             {currentStory.photo_required || currentStory.contacts?.filter(e => e?.story_association === 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
-                  <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+                  <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Photographer
                   </Typography>
                 </Grid>
@@ -212,7 +248,7 @@ export default function StoriesPage() {
             {currentStory.fact_check_required || currentStory.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
               <>
                 <Grid item xs={3}>
-                  <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+                  <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Fact Checker
                   </Typography>
                 </Grid>
@@ -246,7 +282,7 @@ export default function StoriesPage() {
             {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
-                  <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+                  <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Other
                   </Typography>
                 </Grid>
@@ -254,7 +290,6 @@ export default function StoriesPage() {
                   {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').map((contact) => {
                     return (
                       <Grid container spacing={1} key={contact ? contact.id : 1}>
-                        {/* The below portion can be swapped out with a contact card component once created */}
                         <Grid item xs={12}>
                           <Box component={Paper} p={1} m={1}>
                             <Typography fontWeight='bold'>{contact?.name}</Typography>
@@ -271,39 +306,39 @@ export default function StoriesPage() {
             }
 
             {/* Theme */}
-            <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+            <Grid item xs={3} sx={{ ...displayFlex, flexDirection: 'row-reverse' }}>
+              <Typography variant='body1' sx={{ textAlign: 'right', p: 1 }}>
                 Theme
               </Typography>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={9} sx={displayFlex}>
               {currentStory.theme ? currentStory.theme[0]?.name : null}
             </Grid>
 
             {/* Publication date */}
-            <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+            <Grid item xs={3} sx={{ ...displayFlex, flexDirection: 'row-reverse' }}>
+              <Typography variant='body1' sx={{ textAlign: 'right', p: 1 }}>
                 Publication Date
               </Typography>
             </Grid>
-            <Grid item xs={9}>
-              {currentStory?.publication_date}
+            <Grid item xs={9} sx={displayFlex}>
+              {DateTime.fromISO(currentStory?.publication_date).toFormat('MMMM dd, yyyy')}
             </Grid>
 
             {/* link to story */}
-            <Grid item xs={3}>
-              <Typography variant='body1' sx={{ textAlign: 'right', mt: 1, p: 1 }}>
+            <Grid item xs={3} sx={{ ...displayFlex, flexDirection: 'row-reverse' }}>
+              <Typography variant='body1' sx={{ textAlign: 'right', p: 1 }}>
                 link to story
               </Typography>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={9} sx={displayFlex}>
               <Link href={currentStory?.article_link}>{currentStory?.article_link}</Link>
             </Grid>
           </Grid>
         </Grid>
 
 
-
+        
         {/* End general info section, next is the section that holds to-do and comments */}
         <Grid item xs={5}>
           <Grid container spacing={1} sx={{ backgroundColor: 'lightgrey', mt: "1px" }}>
@@ -366,7 +401,7 @@ export default function StoriesPage() {
                     <FormGroup>
                       <FormControlLabel
                         label={'Payment(s) Sent'}
-                        control={<Checkbox id={'make payments'} checked={paymentRequired} />}
+                        control={<Checkbox id={'make payments'} checked={paymentStatus} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -380,7 +415,7 @@ export default function StoriesPage() {
                   {currentStory.copies_required > 0 ?
                     <FormGroup>
                       <FormControlLabel
-                        label={'Copies sent, required amount:' + currentStory.copies_required}
+                        label={'Copies sent, required: ' + (currentStory.number_of_copies !== null ? currentStory.number_of_copies : '')}
                         control={<Checkbox id={'make payments'} checked={copiesStatus} />}
                         onChange={handleCheck}
                       />
@@ -389,21 +424,7 @@ export default function StoriesPage() {
                     null
                   }
                 </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* payment sent? */}
-                  {currentStory.payment_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Payment Sent'}
-                        control={<Checkbox id={'make payments'} checked={paymentStatus} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
+                
                 {/* end to-do items */}
               </>
               :
@@ -424,7 +445,7 @@ export default function StoriesPage() {
                 <Typography sx={{ '&:hover': { cursor: 'pointer' } }} >Edit <EditIcon /></Typography>
               }
             </Grid>
-            <Grid item xs={12} mr={1}>
+            <Grid item xs={12} mr={1} height={generalInfoHeight + 'px'}>
               {editNotesMode ?
                 <TextField
                   id='notesEditField'

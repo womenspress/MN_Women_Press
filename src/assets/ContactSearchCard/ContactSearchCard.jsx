@@ -37,7 +37,7 @@ export default function ContactSearchCard(props) {
     <Paper sx={{ ...smallCard, width: 300, height: 80 }}>
       {/* {JSON.stringify([contact.name, paymentRequired,])} */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }} >
-        <Typography>{contact.name}</Typography>
+        <Typography>{contact?.name}</Typography>
         <Button
           sx={{ textTransform: 'none', p: 0, color: 'inherit' }}
           endIcon={rolesOpen ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}

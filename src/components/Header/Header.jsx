@@ -1,43 +1,56 @@
 import { flexbox } from '@mui/system';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import LogOutButton from '../LogOutButton/LogOutButton';
-import './Header.css';
+// import './Header.css';
 
 
-export default function Header(props){
-    let user = props.user;
-    // console.log(user);
+// libraries
 
-    let location = useLocation().pathname;
+// components
+import { Typography, Button, AppBar, Box, Toolbar, } from '@mui/material'
 
-    return(
-        <div className='header'>
-            <div >
-                <Link to="/home">
-                    <h2 className="title">Women's Press of Minnesota Working Title</h2>
-                </Link>
-            </div>
-            <div id='links'>
-                {/* If no user is logged in, show these links */}
-                {!user.id && (
-                // If there's no user, show login/registration links
-                <Link className="navLink" to="/login">
-                    Login / Register
-                </Link>
-                )}
 
-                {/* If a user is logged in, show these links */}
-                {user.id && (
-                <div className='headerButtons'>
-                    <LogOutButton className="navLink" />
-                    <Link id={location == '/AdminPage' ? 'activeHeader' : ''} className="navLink" to="/AdminPage">
-                        Admin
-                    </Link>
-                </div>
-                )}
-            </div>
-        </div>
-    )
+export default function Header(props) {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  let user = props.user;
+  // console.log(user);
+
+  let location = useLocation().pathname;
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' })
+    history.push('/login');
+  }
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+
+          <Typography variant="h4" color="inherit" sx={{ textDecoration: 'none', flexGrow: 1 }}>
+            MN Women's Press Content Manager
+          </Typography>
+
+
+          {user.id ?
+            <>
+              <Button sx={{ textTransform: 'none' }} color="inherit" onClick={() => history.push('/adminpage')}>admin</Button>
+              <Button sx={{ textTransform: 'none' }} color="inherit" onClick={handleLogout}>logout</Button>
+            </>
+            :
+            <Button color="inherit" onClick={() => history.push('/login')} sx={{ textTransform: 'none' }}>login</Button>
+          }
+
+
+
+          {/* <Button component = "avatar" src='images/prof-pics/Paolo-prof-pic.png' color="inherit" onClick={() => navigate('/login')}/> */}
+        </Toolbar>
+      </AppBar>
+
+    </Box>
+
+
+
+  )
 }

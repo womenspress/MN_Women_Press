@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import CheckIcon from '@mui/icons-material/Check';
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+
 
 export default function AdminPage() {
     const dispatch = useDispatch();
@@ -14,13 +18,13 @@ export default function AdminPage() {
     const [viewState, setViewState] = useState('unauthorized')
 
     useEffect(() => {
-        dispatch({ type: 'FETCH_ALL_USERS'})
+        dispatch({ type: 'FETCH_ALL_USERS' })
     }, [])
 
     useEffect(() => {
-            // does not include logged in user in list (someone else would need to change their access or delete the user)
-            setAuthorizedUsers(allUsers.filter((e) => e.access === true && e.id !== currentUser.id));
-            setUnauthorizedUsers(allUsers.filter((e) => e.access === false));
+        // does not include logged in user in list (someone else would need to change their access or delete the user)
+        setAuthorizedUsers(allUsers.filter((e) => e.access === true && e.id !== currentUser.id));
+        setUnauthorizedUsers(allUsers.filter((e) => e.access === false));
     }, [allUsers]);
 
 
@@ -38,24 +42,31 @@ export default function AdminPage() {
         <div className="container">
             <Box >
                 <Typography variant='h3'>User Access</Typography>
-                <Box display='flex' flexDirection='row-reverse'>
-                    <Button variant={(viewState === 'unauthorized' ? 'contained' : 'outlined')} color='warning' onClick={() => setViewState('unauthorized')}>Unauthorized Users</Button>
-                    <Button variant={(viewState === 'authorized' ? 'contained' : 'outlined')} color='success' onClick={() => setViewState('authorized')}>Authorized Users</Button>
+                <Box display='flex' flexDirection='row-reverse' mb={'1px'}>
+                    <Button variant={(viewState === 'unauthorized' ? 'contained' : 'outlined')}  sx={{ color: 'primary', borderColor: 'primary', borderRadius: 2}} onClick={() => setViewState('unauthorized')}>Unauthorized Users</Button>
+                    <Button variant={(viewState === 'authorized' ? 'contained' : 'outlined')}  sx={{ color: 'primary', borderColor: 'primary', borderRadius: 2}} onClick={() => setViewState('authorized')}>Authorized Users</Button>
                 </Box>
-                <Box sx={{ backgroundColor: 'secondary.main', minHeight: '60vh' }}>
+                <Box sx={{
+                    backgroundColor: 'grey.100', 
+                    minHeight: '60vh', 
+                    border: '1px solid #951c2a',
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    padding: 2,
+                }}>
                     <Grid container space={2}>
                         {viewState === 'unauthorized' ?
                             unauthorizedUsers.map(user => {
                                 return (
-                                    <Grid item xs={3} key={user.id} sx={{ border: 1, m: 1 }}>
+                                    <Grid item xs={3} key={user.id} sx={{ border: '1px solid #951c2a', borderRadius: 1, m: 1 }}>
                                         <Card>
                                             <CardContent>
                                                 <Typography variant='h5'>{user.username}</Typography>
                                                 <Typography variant='h6' mt={2}>Status: Pending</Typography>
                                             </CardContent>
-                                            <CardActions>
-                                                <Button variant='contained' color='success' onClick={() => handleAuthorizeClick(user)}>Activate</Button>
-                                                <Button variant='contained' color='error' onClick={() => handleDeleteClick(user)}>Delete</Button>
+                                            <CardActions display='flex' flexDirection='row' sx={{justifyContent: 'center'}}>
+                                                <Button variant='contained' sx={{ color: 'primary', borderColor: 'primary' }} onClick={() => handleAuthorizeClick(user)}>Activate <CheckIcon sx={{pl: 1}}/></Button>
+                                                <Button variant='contained' color='error' onClick={() => handleDeleteClick(user)}>Delete <DeleteForeverIcon sx={{pl:1}}/></Button>
                                             </CardActions>
                                         </Card>
                                     </Grid>
@@ -64,14 +75,14 @@ export default function AdminPage() {
                             :
                             authorizedUsers.map(user => {
                                 return (
-                                    <Grid item xs={3} key={user.id} sx={{ border: 1, m: 1 }}>
+                                    <Grid item xs={3} key={user.id} sx={{ border: '1px solid #951c2a', borderRadius: 1, m: 1 }}>
                                         <Card>
                                             <CardContent>
                                                 <Typography variant='h5'>{user.username}</Typography>
                                                 <Typography variant='h6' mt={2}>Authorized</Typography>
                                             </CardContent>
-                                            <CardActions>
-                                                <Button variant='contained' color='warning' onClick={() => handleAuthorizeClick(user)}>Deactivate</Button>
+                                            <CardActions >
+                                                <Button variant='contained'  sx={{ color: 'primary', borderColor: 'primary'}} onClick={() => handleAuthorizeClick(user)}>Deactivate <DoDisturbIcon sx={{pl:1}}/></Button>
                                             </CardActions>
                                         </Card>
                                     </Grid>

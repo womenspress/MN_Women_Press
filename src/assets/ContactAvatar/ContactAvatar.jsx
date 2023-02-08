@@ -9,13 +9,13 @@ export default function ContactAvatar(props) {
 
   const {
     contact,
-    style
+    avatarStyle
   } = props
 
   const getInitials = (contact) => {
     const nameArr = contact.name.split(' ');
-    if (nameArr.length > 1) return (nameArr[0] + nameArr[nameArr.length-1]).toUpperCase()
-    else return nameArr[0].toUpperCase()
+    if (nameArr.length > 1) return (nameArr[0][0] + nameArr[nameArr.length-1][0]).toUpperCase()
+    else return nameArr[0][0].toUpperCase()
   }
 
   const stringToValue = (string) => {
@@ -28,15 +28,16 @@ export default function ContactAvatar(props) {
 
   const makeRandomColor = (username) => {
     const index = Math.floor((stringToValue(username) / 500) * 16777215).toString(16);
+    console.log('index', index)
     return '#' + index
   }
 
   return (
     <>
       {contact.photo ?
-        <Avatar alt={`${contact.name}'s avatar`} src={contact.photo} sx={{...style}} />
+        <Avatar alt={`${contact.name}'s avatar`} src={contact.photo} sx = {{...avatarStyle}}/>
         :
-        <Avatar sx={{ bgcolor: makeRandomColor(contact.name) }}>{getInitials(contact)}</Avatar>
+        <Avatar sx = {{...avatarStyle, bgcolor: makeRandomColor(contact.name) }}>{getInitials(contact)}</Avatar>
       }
     </>
   )

@@ -13,6 +13,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditContactModal from '../EditContactModal/EditContactModal'
 import StoryCard from '../StoryCard/StoryCard'
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar';
 
 export default function ContactListItem({ contact }) {
   const history = useHistory()
@@ -54,6 +55,13 @@ export default function ContactListItem({ contact }) {
       boxShadow: 24,
       padding: 2,
   };
+
+  const avatarStyle = {
+    height: 30,
+    width: 30,
+    margin: 1,
+    fontSize: 14
+  }
 
   const [openEdit, setEditOpen] = React.useState(false);
 
@@ -98,7 +106,7 @@ export default function ContactListItem({ contact }) {
       >
         <Box display='flex' flexDirection='row' justifyContent='space-between'>
           <Box sx={{ display: 'flex' }}>
-            <Avatar src={contact.photo} />
+            <ContactAvatar avatarStyle={avatarStyle} contact={contact}/>
             <Typography variant='body2'>{contact.bio}</Typography>
             <Box>
               <Typography variant='body2'>most recent contribution:</Typography>

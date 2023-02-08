@@ -17,6 +17,10 @@ export default function ContactsPage() {
     dispatch({ type: 'GET_ALL_CONTACTS' });
   }, [])
 
+  const sortOptions = ['date', 'name', 'last contribution']
+  const filterOptions = ['role']
+
+
   return (
     <>
       <Box sx={{ display: 'flex' }}>

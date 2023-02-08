@@ -49,8 +49,8 @@ export default function StoriesPage() {
 
   //* ============ SORT/FILTER/SEARCH STUFF ===============
 
-  const sortOptions = ['date', 'title'];
-  const filterOptions = ['all', 'recent'];
+  const sortOptions = ['date', 'title', 'status'];
+  const filterOptions = ['all', 'recent', 'tags', 'themes'];
   const [searchTerm, setSearchTerm] = useState('');
   const [sortMethod, setSortMethod] = useState('date');
   const [sortDirection, setSortDirection] = useState('ascending');

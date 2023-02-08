@@ -19,7 +19,7 @@ export default function ContactSearchCard(props) {
     setInputValues
   } = props
 
-  const roles = ['author', 'photographer', 'fact-checker']
+  const roles = ['author', 'editor', 'source', 'photographer', 'underwriter', 'photo subject']
   const [paymentRequired, setPaymentRequired] = useState(Boolean(contact.invoice_amount))
 
   const [rolesAnchor, setRolesAnchor] = useState(null)

@@ -6,20 +6,11 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import StoryListItem from '../../components/StoryListItem/StoryListItem';
+import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar'
 
 
 export default function ContactDetailsPage() {
   const dispatch = useDispatch();
-
-  const { id } = useParams();
-  const allContacts = useSelector(store => store.contacts.allContacts)
-  const allStories = useSelector(store => store.stories.allStories);
-
-  const [createMode, setCreateMode] = useState(true);
-  const [contact, setContact] = useState({});
-  const [contactStories, setContactStories] = useState([]);
-
-  const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
 
   useEffect(() => {
     setGeneralInfoHeight(document.getElementById("generalInfoSection").offsetHeight - 1)
@@ -27,8 +18,18 @@ export default function ContactDetailsPage() {
 
   useEffect(() => {
     dispatch({ type: 'GET_ALL_CONTACTS' });
-    dispatch({ type: 'GET_ALL_STORIES'})
+    dispatch({ type: 'GET_ALL_STORIES' })
   }, [])
+
+  const { id } = useParams();
+  const allContacts = useSelector(store => store.contacts.allContacts)
+  const allStories = useSelector(store => store.stories.allStories);
+
+  const [createMode, setCreateMode] = useState(true);
+  const [contact, setContact] = useState({ name: 'asdf', });
+  const [contactStories, setContactStories] = useState([]);
+
+  const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
 
   useEffect(() => {
     setContact(allContacts.filter((contact) => contact.id == id));
@@ -43,32 +44,30 @@ export default function ContactDetailsPage() {
     setContactStories(tempStories)
   }, [allStories])
 
-
+  const avatarStyle = {
+    height: 60,
+    width: 60,
+    margin: 1
+  }
 
   return (
     <Box>
-      <Grid container space={1}>
-        <Grid item xs={2} display='flex' flexDirection='row-reverse'>
-          {/* profile image */}
-          <Box
-            component='img'
-            sx={{
-              height: 150
-            }}
-            alt="Profile Picture"
-            src={contact[0]?.photo}
-          />
-        </Grid>
+      {/* {JSON.stringify(contact)} */}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {/* profile image */}
+        {contact[0]?.id &&
+          <ContactAvatar contact={contact[0]} avatarStyle={avatarStyle} />}
         {/* holds name, pronouns, and expertise */}
-        <Grid item xs={10}>
-          <Box display='flex' flexDirection='column' justifyContent='center' height={150}>
-            <Box display='flex' flexDirection='row' alignItems='center'>
-              <Typography variant='h4'>{contact[0]?.name}</Typography>
-              <Typography variant='h6' sx={{ ml: 1 }}>({contact[0]?.pronouns})</Typography>
-            </Box>
-            <Typography variant='h6' fontStyle='italic'>{contact[0]?.expertise}</Typography>
+        <Box display='flex' flexDirection='column' justifyContent='center' height={150}>
+          <Box display='flex' flexDirection='row' alignItems='flex-end'>
+            <Typography variant='h3'>{contact[0]?.name}</Typography>
+            <Typography variant='h6' sx={{ ml: 1 }}>({contact[0]?.pronouns})</Typography>
           </Box>
-        </Grid>
+          <Typography variant='h6' fontStyle='italic'>{contact[0]?.expertise}</Typography>
+        </Box>
+      </Box>
+      <Grid container space={1}>
+
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
         <Grid item xs={4}>
           <Typography variant='h5' fontWeight='bold'>General Info <EditIcon /></Typography>
@@ -133,6 +132,6 @@ export default function ContactDetailsPage() {
 
         </Grid>
       </Grid>
-    </Box>
+    </Box >
   )
 }

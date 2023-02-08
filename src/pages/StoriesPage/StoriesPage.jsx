@@ -117,8 +117,8 @@ export default function StoriesPage() {
         </IconButton>
       </Box>
       <Box
-        sx={{ ...mainContentBox }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
           <SortFilterSearch
             sortOptions={sortOptions}
             filterOptions={filterOptions}
@@ -133,7 +133,7 @@ export default function StoriesPage() {
           />
         </Box>
         <Box>
-          {storyResults.length ? storyResults.map(story => {
+          {allStories.length ? allStories.map(story => {
             return (
               <StoryListItem
                 key={story.title}
@@ -141,7 +141,6 @@ export default function StoriesPage() {
                 createMode={createMode}
                 setCreateMode={setCreateMode}
                 setModalOpen={setModalOpen}
-
               />
             )
           })

@@ -211,14 +211,18 @@ VALUES
 
 /*Role*/ 
 INSERT INTO "role"
-(name)
+("id", "name")
 VALUES 
-('Photographer'), 
-('Illustrator'), 
-('Editor'), 
-('Expert'), 
-('Fact Checker'), 
-('Printers'); 
+(1,'Photographer'), 
+(2,'Illustrator'), 
+(3,'Editor'), 
+(4,'Expert'), 
+(5,'Fact Checker'), 
+(6,'Printers'),
+(7,'Author'),
+(8,'Underwriter'),
+(9,'Source'),
+(10,'Subject'); 
 
 INSERT INTO "contact_role"
 ("contact_id","role_id")

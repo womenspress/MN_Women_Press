@@ -99,7 +99,7 @@ export default function ThemeStoryListItem({ story}) {
             <a href={story?.article_link}><Typography>{story?.article_link}</Typography></a>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Button
-                onClick={() => history.push(`/story/{story.id}`)}
+                onClick={() => history.push(`/storydetails/${story.id}`)}
                 size='small'
                 color='inherit'
                 endIcon={<ArrowForwardIcon />}>

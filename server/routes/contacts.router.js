@@ -199,7 +199,7 @@ router.post('/', async (req, res) => {
 //* --------------- PUT - update contact -----------------
 
 router.put('/:id', async (req, res) => {
-  // console.log('editing project. req.body: ', req.body);
+  console.log('editing project. req.body: ', req.body);
   const client = await pool.connect();
 
   try {
@@ -278,14 +278,14 @@ router.put('/:id', async (req, res) => {
     // //* 3. insert tags and roles info
     // // 3a. tags
     const tagsPromises = tags.map((tag) => {
-      const insertTagText = `UPDATE "tag_contact" SET "tag_id"=$1 WHERE "contact_id"=$2;`;
+      const insertTagText = `INSERT INTO "tag_contact"("tag_id", "contact_id") VALUES($1, $2);`;
       const insertTagValues = [tag.id, req.params.id];
       return client.query(insertTagText, insertTagValues);
     });
 
     // // 3b. roles
     const rolesPromises = roles.map((role) => {
-      const insertRoleText = `UPDATE "contact_role" SET "role_id"=$1 WHERE "contact_id"=$2;`;
+      const insertRoleText = `INSERT INTO "contact_role" ("role_id", "contact_id") VALUES($1, $2);`;
       const insertRoleValues = [role.id, req.params.id];
       return client.query(insertRoleText, insertRoleValues);
     });

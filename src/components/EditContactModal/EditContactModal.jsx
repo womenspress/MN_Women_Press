@@ -44,6 +44,7 @@ const smallStyle = {
 };
 
 export default function EditContactModal({contact}){
+
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -56,29 +57,29 @@ export default function EditContactModal({contact}){
 
     // contact info values
     // page 1
-    const [name, setName] = React.useState(contact.name);
-    const [pronouns, setPronouns] = React.useState(contact.pronouns)
-    const [email, setEmail] = React.useState(contact.email);
-    const [phone, setPhone] = React.useState(contact.phone);
-    const [expertise, setExpertise] = React.useState(contact.expertise);
-    const [tagsArray, setTagsArray] = React.useState(contact.tags[0] ? contact.tags : []);
+    const [name, setName] = React.useState(contact.name|| '');
+    const [pronouns, setPronouns] = React.useState(contact.pronouns|| '')
+    const [email, setEmail] = React.useState(contact.email|| '');
+    const [phone, setPhone] = React.useState(contact.phone || '');
+    const [expertise, setExpertise] = React.useState(contact.expertise || '');
+    const [tagsArray, setTagsArray] = React.useState(!contact.tags.includes(null) ? contact.tags : []);
     // const [location, setLocation] = React.useState(contact.location);
-    const [notes, setNotes] = React.useState(contact.note)
-    const [rolesArray, setRolesArray] = React.useState(contact.roles[0] ? contact.roles : []);
+    const [notes, setNotes] = React.useState(contact.note || '')
+    const [rolesArray, setRolesArray] = React.useState(!contact.roles.includes(null) ? contact.roles : []);
     
     // page 2
-    const [billingAddress, setBillingAddress] = React.useState(contact.billing_address);
-    const [mailingAddress, setMailingAddress] = React.useState(contact.mailing_address);
-    const [bio, setBio] = React.useState(contact.bio);
-    const [website, setWebsite] = React.useState(contact.website);
-    const [twitter, setTwitter] = React.useState(contact.twitter);
-    const [facebook, setFacebook] = React.useState(contact.facebook);
-    const [instagram, setInstagram] = React.useState(contact.instagram);
-    const [linkedIn, setLinkedIn] = React.useState(contact.linkedIn);
+    const [billingAddress, setBillingAddress] = React.useState(contact.billing_address || '');
+    const [mailingAddress, setMailingAddress] = React.useState(contact.mailing_address || '');
+    const [bio, setBio] = React.useState(contact.bio || '');
+    const [website, setWebsite] = React.useState(contact.website || '');
+    const [twitter, setTwitter] = React.useState(contact.twitter || '');
+    const [facebook, setFacebook] = React.useState(contact.facebook || '');
+    const [instagram, setInstagram] = React.useState(contact.instagram || '');
+    const [linkedIn, setLinkedIn] = React.useState(contact.linkedIn || '');
 
     // add contact tag actions
 
-    const dbTagsArray = useSelector(store => store.tags.allTags);
+    const dbTagsArray = useSelector(store => store.tags.allTags) || [];
     const [searchTag, setSearchTag] = React.useState('');
     const [newTagDescription, setNewTagDescription] = React.useState('');
     const [foundTag, setFoundTag] = React.useState([]);
@@ -127,12 +128,13 @@ export default function EditContactModal({contact}){
         {id: 6, name: "Printer"}
     ]
 
-    const [check1, setCheck1] = React.useState(contact.roles[0]?.name === availableRoles[0].name? true : false);
-    const [check2, setCheck2] = React.useState(contact.roles[1]?.name === availableRoles[1].name? true : false);
-    const [check3, setCheck3] = React.useState(contact.roles[2]?.name === availableRoles[2].name? true : false);
-    const [check4, setCheck4] = React.useState(contact.roles[3]?.name === availableRoles[3].name? true : false);
-    const [check5, setCheck5] = React.useState(contact.roles[4]?.name === availableRoles[4].name? true : false);
-    const [check6, setCheck6] = React.useState(contact.roles[5]?.name === availableRoles[5].name? true : false);
+    console.log();
+    const [check1, setCheck1] = React.useState(contact.roles.filter(e =>  e?.name == 'Photographer').length>0);
+    const [check2, setCheck2] = React.useState(contact.roles.filter(e =>  e?.name == 'Illustrator').length>0);
+    const [check3, setCheck3] = React.useState(contact.roles.filter(e =>  e?.name == 'Editor').length>0);
+    const [check4, setCheck4] = React.useState(contact.roles.filter(e =>  e?.name == 'Expert').length>0);
+    const [check5, setCheck5] = React.useState(contact.roles.filter(e =>  e?.name == 'Fact Checker').length>0);
+    const [check6, setCheck6] = React.useState(contact.roles.filter(e =>  e?.name == 'Printer').length>0);
 
     const changeRoleStatus = (checked,id) => {
         console.log(checked);
@@ -174,6 +176,10 @@ export default function EditContactModal({contact}){
         dispatch({type: 'EDIT_CONTACT', payload: newContact});
         handleClose()
     }
+
+    if (!contact.roles.includes(null)){
+        console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
+    };
 
     const ModalPages = () => {
         switch(createContactPage){

@@ -114,7 +114,7 @@ export default function ContactListItem({ contact }) {
 
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <EditContactModal contact={contact} />
+            {contact !== undefined && <EditContactModal contact={contact} /> }
 
 
 

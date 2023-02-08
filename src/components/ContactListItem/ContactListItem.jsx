@@ -105,29 +105,19 @@ export default function ContactListItem({ contact }) {
         in={detailsOpen}
       >
         <Box display='flex' flexDirection='row' justifyContent='space-between'>
-          <Box sx={{ display: 'flex' }}>
+          <Box sx={{ display: 'flex', mb: 2 }}>
             <ContactAvatar avatarStyle={avatarStyle} contact={contact}/>
-            <Typography variant='body2'>{contact.bio}</Typography>
-            <Box>
-              <Typography variant='body2'>most recent contribution:</Typography>
+            <Typography sx={{width: .40, mr: 5, ml: 5 }} variant='body2'>
+            <Typography  variant='h6'>Bio:</Typography>
+              {contact.bio}
+            </Typography>
+            <Box sx={{width: .45 }} >
+              <Typography  variant='h6'>Recent contribution:</Typography>
               <StoryCard story={contact.stories[0]} />
             </Box>
           </Box>
-
-
-
-
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', width: .25, minWidth: 'fit-content' }}>
             {contact !== undefined && <EditContactModal contact={contact} /> }
-
-
-
-
-
-
-
-
-
             <IconButton size='small' onClick={() => openDeleteDialog(contact.id)}>
               <DeleteIcon />
             </IconButton>

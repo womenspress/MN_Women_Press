@@ -208,9 +208,9 @@ export default function EditContactModal({contact}){
         handleClose()
     }
 
-    if (!contact.roles?.includes(null)){
-        console.log(contact.name, ' ', contact?.roles.filter(e =>  e?.name == availableRoles[0].name));
-    };
+    // if (!contact.roles.includes(null)){
+    //     console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
+    // };
 
     const ModalPages = () => {
         switch(createContactPage){
@@ -354,7 +354,7 @@ export default function EditContactModal({contact}){
                                 </Box>
                             </Box>                         
                         </Box>
-                        <ListTags tags={tagsArray} numOfDisplay={tagsArray.length} removeTag={removeTag}/>
+                        <ListTags tags={tagsArray} numOfDisplay={tagsArray?.length} removeTag={removeTag}/>
                         {/* <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/> */}
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>

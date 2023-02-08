@@ -71,9 +71,9 @@ export default function ContactDetailsPage() {
       <Grid container space={1}>
 
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
-        <Grid item xs={4}>
-          {JSON.stringify(contact)}
-          <Typography variant='h5' fontWeight='bold'>General Info {contact ? <EditContactModal contact={contact} /> : null }</Typography>
+        <Grid item xs={4} display='flex'>
+          <Typography variant='h5' fontWeight='bold' sx={{mr: 1}}>General Info </Typography>
+          {contact[0] ? <EditContactModal contact={contact[0]}/> : null }
         </Grid>
         <Grid item xs={4}>
           <Typography variant='h5' fontWeight='bold' sx={{ ml: 2 }}>Contributions</Typography>

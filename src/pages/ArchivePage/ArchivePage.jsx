@@ -33,7 +33,7 @@ export default function ArchivePage(){
           <Button onClick = {()=>setTabValue('themes')}>themes</Button>
         </Box>
 
-        <Box sx = {{...mainContentBox, height: 600}}>
+        <Box sx = {{...mainContentBox, height: 600, overflow:'hidden', overflowY: 'scroll'}}>
 
         {tabValue === 'stories' && <StoryArchive/>}
         {tabValue === 'themes' && <ThemeArchive/>}

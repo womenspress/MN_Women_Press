@@ -1,6 +1,7 @@
 const express = require('express');
 const {
   rejectUnauthenticated,
+  rejectUnauthorized,
 } = require('../modules/authentication-middleware');
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
@@ -9,13 +10,13 @@ const userStrategy = require('../strategies/user.strategy');
 const router = express.Router();
 
 // Handles Ajax request for user information if user is authenticated
-router.get('/', rejectUnauthenticated, (req, res) => {
+router.get('/', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // Send back user object from the session (previously queried from the database)
   res.send(req.user);
 });
 
 // gets all users for admin dashboard (we will filter unauthorized vs authorized on the front end so we can add/remove permissions for everyone)
-router.get('/all', rejectUnauthenticated, (req, res) => {
+router.get('/all', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // GET request for all users goes here
   const queryText = 'SELECT * FROM "user";';
 
@@ -61,7 +62,7 @@ router.post('/logout', (req, res) => {
 });
 
 // grants or removes access, initiated from admin page
-router.put('/access', rejectUnauthenticated, (req, res) => {
+router.put('/access', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const queryText = 'UPDATE "user" set "access" = $1 WHERE "id" = $2;';
   const queryParams = [req.body.access, req.body.userId];
 
@@ -73,7 +74,7 @@ router.put('/access', rejectUnauthenticated, (req, res) => {
 });
 
 // deletes user, initiated from admin page
-router.delete('/:id', rejectUnauthenticated, (req, res) => {
+router.delete('/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const id = req.params.id;
   const queryText = `DELETE from "user" where "id"=$1;`;
 

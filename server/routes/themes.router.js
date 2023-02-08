@@ -1,11 +1,15 @@
 const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
+const {
+  rejectUnauthenticated,
+  rejectUnauthorized,
+} = require('../modules/authentication-middleware');
 
 /**
  * GET route template
  */
-router.get('/', (req, res) => {
+router.get('/', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // GET route code here
   //const getAllThemesQuery = `SELECT * FROM "theme" ORDER BY "name" ASC;`
   const getAllThemesQuery = `SELECT "theme".*,  json_agg( DISTINCT"story") AS "stories", json_agg( DISTINCT "contact") AS "contacts" 
@@ -25,7 +29,7 @@ router.get('/', (req, res) => {
 });
 
 //CAN/WILL THIS BE MANAGED BY PULLING ID FROM STATE?
-router.get('/current/:id', (req, res) => {
+router.get('/current/:id',  rejectUnauthenticated, rejectUnauthorized,(req, res) => {
   // GET route for contact detail
   // console.log('In themes router GET, getting theme detail. URL: /api/themes/current/:id',[req.params.id]);
   const getCurrentThemeQuery = `SELECT * FROM "theme" WHERE "id" = $1;`
@@ -41,7 +45,7 @@ router.get('/current/:id', (req, res) => {
 /**
  * POST route template
  */
-router.put('/edit/:id', (req, res) => {
+router.put('/edit/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // EDIT here (this will handle "create" "delete" and "edit", but actually just edit all of the rows we created)
   const {name, description, month_year} = req.body;
   console.log('req.body:', req.body)

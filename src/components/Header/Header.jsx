@@ -1,6 +1,7 @@
+import { flexbox } from '@mui/system';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import LogOutButton from '../LogOutButton/LogOutButton';
 import './Header.css';
 
@@ -9,6 +10,8 @@ export default function Header(props){
     let user = props.user;
     // console.log(user);
 
+    let location = useLocation().pathname;
+
     return(
         <div className='header'>
             <div >
@@ -16,7 +19,7 @@ export default function Header(props){
                     <h2 className="title">Women's Press of Minnesota Working Title</h2>
                 </Link>
             </div>
-            <div>
+            <div id='links'>
                 {/* If no user is logged in, show these links */}
                 {!user.id && (
                 // If there's no user, show login/registration links
@@ -29,7 +32,7 @@ export default function Header(props){
                 {user.id && (
                 <div className='headerButtons'>
                     <LogOutButton className="navLink" />
-                    <Link className="navLink" to="/AdminPage">
+                    <Link id={location == '/AdminPage' ? 'activeHeader' : ''} className="navLink" to="/AdminPage">
                         Admin
                     </Link>
                 </div>

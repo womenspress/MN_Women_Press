@@ -43,9 +43,10 @@ router.get('/current/:id', (req, res) => {
  */
 router.put('/edit/:id', (req, res) => {
   // EDIT here (this will handle "create" "delete" and "edit", but actually just edit all of the rows we created)
-  const {name, description, month, year} = req.body;
-  const updateThemeQuery = `UPDATE "theme" SET "name" = $1, "description"= $2, "month"= $3, "year" = $4 WHERE "id" = $5;`
-  pool.query(updateThemeQuery, [name, description, month, year, req.params.id]).then(() => {
+  const {name, description, month_year} = req.body;
+  console.log('req.body:', req.body)
+  const updateThemeQuery = `UPDATE "theme" SET "name" = $1, "description"= $2 WHERE "id" = $3;`
+  pool.query(updateThemeQuery, [name, description, req.params.id]).then(() => {
     res.sendStatus(200);
   }).catch((err) => {
     console.log('error in edit current theme query: ', err)

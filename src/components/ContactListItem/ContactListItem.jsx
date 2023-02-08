@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Dialog from '@mui/material/Dialog';
@@ -15,6 +14,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import StoryCard from '../StoryCard/StoryCard'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Modal from '@mui/material/Modal';
+
+import EditContactModal from '../EditContactModal/EditContactModal'
 
 export default function ContactListItem({ contact }) {
   const history = useHistory()
@@ -23,24 +25,58 @@ export default function ContactListItem({ contact }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   // delete 
-  const [open, setOpen] = React.useState(false);
+  const [openDelete, setDeleteOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleDeleteOpen = () => {
+    setDeleteOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleDeleteClose = () => {
+    setDeleteOpen(false);
   };
 
   const openDeleteDialog = () => {
-    handleClickOpen();
+    handleDeleteOpen();
   }
 
   const deleteContact = (id) => {
     console.log('delete contact id:',id);
     dispatch({type: "DELETE_CONTACT", payload: id})
-    handleClose();
+    handleDeleteClose();
+  }
+
+  // edit
+  const style = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 900,
+      height: 700,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      padding: 2,
+  };
+
+  const [openEdit, setEditOpen] = React.useState(false);
+
+  const handleEditOpen = () => {
+    setEditOpen(true);
+  }
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+  }
+
+  const openEditModal = () => {
+    handleEditOpen()
+  }
+
+  const editContact = (contact) => {
+    console.log('edit contact:', contact.id);
+    // dispatch({type: "", payload: contact});
+    //handleEditClose();
   }
 
   return (
@@ -73,16 +109,27 @@ export default function ContactListItem({ contact }) {
               <StoryCard story={contact.stories[0]} />
             </Box>
           </Box>
+
+
+
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton size='small'>
-              <EditIcon />
-            </IconButton>
+            {contact !== undefined && <EditContactModal contact={contact} /> }
+
+
+
+
+
+
+
+
+
             <IconButton size='small' onClick={() => openDeleteDialog(contact.id)}>
               <DeleteIcon />
             </IconButton>
             <Dialog
-              open={open}
-              onClose={handleClose}
+              open={openDelete}
+              onClose={handleDeleteClose}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
@@ -95,7 +142,7 @@ export default function ContactListItem({ contact }) {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleDeleteClose}>Cancel</Button>
                 <Button onClick={() => deleteContact(contact.id)} autoFocus>
                   Delete
                 </Button>

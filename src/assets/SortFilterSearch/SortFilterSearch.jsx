@@ -29,7 +29,9 @@ export default function SortFilterSearch(props) {
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
+  //3 sets sortanchor to date/title
   const [sortAnchor, setSortAnchor] = useState(null);
+  //4
   const sortOpen = Boolean(sortAnchor)
 
   const [filterAnchor, setFilterAnchor] = useState(null);
@@ -62,9 +64,10 @@ export default function SortFilterSearch(props) {
     setFilterAnchor(e.currentTarget)
   }
 
+  //2 opens sort menu
   const openSortMenu = (e) => {
-    console.log('opening sort menu');
-    setSortAnchor(e.currentTarget)
+    console.log('opening sort menu',e.currentTarget);
+    setSortAnchor(e.currentTarget);
   }
 
   const toggleSortDirection = () => {
@@ -81,7 +84,8 @@ export default function SortFilterSearch(props) {
         >
           <ReplayIcon sx={{ height: 20, width: 20 }} />
         </Button>
-        <ButtonGroup>
+        
+        <ButtonGroup>{/*1 On click invoke openSortMenu */}
           <Button
             onClick={openSortMenu}
             sx={{ textTransform: 'none' }}
@@ -89,6 +93,7 @@ export default function SortFilterSearch(props) {
             size='small'
           >{sortMethod}
           </Button>
+
           <Button
             onClick={toggleSortDirection}
             variant='text'

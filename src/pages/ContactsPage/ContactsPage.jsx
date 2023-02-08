@@ -8,6 +8,7 @@ import CreateNewContactModal from '../../components/CreateNewContactModal/Create
 
 export default function ContactsPage() {
     const dispatch = useDispatch();
+    
     const contacts = useSelector(store => store.contacts.allContacts)
 
     useEffect(() => {

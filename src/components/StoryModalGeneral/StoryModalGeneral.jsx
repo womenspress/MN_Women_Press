@@ -13,6 +13,7 @@ import {
   Menu,
   Autocomplete,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
 import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
 import ThemeDropdownItem from '../../assets/ThemeDropdownItem/ThemeDropdownItem';
@@ -54,7 +55,7 @@ const smallStyle = {
 export default function StoryModalGeneral(props) {
   //! todo: make dropdown tag and contact search functionality
 
-  const { setModalOpen, setStep, createMode } = props;
+  const { setModalOpen, setStep, createMode, setCreateMode } = props;
 
   const dispatch = useDispatch();
 
@@ -188,6 +189,12 @@ export default function StoryModalGeneral(props) {
     setModalOpen(false);
   };
 
+  const handleClose = () => {
+    setModalOpen(false);
+    setCreateMode(true);
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
+  };
+
   // navigation: update temp story with input values, move to next step
   const navigateAdditional = () => {
     console.log('navigating to next page');
@@ -209,9 +216,20 @@ export default function StoryModalGeneral(props) {
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
       {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
       {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
-      <Typography variant="h4">
-        {createMode ? 'New Story - general' : 'Edit Story - general'}
-      </Typography>
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Typography variant="h4">
+          {createMode ? 'New Story - general' : 'Edit Story - general'}
+        </Typography>
+        <CloseIcon
+          onClick={handleClose}
+          sx={{
+            '&:hover': {
+              cursor: 'pointer',
+              backgroundColor: 'lightgrey',
+            },
+          }}
+        />
+      </Box>
       <Grid container spacing={1}>
         {/* title */}
         <Grid item xs={3}>

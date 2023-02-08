@@ -7,6 +7,7 @@ import { DateTime } from 'luxon'
 
 // components
 import { Box, Typography, Grid, Button, TextField, FormGroup, Checkbox, FormControlLabel } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
 
 
@@ -88,6 +89,12 @@ export default function StoryModalAdditional(props) {
     setModalOpen(false);
   }
 
+  const handleClose = () => {
+    setModalOpen(false);
+    setCreateMode(true);
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
+  }
+
   // navigation: move to appropriate step, update temp story with the input values
   const navigateGeneral = () => {
     console.log('navigating to general');
@@ -106,7 +113,18 @@ export default function StoryModalAdditional(props) {
   return (
     <Box>
       {/* {JSON.stringify(inputValues)} */}
-      <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
+      <Box display='flex' flexDirection='row' justifyContent='space-between'>
+        <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
+        <CloseIcon
+          onClick={handleClose}
+          sx={{
+            '&:hover': {
+              cursor: 'pointer',
+              backgroundColor: 'lightgrey'
+            }
+          }}
+        />
+      </Box>
       <Grid container spacing={1}>
 
         {/* subtitle */}

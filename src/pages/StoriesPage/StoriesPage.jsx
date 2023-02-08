@@ -24,6 +24,7 @@ export default function StoriesPage() {
     dispatch({ type: 'GET_ALL_CONTACTS' })
     dispatch({ type: 'GET_ALL_THEMES' })
     dispatch({ type: 'GET_ALL_TAGS' })
+    dispatch({ type: 'CLEAR_TEMP_STORY'})
   }
     , [])
 
@@ -37,7 +38,8 @@ export default function StoriesPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleClickPlus = () => {
-    setModalOpen(true)
+    setCreateMode(true);
+    setModalOpen(true);
   }
 
   const handleClose = () => {
@@ -131,7 +133,7 @@ export default function StoriesPage() {
           />
         </Box>
         <Box>
-          {storyResults.length && storyResults.map(story => {
+          {storyResults.length ? storyResults.map(story => {
             return (
               <StoryListItem
                 key={story.title}
@@ -142,14 +144,17 @@ export default function StoriesPage() {
 
               />
             )
-          })}
+          })
+          :
+          <></>
+          }
         </Box>
       </Box>
       <Modal
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} />
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode}/>
         </Box>
       </Modal>
 

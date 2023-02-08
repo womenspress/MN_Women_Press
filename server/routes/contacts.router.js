@@ -33,6 +33,12 @@ router.get('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
 
     allContacts = generalInfoResults.rows;
 
+    for (let contact of allContacts) {
+      if (contact.roles[0] === null) contact.roles = [];
+      if (contact.tags[0] === null) contact.tags = [];
+      if (contact.stories[0]===null) contact.stories = [];
+    }
+
     //     //* 2. stories. query returns array of objects:
     //     /*
     //       {

@@ -5,8 +5,11 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import { mainContentBox } from '../../__style';
 import StoryListItem from '../../components/StoryListItem/StoryListItem';
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar'
+
+import EditContactModal from '../../components/EditContactModal/EditContactModal';
 
 
 export default function ContactDetailsPage() {
@@ -52,7 +55,6 @@ export default function ContactDetailsPage() {
 
   return (
     <Box>
-      {/* {JSON.stringify(contact)} */}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {/* profile image */}
         {contact[0]?.id &&
@@ -61,7 +63,7 @@ export default function ContactDetailsPage() {
         <Box display='flex' flexDirection='column' justifyContent='center' height={150}>
           <Box display='flex' flexDirection='row' alignItems='flex-end'>
             <Typography variant='h3'>{contact[0]?.name}</Typography>
-            <Typography variant='h6' sx={{ ml: 1 }}>({contact[0]?.pronouns})</Typography>
+            <Typography variant='h6' sx={{ ml: 1 }}>{contact[0] ? <>({contact[0]?.pronouns})</> : null}</Typography>
           </Box>
           <Typography variant='h6' fontStyle='italic'>{contact[0]?.expertise}</Typography>
         </Box>
@@ -70,7 +72,8 @@ export default function ContactDetailsPage() {
 
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
         <Grid item xs={4}>
-          <Typography variant='h5' fontWeight='bold'>General Info <EditIcon /></Typography>
+          {JSON.stringify(contact)}
+          <Typography variant='h5' fontWeight='bold'>General Info {contact ? <EditContactModal contact={contact} /> : null }</Typography>
         </Grid>
         <Grid item xs={4}>
           <Typography variant='h5' fontWeight='bold' sx={{ ml: 2 }}>Contributions</Typography>
@@ -91,7 +94,7 @@ export default function ContactDetailsPage() {
 
 
           {/* general info section */}
-          <Grid item xs={4} id='generalInfoSection' sx={{ p: 1, backgroundColor: 'lightgrey', mt: 1 }}>
+          <Grid item xs={4} id='generalInfoSection' sx={{ ...mainContentBox, m: 0, mt: 1 }}>
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Bio</Typography>
             <Typography variant='body1'>{contact[0]?.bio}</Typography>
             <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Role(s)</Typography>
@@ -120,7 +123,7 @@ export default function ContactDetailsPage() {
           {/* contributions section */}
           <Grid item xs={8} sx={{ pl: 1, backgroundColor: 'white' }}>
             {/* container so there is margin between general info and contributions while maximizing screen space */}
-            <Grid container space={1} sx={{ backgroundColor: 'lightgrey', mt: 1, minHeight: generalInfoHeight + 'px' }}>
+            <Grid container space={1} sx={{ ...mainContentBox, m: 0, mt: 1, minHeight: generalInfoHeight + 'px' }}>
               <Grid item xs={12} sx={{ p: 1 }}>
                 {contactStories[0] && contactStories.map((story) => {
                   return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} />

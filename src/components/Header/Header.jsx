@@ -7,7 +7,7 @@ import './Header.css';
 
 export default function Header(props){
     let user = props.user;
-    console.log(user);
+    // console.log(user);
 
     return(
         <div className='header'>

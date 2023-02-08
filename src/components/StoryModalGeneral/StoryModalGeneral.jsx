@@ -145,6 +145,8 @@ export default function StoryModalGeneral(props) {
 
   return (
     <Box>
+
+      {/* inputValues themes: {JSON.stringify(inputValues.theme)} */}
       {/* input values: {JSON.stringify(inputValues)}
       contactId: {JSON.stringify(contactIds)}
       
@@ -323,7 +325,7 @@ export default function StoryModalGeneral(props) {
             })}
           </Menu>
           <Box sx={{ bgcolor: 'grey.100', padding: .5 }}>
-            {inputValues.themes?.map(theme => {
+            {inputValues.theme.map(theme => {
               return (
                 <ThemeSearchCard key={theme.id} theme={theme} />
               )

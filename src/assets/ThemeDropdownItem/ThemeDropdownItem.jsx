@@ -5,8 +5,8 @@ import { MenuItem, Typography } from '@mui/material'
 export default function ThemeDropdownItem({ handleClose, theme, setInputValues, inputValues }) {
 
   const handleClick = () => {
-    console.log('clicked contact no.', theme.id);
-    setInputValues({...inputValues, themes: [...inputValues.themes, theme]})
+    console.log('clicked theme no.', theme.id);
+    setInputValues({...inputValues, theme: [theme]})
     handleClose()
   }
 

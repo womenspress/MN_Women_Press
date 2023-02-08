@@ -208,9 +208,9 @@ export default function EditContactModal({contact}){
         handleClose()
     }
 
-    if (!contact.roles.includes(null)){
-        console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
-    };
+    // if (!contact.roles.includes(null)){
+    //     console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
+    // };
 
     const ModalPages = () => {
         switch(createContactPage){

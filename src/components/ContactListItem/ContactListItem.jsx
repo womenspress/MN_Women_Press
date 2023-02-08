@@ -1,22 +1,19 @@
-import React from 'react'
-import { useState } from 'react'
+import React, {useState} from 'react'
+
+//libraries
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton } from '@mui/material'
+//components
+import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton, DialogActions, DialogContent, Dialog, DialogContentText, DialogTitle, Modal } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import StoryCard from '../StoryCard/StoryCard'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Modal from '@mui/material/Modal';
-
 import EditContactModal from '../EditContactModal/EditContactModal'
+import StoryCard from '../StoryCard/StoryCard'
+import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar';
 
 export default function ContactListItem({ contact }) {
   const history = useHistory()
@@ -59,6 +56,13 @@ export default function ContactListItem({ contact }) {
       padding: 2,
   };
 
+  const avatarStyle = {
+    height: 30,
+    width: 30,
+    margin: 1,
+    fontSize: 14
+  }
+
   const [openEdit, setEditOpen] = React.useState(false);
 
   const handleEditOpen = () => {
@@ -80,7 +84,7 @@ export default function ContactListItem({ contact }) {
   }
 
   return (
-    <Paper sx={{ paddingX: 1, marginY: 1 }}>
+    <Paper sx={{ paddingX: 1, marginY: .5 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton
@@ -102,7 +106,7 @@ export default function ContactListItem({ contact }) {
       >
         <Box display='flex' flexDirection='row' justifyContent='space-between'>
           <Box sx={{ display: 'flex' }}>
-            <Avatar src={contact.photo} />
+            <ContactAvatar avatarStyle={avatarStyle} contact={contact}/>
             <Typography variant='body2'>{contact.bio}</Typography>
             <Box>
               <Typography variant='body2'>most recent contribution:</Typography>

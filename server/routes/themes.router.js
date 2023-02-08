@@ -21,6 +21,11 @@ router.get('/', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   GROUP BY "theme"."id"
   ;`
   pool.query(getAllThemesQuery).then((results) => {
+    // console.log('theme results: ', results.rows)
+    for (let theme of results.rows){
+      if (theme.stories[0] === null) theme.stories = [];
+      if (theme.contacts[0] === null) theme.contacts = [];
+    }
     res.send(results.rows);
   }).catch((err) => {
     console.log('error in get all themes query: ', err)

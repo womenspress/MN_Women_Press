@@ -6,62 +6,59 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ReplayIcon from '@mui/icons-material/Replay';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function SortFilterSearch(props) {
 
   /* 
   props: 
   sortOptions = string[], eg ['alphabetical', 'date', etc.]
-  filterOptions = string[], eg  ['']
-  searchTerm: a useState variable from parent component
-  setSearchTerm: useState function from parent component
-
   sortMethod:
   setSortMethod
-
   sortDirection
   setSortDirection
-
-  filterMethod
-  setFilterMethod
+  
+  searchByOptions = string[], eg  ['']
+  searchTerm: a useState variable from parent component
+  setSearchTerm: useState function from parent component
+  searchBy:
+  setSearchBy
   */
-
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const [sortMenuOpen, setSortMenuOpen] = useState(false);
-
-  //3 sets sortanchor to date/title
-  const [sortAnchor, setSortAnchor] = useState(null);
-  //4
-  const sortOpen = Boolean(sortAnchor)
-
-  const [filterAnchor, setFilterAnchor] = useState(null);
-  const filterOpen = Boolean(filterAnchor)
-
-
   const {
     sortOptions,
-    filterOptions,
-    searchTerm,
-    setSearchTerm,
     sortMethod,
     setSortMethod,
     sortDirection,
     setSortDirection,
-    filterMethod,
-    setFilterMethod
+    searchTerm,
+    setSearchTerm,
+    searchByOptions,
+    searchBy,
+    setSearchBy
   } = props
+
+  // const [searchByMenuOpen, setSearchByMenuOpen] = useState(false);
+  const [searchByAnchor, setSearchByAnchor] = useState(null);
+  const searchByOpen = Boolean(searchByAnchor)
+
+  // const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const [sortAnchor, setSortAnchor] = useState(null);
+  const sortOpen = Boolean(sortAnchor)
+
+  //3 sets sortanchor to date/title
+  //4
 
   const handleReset = () => {
     setSortMethod(sortOptions[0]);
-    setFilterMethod(filterOptions[0]);
+    setSearchBy(searchByOptions[0]);
     setSortDirection('ascending');
     setSearchTerm('');
   }
 
 
-  const openFilterMenu = (e) => {
-    console.log('opening filter menu');
-    setFilterAnchor(e.currentTarget)
+  const openSearchByMenu = (e) => {
+    console.log('opening search by menu');
+    setSearchByAnchor(e.currentTarget)
   }
 
   //2 opens sort menu
@@ -107,11 +104,11 @@ export default function SortFilterSearch(props) {
 
 
         <Button
-          endIcon={<FilterListIcon />}
-          onClick={openFilterMenu}
+          endIcon={<SearchIcon />}
+          onClick={openSearchByMenu}
           sx={{ textTransform: 'none' }}
           size='small'
-        >{filterMethod}</Button>
+        >{searchBy}</Button>
       </Box>
       <Menu
         anchorEl={sortAnchor}
@@ -131,15 +128,15 @@ export default function SortFilterSearch(props) {
       </Menu>
 
       <Menu
-        anchorEl={filterAnchor}
-        open={filterOpen}
-        onClose={() => setFilterAnchor(null)}
+        anchorEl={searchByAnchor}
+        open={searchByOpen}
+        onClose={() => setSearchByAnchor(null)}
       >
-        {filterOptions.map(option => {
+        {searchByOptions.map(option => {
           return (
             <MenuItem
               key={option}
-              onClick={() => setFilterMethod(option)}
+              onClick={() => setSearchBy(option)}
             >
               {option}
             </MenuItem>

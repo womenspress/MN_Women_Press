@@ -24,37 +24,24 @@ export default function StoryArchive() {
 
   // initialize all variables
 
-/* 
-  const [options, setOptions]= useState({search: '', sort: 'date', direction: 'ascending', filter: 'all'}) 
-  */
+  /* 
+    const [options, setOptions]= useState({search: '', sort: 'date', direction: 'ascending', filter: 'all'}) 
+    */
+
+  const sortOptions = ['date published', 'title',]
+  const [sortMethod, setSortMethod] = useState('date published');
+  const [sortDirection, setSortDirection] = useState('ascending')
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortMethod, setSortMethod] = useState('date');
-  const [sortDirection, setSortDirection] = useState('ascending')
-  const [filterMethod, setFilterMethod] = useState('all');
-  const sortOptions = ['date', 'title']
-  const filterOptions = ['all', 'recent',]
-
-  const filterResults = (arr) => {
-    switch (filterMethod) {
-      case 'all':
-        return arr;
-        break;
-      // recent sets to the past three months
-      case 'recent':
-        return arr.filter(story => story.publication_date > DateTime.now().minus({ months: 3 }))
-        break;
-      default:
-        return arr
-    }
-  }
+  const [searchBy, setSearchBy] = useState('all');
+  const searchByOptions = ['all', 'title', 'contact', 'tag', 'theme']
 
   const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
 
   const sortResults = (arr) => {
 
     switch (sortMethod) {
-      case 'date':
+      case 'date published':
         return arr.sort((a, b) => {
           if (DateTime.fromISO(a.publication_date) > DateTime.fromISO(b.publication_date)) return 1
           if (DateTime.fromISO(a.publication_date) < DateTime.fromISO(b.publication_date)) return -1
@@ -72,18 +59,32 @@ export default function StoryArchive() {
   }
 
   const searchResults = (arr) => {
+
     function getContactsString(story) {
       return story.contacts.map(contact => contact?.name.toLowerCase()).join('')
     }
 
-    function getTabsString(story) {
+    function getTagsString(story) {
       return story.tags.map(tag => tag?.name.toLowerCase()).join('')
     }
 
-    return arr.filter(story => story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTabsString(story).includes(searchTerm) || story.theme[0]?.name.toLowerCase().includes(searchTerm))
+    switch (searchBy) {
+      case 'all':
+        return arr.filter(story => story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTagsString(story).includes(searchTerm) || story.theme[0]?.name.toLowerCase().includes(searchTerm))
+      case 'title':
+        return arr.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'contact':
+        return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
+      case 'tag':
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
+      case 'theme':
+        return arr.filter(story => story.theme[0].name.toLowerCase().includes(searchTerm.toLowerCase()))
+      default:
+        return arr
+    }
   }
 
-  const storyResults = ascDesc(filterResults(sortResults(searchResults(archiveStories))))
+  const storyResults = ascDesc(sortResults(searchResults(archiveStories)))
 
   return (
     <Box>
@@ -94,13 +95,13 @@ export default function StoryArchive() {
         <Typography variant='h4'>Stories </Typography>
         <SortFilterSearch
           sortOptions={sortOptions}
-          filterOptions={filterOptions}
           sortMethod={sortMethod}
           setSortMethod={setSortMethod}
           sortDirection={sortDirection}
           setSortDirection={setSortDirection}
-          filterMethod={filterMethod}
-          setFilterMethod={setFilterMethod}
+          searchByOptions={searchByOptions}
+          searchBy={searchBy}
+          setSearchBy={setSearchBy}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
         />

@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import { largeModal, mainContentBox } from '../../__style'
 import { makeStatusColor } from '../../modules/makeStatusColor';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
-import MatchingHeightComponent from '../../components/MatchComponentHeight/MatchComponentHeight';
 
 
 

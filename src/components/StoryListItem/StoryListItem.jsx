@@ -43,6 +43,8 @@ export default function StoryListItem(props) {
     setModalOpen
   } = props
 
+  // console.log(story)
+
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -53,7 +55,7 @@ export default function StoryListItem(props) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   // builds an array of deadlines on story for later use
-  const deadlines = [{ name: 'Rough draft', date: DateTime.fromISO(story.rough_draft_deadline) }, { name: 'Final draft', date: DateTime.fromISO(story.final_draft_deadline) }, { name: 'Publication', date: DateTime.fromISO(story.publication_date) }];
+  const deadlines = [{ name: 'Rough draft', date: DateTime.fromISO(story?.rough_draft_deadline) }, { name: 'Final draft', date: DateTime.fromISO(story?.final_draft_deadline) }, { name: 'Publication', date: DateTime.fromISO(story?.publication_date) }];
 
   const upcomingDeadlines = deadlines.filter((date) => date.date > DateTime.now())
 
@@ -129,10 +131,11 @@ export default function StoryListItem(props) {
             </Box>
           </Grid>
           <Grid item xs={2}>
+            {/*  */}
             <Typography>Theme: {story.theme[0]?.name}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography>{author.length ? <>Author: {author[0].name}</> : null}</Typography>
+            <Typography>{author?.length ? <>by: {author[0].name}</> : null}</Typography>
           </Grid>
           <Grid item xs={2} display='flex' flexDirection='row-reverse'>
             <StatusDropdown story={story} />
@@ -154,7 +157,6 @@ export default function StoryListItem(props) {
             <ListTags numOfDisplay={3} tags={story.tags} />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {JSON.stringify(createMode)}
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />
             </IconButton>

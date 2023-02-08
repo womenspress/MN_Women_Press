@@ -12,24 +12,37 @@ export default function ContactDetailsPage() {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const allContacts = useSelector(store => store.contacts.allContacts)  
-  
+  const allContacts = useSelector(store => store.contacts.allContacts)
+  const allStories = useSelector(store => store.stories.allStories);
+
   const [createMode, setCreateMode] = useState(true);
-  const [ contact, setContact ] = useState({});
+  const [contact, setContact] = useState({});
+  const [contactStories, setContactStories] = useState([]);
 
   const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
 
   useEffect(() => {
-    setGeneralInfoHeight(document.getElementById("generalInfoSection").offsetHeight)
+    setGeneralInfoHeight(document.getElementById("generalInfoSection").offsetHeight - 1)
   })
 
   useEffect(() => {
-    dispatch({ type: 'GET_ALL_CONTACTS'});
+    dispatch({ type: 'GET_ALL_CONTACTS' });
+    dispatch({ type: 'GET_ALL_STORIES'})
   }, [])
-  
+
   useEffect(() => {
     setContact(allContacts.filter((contact) => contact.id == id));
   }, [allContacts])
+
+  useEffect(() => {
+    let tempStories = [];
+
+    allStories.map((story) => {
+      story.contacts.filter(contact => contact.id == id).length > 0 ? tempStories.push(story) : null;
+    })
+    setContactStories(tempStories)
+  }, [allStories])
+
 
 
   return (
@@ -63,7 +76,7 @@ export default function ContactDetailsPage() {
         <Grid item xs={4}>
           <Typography variant='h5' fontWeight='bold' sx={{ ml: 2 }}>Contributions</Typography>
         </Grid>
-        
+
         {/* search item, need to finish functionality */}
         <Grid item xs={4}>
           <TextField
@@ -109,11 +122,11 @@ export default function ContactDetailsPage() {
           <Grid item xs={8} sx={{ pl: 1, backgroundColor: 'white' }}>
             {/* container so there is margin between general info and contributions while maximizing screen space */}
             <Grid container space={1} sx={{ backgroundColor: 'lightgrey', mt: 1, minHeight: generalInfoHeight + 'px' }}>
-                <Grid item xs={12} sx={{ p: 1 }}>
-                  {contact[0]?.stories?.map((story) => {
-                    return <StoryListItem key={story.id} story={story} createMode={createMode} setCreateMode={setCreateMode} />
-                  })}
-                </Grid>
+              <Grid item xs={12} sx={{ p: 1 }}>
+                {contactStories[0] && contactStories.map((story) => {
+                  return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} />
+                })}
+              </Grid>
             </Grid>
           </Grid>
 

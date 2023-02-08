@@ -133,7 +133,7 @@ export default function StoriesPage() {
           />
         </Box>
         <Box>
-          {allStories.length ? allStories.map(story => {
+          {storyResults.length ? storyResults.map(story => {
             return (
               <StoryListItem
                 key={story.title}

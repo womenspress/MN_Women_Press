@@ -23,7 +23,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 900,
-    height: 470,
+    height: "fit-content",
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -53,7 +53,10 @@ export default function EditContactModal({contact}){
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false)
+        resetState();
+    };
 
     // contact info values
     // page 1
@@ -83,6 +86,27 @@ export default function EditContactModal({contact}){
     const [searchTag, setSearchTag] = React.useState('');
     const [newTagDescription, setNewTagDescription] = React.useState('');
     const [foundTag, setFoundTag] = React.useState([]);
+
+    // reset state on close 
+    const resetState = () => {
+        setName(contact.name);
+        setPronouns(contact.pronouns);
+        setEmail(contact.email);
+        setPhone(contact.phone);
+        setExpertise(contact.expertise);
+        setTagsArray(!contact.tags.includes(null) ? contact.tags : []);
+        setNotes("");
+        setRolesArray(!contact.tags.includes(null) ? contact.tags : []);
+        setBillingAddress(contact.billing_address || '');
+        setMailingAddress(contact.mailing_address || '');
+        setBio(contact.bio || '');
+        setWebsite(contact.website || '');
+        setTwitter(contact.twitter || '');
+        setFacebook(contact.facebook || '');
+        setInstagram(contact.instagram || '');
+        setLinkedIn(contact.linkedIn || '');
+        setSearchTag('');
+    }
 
     const setSearchTagValue = (tagName) => {
         setSearchTag(tagName);

@@ -1,6 +1,7 @@
 import React from 'react'
 
 // libraries
+import {DateTime} from 'luxon'
 
 // components
 import { Box, Paper, Typography } from '@mui/material'
@@ -23,7 +24,7 @@ const handleClick= () =>{
           {theme.name}
         </Typography>
         <Typography variant = 'body2'>
-          {Date.parse(theme.month_year)}
+          {DateTime.fromISO(theme.month_year).toFormat('MMMM, yyyy')}
         </Typography>
 
       </Box>

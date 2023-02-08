@@ -24,15 +24,15 @@ export default function ThemeModal(props) {
   let contacts = props.contacts || [{ id: -1, name: "contact not found", pronouns: 'she/they/them', expertise: "ice skating and catching butterflies", bio: "extreme mountain climber", note: "perfect photo dance session" }];
 
 
-  const storiesIds = stories?.map(story=>story.id)
+  const storiesIds = stories ? stories?.map(story => story?.id) : [];
   const allContacts = useSelector(store => store.contacts.allContacts);
   const allStories = useSelector(store => store.stories.allStories);
 
-  const [contactToAdd, setContactToAdd] = useState({id: 0, label: ''})
+  const [contactToAdd, setContactToAdd] = useState({ id: 0, label: '' })
 
 
   // story options: all available stories that are not already in the theme, bundled up for rendering in the autocomplete
-  const storyOptions = allStories.filter(story=>!storiesIds.includes(story.id)).map(story=> {return {id: story.id, label: story.name}})
+  const storyOptions = allStories.filter(story => !storiesIds.includes(story.id)).map(story => { return { id: story.id, label: story.name } })
 
   // secondary theme stow edited values
   const [editValues, setEditValues] = useState(theme);
@@ -175,13 +175,13 @@ export default function ThemeModal(props) {
               Stories:
             </Typography>
             <form onSubmit={handleStorySubmit}>
-              <Box sx={{display: 'flex'}}>
+              <Box sx={{ display: 'flex' }}>
                 <Autocomplete
                   size='small'
                   sx={{ width: 200 }}
                   options={storyOptions}
                   renderInput={(params) => <TextField {...params} size='small' label='story' />}
-                  value = {contactToAdd}
+                  value={contactToAdd}
                 />
                 <Button
                   type='submit'

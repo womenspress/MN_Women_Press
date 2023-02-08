@@ -9,7 +9,7 @@ const router = express.Router();
  * GET ALL stories route
  */
 router.get('/', async (req, res) => {
-  console.log('GETTING ALL STORIES');
+  // console.log('GETTING ALL STORIES');
 
   let getAllQueryText = `
   SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
@@ -59,16 +59,16 @@ router.get('/', async (req, res) => {
           for (invoice of contactForInvoice.invoice) {
             //for each story object, if all comparison data is present process below
             if (story.id && contactForInvoice.id && contactObj && invoice) {
-              console.log(
-                'Story Object Id:',
-                story.id,
-                'Invoice info story id:',
-                invoice.story_id,
-                'Contact Id:',
-                contactObj.id,
-                'InvoiceContact Id:',
-                contactForInvoice.id
-              );
+              // console.log(
+              //   'Story Object Id:',
+              //   story.id,
+              //   'Invoice info story id:',
+              //   invoice.story_id,
+              //   'Contact Id:',
+              //   contactObj.id,
+              //   'InvoiceContact Id:',
+              //   contactForInvoice.id
+              // );
               // IF contact id of story object and invoice object matches
               //AND story id of story object and invoice object
               //add invoice info to currentStoryDetails array
@@ -195,6 +195,16 @@ router.post('/', async (req, res) => {
     tags,
     copies_destination,
   } = req.body;
+
+  // finds contacts who require payment
+  const contactsRequiringPayment = contacts.filter((contact) => contact?.invoice_amount > 0)
+  let payment_needed;
+  if (contactsRequiringPayment.reduce((sum, contact) => sum + contact.invoice_amount, 0) > 0) {
+    payment_needed = true;
+  } else {
+    payment_needed = false;
+  }
+
   let postStoryQuery = `
   INSERT INTO "story" 
   ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
@@ -204,6 +214,8 @@ router.post('/', async (req, res) => {
   VALUES 
   ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
   RETURNING "id";`; //Return id of story
+
+
 
   //Database Query below
   const connection = await pool.connect();
@@ -233,7 +245,7 @@ router.post('/', async (req, res) => {
       number_of_copies, //19
       photo, //20
       copies_required, //21
-      payment_required, //22
+      payment_needed, //22
       payment_completed, //23
       copies_destination, //24
     ]);
@@ -333,6 +345,14 @@ router.put('/:id', async (req, res) => {
     number_of_copies,
     copies_destination,
   } = req.body;
+
+  const contactsRequiringPayment = contacts.filter((contact) => contact?.invoice_amount > 0)
+  let payment_needed;
+  if (contactsRequiringPayment.reduce((sum, contact) => sum + contact.invoice_amount, 0) > 0) {
+    payment_needed = true;
+  } else {
+    payment_needed = false;
+  }
 
   //Query
   const connection = await pool.connect();

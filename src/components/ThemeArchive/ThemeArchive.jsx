@@ -15,11 +15,7 @@ import ContactListItem from '../ThemeContactListItem/ThemeContactListItem';
 
 export default function ThemeArchive() {
 
-
   const [selectedTheme, setSelectedTheme] = useState(null);
-
-
-
   const [searchTerm, setSearchTerm] = useState('');
   const [sortMethod, setSortMethod] = useState('date');
   const [filterMethod, setFilterMethod] = useState('none');
@@ -28,25 +24,11 @@ export default function ThemeArchive() {
   const filterOptions = ['none', 'recent',]
 
   const allThemes = useSelector(store => store.themes.allThemes);
+  const archiveThemes = Array.isArray(allThemes) && allThemes.length ? allThemes.filter(theme => Date.parse(theme.month_year) < DateTime.now()) : [];
 
-  const archiveThemes = allThemes.length ? allThemes.filter(theme => DateTime.fromObject({ month: theme.month, year: theme.year }) < DateTime.now().toISO()) : [];
-
-  const filterResults = (arr) => {
-    switch (filterMethod) {
-      case 'none':
-        return arr;
-        break;
-      // recent sets to the past three months
-      case 'recent':
-        return arr.filter(theme => DateTime.fromObject({ month: theme.month, year: theme.year }) > DateTime.now().minus({ months: 3 }))
-        break;
-      default:
-        return arr
-    }
-  }
 
   const sortResults = (arr) => {
-    let outputArray
+    let outputArray = arr
     if (sortDirection === 'descending') outputArray = arr.reverse();
 
     switch (sortMethod) {
@@ -69,22 +51,33 @@ export default function ThemeArchive() {
     }
   }
 
+
+  const filterResults = (arr) => {
+    switch (filterMethod) {
+      case 'none':
+        return arr;
+        break;
+      // recent sets to the past three months
+      case 'recent':
+        return arr.filter(theme => DateTime.fromISO(theme.month_year) > DateTime.now().minus({ months: 3 }))
+        break;
+      default:
+        return arr
+    }
+  }
+
+
   const searchResults = (arr) => {
-    // const arrTags = arr.map(story=>story.tags).map(tag=>tag.name)
-    // const arrContacts = arr.map(story=>story.contacts).map(contact=>contact.name)
-    // const arrTitles = arr.map(story=>story.title)
-    // const arrThemes = arr.map(story=>story.theme.name)
-
-
-
-
-    return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm) || theme.description.toLowerCase().includes(searchTerm))
+    return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm))
   }
 
   const themeResults = filterResults(sortResults(searchResults(archiveThemes)))
 
   return (
     <Box>
+      {/* <p>{JSON.stringify(archiveThemes)}</p>
+      <p>{Date.now()}</p>
+      <p>{Date.parse(allThemes[0].month_year)}</p> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant='h4'>Themes</Typography>
         <SortFilterSearch
@@ -98,12 +91,13 @@ export default function ThemeArchive() {
           setFilterMethod={setFilterMethod}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          
         />
 
       </Box>
       <Grid container spacing={1}>
         <Grid item xs={2} sx = {{height: 600, overflow: 'hidden', overflowY: 'scroll'}}>
-          {allThemes?.map(theme => {
+          {themeResults?.map(theme => {
             return (
               <ArchiveThemeCard key={theme.name} theme={theme} setSelectedTheme={setSelectedTheme} />
             )
@@ -112,7 +106,7 @@ export default function ThemeArchive() {
         <Grid item xs={5} sx = {{height: 600, overflow: 'hidden', overflowY: 'scroll'}}>
           {selectedTheme &&
             <Box>
-<Typography variant='h6'>stories</Typography>
+              <Typography variant='h6'>stories</Typography>
               {selectedTheme.stories?.map(story => {
                 return (
                   <StoryListItem key={story.title} story={story} />

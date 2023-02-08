@@ -28,8 +28,8 @@ export default function StoryArchive() {
     const [options, setOptions]= useState({search: '', sort: 'date', direction: 'ascending', filter: 'all'}) 
     */
 
-  const sortOptions = ['date', 'title']
-  const [sortMethod, setSortMethod] = useState('date');
+  const sortOptions = ['date published', 'title',]
+  const [sortMethod, setSortMethod] = useState('date published');
   const [sortDirection, setSortDirection] = useState('ascending')
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,7 +41,7 @@ export default function StoryArchive() {
   const sortResults = (arr) => {
 
     switch (sortMethod) {
-      case 'date':
+      case 'date published':
         return arr.sort((a, b) => {
           if (DateTime.fromISO(a.publication_date) > DateTime.fromISO(b.publication_date)) return 1
           if (DateTime.fromISO(a.publication_date) < DateTime.fromISO(b.publication_date)) return -1
@@ -59,23 +59,29 @@ export default function StoryArchive() {
   }
 
   const searchResults = (arr) => {
-    switch(searchBy) {
-      case 'all':
-        return arr
-
-      
-    }
-
 
     function getContactsString(story) {
       return story.contacts.map(contact => contact?.name.toLowerCase()).join('')
     }
 
-    function getTabsString(story) {
+    function getTagsString(story) {
       return story.tags.map(tag => tag?.name.toLowerCase()).join('')
     }
 
-    return arr.filter(story => story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTabsString(story).includes(searchTerm) || story.theme[0]?.name.toLowerCase().includes(searchTerm))
+    switch (searchBy) {
+      case 'all':
+        return arr.filter(story => story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTagsString(story).includes(searchTerm) || story.theme[0]?.name.toLowerCase().includes(searchTerm))
+      case 'title':
+        return arr.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'contact':
+        return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
+      case 'tag':
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
+      case 'theme':
+        return arr.filter(story => story.theme[0].name.toLowerCase().includes(searchTerm.toLowerCase()))
+      default:
+        return arr
+    }
   }
 
   const storyResults = ascDesc(sortResults(searchResults(archiveStories)))

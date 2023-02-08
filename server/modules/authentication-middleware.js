@@ -17,9 +17,6 @@ const rejectUnauthorized = ( req, res, next) => {
   } else {
     res.sendStatus(403);
   }
-  else {
-    res.sendStatus(403)
-  }
 }
 
 module.exports = { rejectUnauthenticated, rejectUnauthorized };

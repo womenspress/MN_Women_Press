@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // libraries
 import { useDispatch, useSelector } from 'react-redux';
-import {DateTime} from 'luxon'
+import { DateTime } from 'luxon'
 
 // components
 import StoryListItem from '../../components/StoryListItem/StoryListItem'
@@ -24,7 +24,7 @@ export default function StoriesPage() {
     dispatch({ type: 'GET_ALL_CONTACTS' })
     dispatch({ type: 'GET_ALL_THEMES' })
     dispatch({ type: 'GET_ALL_TAGS' })
-    dispatch({ type: 'CLEAR_TEMP_STORY'})
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
     , [])
 
@@ -49,37 +49,23 @@ export default function StoriesPage() {
 
   //* ============ SORT/FILTER/SEARCH STUFF ===============
 
-  const sortOptions = ['date', 'title', 'status'];
-  const filterOptions = ['all', 'recent', 'tags', 'themes'];
+  const sortOptions = ['date added', 'title']
+  const [sortMethod, setSortMethod] = useState('date added');
+  const [sortDirection, setSortDirection] = useState('ascending')
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortMethod, setSortMethod] = useState('date');
-  const [sortDirection, setSortDirection] = useState('ascending');
-  const [filterMethod, setFilterMethod] = useState('all')
+  const [searchBy, setSearchBy] = useState('all');
+  const searchByOptions = ['all', 'story info', 'theme', 'tag', 'contact']
 
-
-  const filterResults = (arr) => {
-    switch (filterMethod) {
-      case 'all':
-        return arr;
-        break;
-      // recent sets to the past three months
-      case 'recent':
-        return arr.filter(story => story.publication_date > DateTime.now().minus({ months: 3 }))
-        break;
-      default:
-        return arr
-    }
-  }
 
   const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
 
   const sortResults = (arr) => {
-
     switch (sortMethod) {
-      case 'date':
+      case 'date added':
         return arr.sort((a, b) => {
-          if (DateTime.fromISO(a.publication_date) > DateTime.fromISO(b.publication_date)) return 1
-          if (DateTime.fromISO(a.publication_date) < DateTime.fromISO(b.publication_date)) return -1
+          if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
+          if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
           else return 0
         })
       case 'title':
@@ -93,20 +79,42 @@ export default function StoriesPage() {
     }
   }
 
+  // const searchByOptions = ['all', 'theme', 'tag', 'contact', 'story info']
   const searchResults = (arr) => {
     function getContactsString(story) {
       return story.contacts.map(contact => contact?.name.toLowerCase()).join('')
     }
 
-    function getTabsString(story) {
-      return story.tags.map(tag => tag?.name.toLowerCase()).join('')
+    function getTagsString(story) {
+      const tagsNameString = story.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
+      const tagsDescString = story.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
+      return tagsNameString+tagsDescString
     }
 
-    return arr.filter(story => story.title.toLowerCase().includes(searchTerm) || getContactsString(story).includes(searchTerm) || getTabsString(story).includes(searchTerm) || story.theme[0]?.name.toLowerCase().includes(searchTerm))
+    function getThemesString(story) {
+      const themesNameString = story.theme?.map(theme=>theme?.title?.toLowerCase()).join('');
+      const themesDescString = story.theme?.map(theme=>theme?.description?.toLowerCase()).join('');
+      return themesNameString+themesDescString
+    }
+
+    switch (searchBy) {
+      case 'contact':
+        return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
+      case 'story info':
+        return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'theme':
+        return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
+      case 'tag':
+        return arr.filter(story=>getTagsString(story).includes(searchTerm.toLowerCase()))
+      case 'all':
+        return arr.filter(story=>getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+      default:
+        return arr
+    }
   }
 
-  const storyResults = ascDesc(filterResults(sortResults(searchResults(currentStories))))
-
+  //! set to all stories for now. set to current stories to fix
+  const storyResults = ascDesc(sortResults(searchResults(allStories)))
 
   return (
     <Box>
@@ -118,22 +126,22 @@ export default function StoriesPage() {
       </Box>
       <Box
         sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <SortFilterSearch
             sortOptions={sortOptions}
-            filterOptions={filterOptions}
             sortMethod={sortMethod}
+            setSortMethod={setSortMethod}
             sortDirection={sortDirection}
             setSortDirection={setSortDirection}
-            setSortMethod={setSortMethod}
-            filterMethod={filterMethod}
-            setFilterMethod={setFilterMethod}
+            searchByOptions={searchByOptions}
+            searchBy={searchBy}
+            setSearchBy={setSearchBy}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
           />
         </Box>
         <Box>
-          {allStories.length ? allStories.map(story => {
+          {storyResults.length ? storyResults.map(story => {
             return (
               <StoryListItem
                 key={story.title}
@@ -144,8 +152,8 @@ export default function StoriesPage() {
               />
             )
           })
-          :
-          <></>
+            :
+            <></>
           }
         </Box>
       </Box>
@@ -153,7 +161,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode}/>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} />
         </Box>
       </Modal>
 

@@ -45,19 +45,17 @@ router.get('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
     let contactsInvoiceResponse = contactQueryResponse.rows;
 
     //Step 3.a: Loop over every story object in 'storiesArray
-    for (let i = 0; i < storiesArray.length; i++) {
-      const story = storiesArray[i];
+    for (let story of storiesArray) {
       //for each story object, if tags, contacts, or theme array is null change to empty
       if (story.tags[0] === null) story.tags = [];
       if (story.contacts[0] === null) story.contacts = [];
       if (story.theme[0] === null) story.theme = [];
       //Step 3.b: In each story object, loop over every contact object in contacts array
-      for (let j = 0; j < story.contacts.length; j++) {
-        const contactObj = story.contacts[j];
+      for (let contactObj of story.contacts) {
         //Step 3.c: Loop over every contact object in the contactsInvoiceResponse array (where the story_contact table info for each contact is)
         for (let contactForInvoice of contactsInvoiceResponse) {
           //Step 3.d: Loop over every invoice information object in invoice array
-          for (invoice of contactForInvoice.invoice) {
+          for (let invoice of contactForInvoice.invoice) {
             //for each story object, if all comparison data is present process below
             if (story.id && contactForInvoice.id && contactObj && invoice) {
               // console.log(

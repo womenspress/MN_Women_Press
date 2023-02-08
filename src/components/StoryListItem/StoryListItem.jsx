@@ -71,6 +71,7 @@ export default function StoryListItem(props) {
     bgcolor: statusColor.color,
     width: 16,
     height: 16,
+    minWidth: 16,
     borderRadius: '50%'
   }
 

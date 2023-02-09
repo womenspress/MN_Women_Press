@@ -196,6 +196,7 @@ router.post('/', async (req, res) => {
     contacts,
     theme,
     tags,
+    copies_destination,
   } = req.body;
 
   // finds contacts who require payment
@@ -224,9 +225,9 @@ router.post('/', async (req, res) => {
   "socials_required","socials_completed","underwriter_required",
   "underwriter_completed","photo_submitted","photo_comments",
   "external_link","word_count",
-  "rough_draft_deadline","final_draft_deadline","publication_date" )
+  "rough_draft_deadline","final_draft_deadline","publication_date", "copies_destination" )
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)
   RETURNING "id";`; //Return id of story
 
   //Database Query below
@@ -261,6 +262,7 @@ router.post('/', async (req, res) => {
       rough_draft_deadline, //23
       final_draft_deadline, //24
       publication_date, //25
+      copies_destination, //26
     ]);
 
     //**Step 2: Set returning id to storyId variable

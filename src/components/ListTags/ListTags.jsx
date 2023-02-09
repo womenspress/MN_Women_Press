@@ -8,7 +8,7 @@ import Tag from '../Tag/Tag';
 
 export default function ListTags(props) {
     const removeTag = (tag) => {
-        props.removeTag(tag)
+        props.removeTag(tag.id);
     }
 
     let defaultTags = [

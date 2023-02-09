@@ -144,6 +144,13 @@ export default function StoriesPage() {
     alignItems: 'center',
   }
 
+  // remove tag from story
+  const removeTag = (tagID) => {
+    console.log('remove tag', tagID, 'from story: ', id);
+    const story_id = id;
+    dispatch({type: 'DELETE_STORY_TAG', payload: {tag_id: tagID, story_id: story_id}})
+  }
+
   
 
 
@@ -171,7 +178,7 @@ export default function StoriesPage() {
         </Grid>
         <Grid item xs={4}>
           <Box>
-            <ListTags numOfDisplay={currentStory.tags?.length} tags={currentStory.tags} />
+            <ListTags numOfDisplay={currentStory.tags?.length} tags={currentStory.tags} removeTag={removeTag} />
           </Box>
         </Grid>
 

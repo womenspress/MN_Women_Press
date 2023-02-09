@@ -235,7 +235,7 @@ export default function StoryModalGeneral(props) {
             }}
           />
         </Box>
-        <Grid container spacing={1} sx={{ paddingX: '5%', maxHeight: 480, overflow: 'hidden', overflowY: 'scroll'}}>
+        <Grid container spacing={1} sx={{ paddingX: '5%', maxHeight: 480, overflow: 'hidden', overflowY: 'scroll' }}>
           {/* title */}
           <Grid item xs={4}>
             <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
@@ -244,7 +244,7 @@ export default function StoryModalGeneral(props) {
           </Grid>
           <Grid item xs={7}>
             <TextField
-            sx = {{width: '90%'}}
+              sx={{ width: '90%' }}
               size="small"
               value={inputValues.title}
               onChange={(e) =>
@@ -380,10 +380,14 @@ export default function StoryModalGeneral(props) {
               })}
             </Menu>
             {inputValues.tags.length ?
-              <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
+              <Box sx={{ bgcolor: 'grey.100', padding: 0.5, display: 'flex', flexWrap: 'wrap' }}>
                 {inputValues.tags?.map((tag) => {
                   if (tag) {
-                    return <TagSearchCard key={tag?.id} tag={tag} />;
+                    return <TagSearchCard
+                      key={tag?.id}
+                      tag={tag}
+                      inputValues={inputValues}
+                      setInputValues={setInputValues} />;
                   }
                 })}
               </Box>
@@ -424,12 +428,16 @@ export default function StoryModalGeneral(props) {
             </Menu>
             {inputValues.theme.length ? <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
               {inputValues.theme.map((theme) => {
-                return <ThemeSearchCard key={theme.id} theme={theme} />;
-              
+                return <ThemeSearchCard
+                  key={theme.id}
+                  theme={theme}
+                  inputValues={inputValues}
+                  setInputValues={setInputValues} />;
+
               })}
             </Box>
-            :
-            <></>
+              :
+              <></>
             }
           </Grid>
           {/* notes */}
@@ -440,9 +448,9 @@ export default function StoryModalGeneral(props) {
           </Grid>
           <Grid item xs={7}>
             <TextField
-            sx = {{width: '90%'}}
-            multiline
-            rows = {3}
+              sx={{ width: '90%' }}
+              multiline
+              rows={3}
               size="small"
               value={inputValues.notes}
               onChange={(e) =>

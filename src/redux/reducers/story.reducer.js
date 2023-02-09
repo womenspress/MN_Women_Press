@@ -36,18 +36,18 @@ const storyObject = {
   publication_date: DateTime.now().toISO(),
   contacts: [],
   theme: [],
-  tags: []
-}
+  tags: [],
+};
 
 const allStories = (state = [], action) => {
-  if (action.type === 'SET_ALL_STORIES') return action.payload
-  return state
-}
+  if (action.type === 'SET_ALL_STORIES') return action.payload;
+  return state;
+};
 
 const currentStory = (state = storyObject, action) => {
-  if (action.type === 'SET_CURRENT_STORY') return action.payload
-  return state
-}
+  if (action.type === 'SET_CURRENT_STORY') return action.payload;
+  return state;
+};
 
 const blankStory = {
   id: '',
@@ -58,37 +58,41 @@ const blankStory = {
   notes: '',
   photo: '',
   type: '',
-  copies_required: 0,
+  copies_required: false,
+  number_of_copies: 0,
   copies_sent: false,
-  photo_required: false,
   photo_uploaded: false,
-  fact_check_required: false,
   fact_check_completed: false,
-  graphic_image_required: false,
-  graphic_image_completed: false,
   payment_required: false,
   payment_completed: false,
+  socials_required: false,
+  socials_completed: false,
+  underwriter_required: false,
+  underwriter_completed: false,
+  photo_submitted: false,
+  photo_comments: '',
   external_link: '',
   word_count: 0,
   date_added: '',
-  rough_draft_deadline: DateTime.now(),
-  final_draft_deadline: DateTime.now().toISO(),
-  publication_date: DateTime.now().toISO(),
+  rough_draft_deadline: '01/01/2100',
+  final_draft_deadline: '01/01/2100',
+  publication_date: '01/01/2100',
   contacts: [],
   theme: [],
-  tags: []
-}
+  tags: [],
+};
 //! staging area, not sure if we'll use
 
 const tempStory = (state = blankStory, action) => {
-  if (action.type === 'SET_TEMP_STORY') return {...state, ...action.payload}
-  if (action.type === 'CLEAR_TEMP_STORY') return blankStory
-  return state
-}
-
+  if (action.type === 'SET_TEMP_STORY') return { ...state, ...action.payload };
+  if (action.type === 'CLEAR_TEMP_STORY') return blankStory;
+  return state;
+};
 
 const storyReducer = combineReducers({
-  allStories, currentStory, tempStory
-})
+  allStories,
+  currentStory,
+  tempStory,
+});
 
-export default storyReducer
+export default storyReducer;

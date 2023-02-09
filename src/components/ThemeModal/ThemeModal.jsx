@@ -164,8 +164,8 @@ export default function ThemeModal(props) {
       </Box>
       {/* //* ================ stories ============== */}
 
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
+      <Grid container>
+        <Grid item >
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
             <Typography
               id="modal-modal-description"
@@ -195,9 +195,6 @@ export default function ThemeModal(props) {
               <ThemeStoryListItem story={story} key={index} />
             )
           })}
-
-        </Grid>
-        <Grid item xs={6}>
           {/* //* ================ contacts ============== */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
             <Typography
@@ -220,8 +217,10 @@ export default function ThemeModal(props) {
               <ThemeContactListItem contact={contact} key={index} />
             )
           })}
-          {/* </Box> */}</Grid>
-        {/* </Modal> */}</Grid>
+          {/* </Box> */}
+          </Grid>
+        {/* </Modal> */}
+        </Grid>
     </>
   );
 }

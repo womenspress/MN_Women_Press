@@ -132,7 +132,7 @@ export default function SortFilterSearch(props) {
         open={searchByOpen}
         onClose={() => setSearchByAnchor(null)}
       >
-        {searchByOptions.map(option => {
+        {searchByOptions?.map(option => {
           return (
             <MenuItem
               key={option}

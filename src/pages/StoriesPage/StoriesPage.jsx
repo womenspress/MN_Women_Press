@@ -29,7 +29,12 @@ export default function StoriesPage() {
     , [])
 
   const allStories = useSelector(story => story.stories.allStories)
-  const currentStories = allStories.filter(story => DateTime.fromISO(story.publication_date) > DateTime.now())
+  // added other date fields into current stories, as well as use photo_uploaded as a check to make sure story ideas do not drop off the story page (otherwise if there are no tasks assigned and with a default publication_date of today() it will not show on the page)
+  const currentStories = allStories.filter(story =>
+    (DateTime.fromISO(story.publication_date) >= DateTime.now() || DateTime.fromISO(story.final_draft_deadline) >= DateTime.now() || DateTime.fromISO(story.rough_draft_deadline) >= DateTime.now())
+    ||
+    story.photo_uploaded === false
+  )
 
   //! temporary fix. const allStories = useSelector(store => store.stories.allStories);
 
@@ -86,15 +91,15 @@ export default function StoriesPage() {
     }
 
     function getTagsString(story) {
-      const tagsNameString = story.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
-      const tagsDescString = story.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
-      return tagsNameString+tagsDescString
+      const tagsNameString = story.tags?.map(tag => tag?.name?.toLowerCase()).join('');
+      const tagsDescString = story.tags?.map(tag => tag?.description?.toLowerCase()).join('')
+      return tagsNameString + tagsDescString
     }
 
     function getThemesString(story) {
-      const themesNameString = story.theme?.map(theme=>theme?.title?.toLowerCase()).join('');
-      const themesDescString = story.theme?.map(theme=>theme?.description?.toLowerCase()).join('');
-      return themesNameString+themesDescString
+      const themesNameString = story.theme?.map(theme => theme?.title?.toLowerCase()).join('');
+      const themesDescString = story.theme?.map(theme => theme?.description?.toLowerCase()).join('');
+      return themesNameString + themesDescString
     }
 
     switch (searchBy) {
@@ -105,19 +110,20 @@ export default function StoriesPage() {
       case 'theme':
         return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
       case 'tag':
-        return arr.filter(story=>getTagsString(story).includes(searchTerm.toLowerCase()))
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
       case 'all':
-        return arr.filter(story=>getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
       default:
         return arr
     }
   }
 
   //! set to all stories for now. set to current stories to fix
-  const storyResults = ascDesc(sortResults(searchResults(allStories)))
+  const storyResults = ascDesc(sortResults(searchResults(currentStories)))
 
   return (
     <Box>
+      {/* {JSON.stringify(currentStories)} */}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Typography variant='h3'>Stories Page</Typography>
         <IconButton onClick={handleClickPlus}>
@@ -141,10 +147,10 @@ export default function StoriesPage() {
           />
         </Box>
         <Box>
-          {storyResults.length ? storyResults.map(story => {
+          {storyResults.length ? storyResults.map((story,index) => {
             return (
               <StoryListItem
-                key={story.title}
+                key={index}
                 story={story}
                 createMode={createMode}
                 setCreateMode={setCreateMode}

@@ -469,10 +469,13 @@ router.post('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =>
 
 //Created with the idea that the tag id was params and story id is in the body of the request
 //Is there a place for this route in our process? Currently embedded in the put route.
-router.delete('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
+router.delete('/tag/:tagId/:storyId', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // DELETE a tag from a story
-  let tagId = req.params.id;
-  let storyId = req.body.id;
+  console.log('here');
+  let tagId = req.params.tagId;
+  console.log(tagId);
+  let storyId = req.params.storyId;
+  console.log(storyId);
   let deleteTagQueryText =
     'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
   pool

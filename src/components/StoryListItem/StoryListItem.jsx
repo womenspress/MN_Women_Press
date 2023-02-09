@@ -114,6 +114,13 @@ export default function StoryListItem(props) {
     setDeleteOpen(false)
   }
 
+  // remove tag from story
+  const removeTag = (tagID) => {
+    console.log('remove tag', tagID, 'from story: ', story.id);
+    const story_id = story.id;
+    dispatch({type: 'DELETE_STORY_TAG', payload: {tag_id: tagID, story_id: story_id}})
+  }
+
   return (
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -155,7 +162,7 @@ export default function StoryListItem(props) {
             </Typography>
           </Box>
           <Box>
-            <ListTags numOfDisplay={3} tags={story.tags} />
+            <ListTags numOfDisplay={3} tags={story.tags} removeTag={removeTag} />
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton size='small' onClick={handleEditOpen}>

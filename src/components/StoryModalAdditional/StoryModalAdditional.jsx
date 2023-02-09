@@ -6,7 +6,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { DateTime } from 'luxon'
 
 // components
-import { Box, Typography, Grid, Button, TextField, FormGroup, Checkbox, FormControlLabel } from '@mui/material'
+import { Box, Typography, Grid, Button, TextField, FormGroup, Checkbox, FormControlLabel, ToggleButtonGroup, ToggleButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
 
@@ -28,8 +28,6 @@ export default function StoryModalAdditional(props) {
 
   const [inputValues, setInputValues] = useState(currentStory);
 
-  const [photographerSearchTerm, setPhotographerSearchTerm] = useState('')
-
   const handleRoughDraft = (value) => {
     setInputValues({ ...inputValues, rough_draft_deadline: value })
   }
@@ -42,16 +40,19 @@ export default function StoryModalAdditional(props) {
     setInputValues({ ...inputValues, publication_date: value })
   }
 
+  const handleToggleChange = (e, value) => {
+    console.log('in handle toggle change, e: ', e)
+    setInputValues({ ...inputValues, photo_submitted: value })
+  }
+
+  const handlePhotoComments = (e) =>{
+    setInputValues({...inputValues, photo_comments: e.target.value})
+  }
+
   const handleGraphic = (e) => {
     console.log('in handleGraphic');
     if (e.target.checked) setInputValues({ ...inputValues, graphic_image_required: true });
     else setInputValues({ ...inputValues, graphic_image_required: false })
-  }
-
-  const handlePhoto = (e) => {
-    console.log('in handlePhoto');
-    if (e.target.checked) setInputValues({ ...inputValues, photo_required: true });
-    else setInputValues({ ...inputValues, photo_required: false })
   }
 
   const handleFactCheck = (e) => {
@@ -78,6 +79,15 @@ export default function StoryModalAdditional(props) {
     console.log('inputValues', inputValues)
   }
 
+  const handleSocials = (e) =>{
+    if (e.target.checked) setInputValues({...inputValues, socials_required: true})
+    else setInputValues({...inputValues, socials_required: false})
+  }
+
+  const handleUnderwriter = (e) =>{
+    if (e.target.checked) setInputValues({...inputValues, underwriter_required: true})
+    else setInputValues({...inputValues, underwriter_required: false})
+  }
 
 
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
@@ -109,10 +119,9 @@ export default function StoryModalAdditional(props) {
   // }
 
 
-
   return (
     <Box>
-      {/* {JSON.stringify(inputValues)} */}
+      {/* <pre> {JSON.stringify(inputValues, null, 2)}</pre> */}
       <Box display='flex' flexDirection='row' justifyContent='space-between'>
         <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
         <CloseIcon
@@ -154,6 +163,7 @@ export default function StoryModalAdditional(props) {
               size='small'
               label="rough draft due"
               // inputFormat = "MM/DD/YYYY"
+              disableMaskedInput={true}
               value={DateTime.fromISO(inputValues.rough_draft_deadline)}
               onChange={handleRoughDraft}
               renderInput={(params) => <TextField {...params} />}
@@ -163,6 +173,7 @@ export default function StoryModalAdditional(props) {
             <DesktopDatePicker
               size='small'
               label="final draft due"
+              disableMaskedInput={true}
               // inputFormat = "MM/DD/YYYY"
               value={DateTime.fromISO(inputValues.final_draft_deadline)}
               onChange={handleFinalDraft}
@@ -173,6 +184,7 @@ export default function StoryModalAdditional(props) {
             <DesktopDatePicker
               // inputFormat = "MM/DD/YYYY"
               label="publication"
+              disableMaskedInput={true}
               value={DateTime.fromISO(inputValues.publication_date)}
               onChange={handlePublicationDate}
               renderInput={(params) => <TextField {...params} />}
@@ -205,19 +217,48 @@ export default function StoryModalAdditional(props) {
             onChange={(e) => setInputValues({ ...inputValues, word_count: e.target.value })} />
         </Grid>
 
+        {/* photo */}
+        <Grid item xs={2}>
+          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>photo</Typography>
+
+
+        </Grid>
+        <Grid item xs={3}>
+          <ToggleButtonGroup
+            value={inputValues.photo_submitted}
+            exclusive
+            size='small'
+            onChange={handleToggleChange}
+          >
+            <ToggleButton value={true}>submitted</ToggleButton>
+            <ToggleButton value={false}>assigned</ToggleButton>
+          </ToggleButtonGroup>
+
+        </Grid>
+          <Grid item xs={6}>
+            <TextField
+              size='small'
+              placeholder='photo comments'
+              value = {inputValues.photo_comments}
+              onChange = {handlePhotoComments}
+              sx = {{width: '100%'}}
+              />
+
+          </Grid>
+
+
         {/* more options */}
         <Grid item xs={2}>
           <Typography>additional needs</Typography>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={5}>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <FormControlLabel control={<Checkbox checked={inputValues.graphic_image_required} onChange={handleGraphic} />} label='graphic' />
             <FormControlLabel control={<Checkbox checked={inputValues.fact_check_required} onChange={handleFactCheck} />} label='fact check' />
-            <FormControlLabel control={<Checkbox checked={inputValues.photo_required} onChange={handlePhoto} />} label='photo' />
 
             <Box>
               <FormControlLabel control={<Checkbox checked={inputValues.copies_required} onChange={handleCopies} />} label='copies sent' />
-              {inputValues.copies_required &&
+              {inputValues.copies_required ?
                 <>
                   <TextField
                     sx={{ display: 'inline-block', width: 60 }}
@@ -235,9 +276,18 @@ export default function StoryModalAdditional(props) {
                     value={inputValues.copies_destination}
                     onChange={handleCopyDestination}
                   />
-                </>
+
+                </> :
+                <></>
               }
             </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={5}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <FormControlLabel control={<Checkbox checked={inputValues.socials_required} onChange={handleSocials} />} label='social media' />
+            <FormControlLabel control={<Checkbox checked={inputValues.underwriter_required} onChange={handleUnderwriter} />} label='underwriter' />
+
           </Box>
         </Grid>
 

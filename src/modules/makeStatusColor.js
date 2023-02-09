@@ -71,7 +71,7 @@ export function makeStatusColor(story) {
   // console.log(piecesToTrack);
 
   const piecesReady = !piecesToTrack.filter(piece => !piece.complete).length
-  console.log('pieces ready', piecesReady, story.title);
+  // console.log('pieces ready', piecesReady, story.title);
   // const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
   // console.log('pieces ready', piecesReady);
 

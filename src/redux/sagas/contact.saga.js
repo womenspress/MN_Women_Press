@@ -83,7 +83,7 @@ function* createContactTag(action) {
 function* deleteContactTag(action) {
   try {
     yield axios.delete(`/api/contacts/tag/${action.payload.contact_id}/${action.payload.tag_id}`);
-    yield put({ type: 'GET_CURRENT_CONTACT', payload: action.payload.contact_id })
+    yield put({ type: 'GET_ALL_CONTACTS'})
   } catch (error) {
     console.log('error in deleteContactTag saga:', error);
   }

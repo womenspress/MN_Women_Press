@@ -69,7 +69,7 @@ export default function ContactDetailsPage() {
     dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
 
-    // remove tag from story
+    // remove tag from contact
     const removeTag = (tagID) => {
       // console.log('remove tag', tagID, 'from story: ', id);
       const story_id = id;

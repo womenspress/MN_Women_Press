@@ -1,8 +1,12 @@
 const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
+const {
+  rejectUnauthenticated,
+  rejectUnauthorized,
+} = require('../modules/authentication-middleware');
 
-router.get('/', async (req, res) => {
+router.get('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   // GET route code here
   // console.log('In contacts router GET, getting all contacts. URL: /api/contacts');
 
@@ -28,6 +32,12 @@ router.get('/', async (req, res) => {
     const generalInfoResults = await client.query(generalInfoQuery);
 
     allContacts = generalInfoResults.rows;
+
+    for (let contact of allContacts) {
+      if (contact.roles[0] === null) contact.roles = [];
+      if (contact.tags[0] === null) contact.tags = [];
+      if (contact.stories[0]===null) contact.stories = [];
+    }
 
     //     //* 2. stories. query returns array of objects:
     //     /*
@@ -116,7 +126,7 @@ router.get('/', async (req, res) => {
 //   res.sendStatus(200);
 // });
 
-router.post('/', async (req, res) => {
+router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   //console.log('editing project. req.body: ', req.body)
   const client = await pool.connect();
 
@@ -198,7 +208,7 @@ router.post('/', async (req, res) => {
 
 //* --------------- PUT - update contact -----------------
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   console.log('editing project. req.body: ', req.body);
   const client = await pool.connect();
 
@@ -304,7 +314,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // DELETE route goes here. straightforward thanks to ON DELETE CASCADE
   const deleteContactQuery = `DELETE FROM "contact" WHERE id=$1`;
   pool
@@ -318,7 +328,7 @@ router.delete('/:id', (req, res) => {
 
 // CREATE tags for a contact. just insert one row into the junction table
 // require ID for params and req.body to include tags
-router.post('/tag/:id', (req, res) => {
+router.post('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const createTagQuery = `INSERT INTO "tag_contact"("tag_id", "contact_id") VALUES($1, $2);`;
   pool
     .query(createTagQuery, [req.body.tag.id, req.params.id]) //NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
@@ -329,7 +339,7 @@ router.post('/tag/:id', (req, res) => {
     });
 });
 
-router.delete('/tag/:id', (req, res) => {
+router.delete('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // DELETE a tag from a contact. delete a row from the junction table
   const deleteTagContactQuery = `DELETE FROM "tag_contact" WHERE "contact_id" = $1 AND "tag_id" = $2;`;
   pool

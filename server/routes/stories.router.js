@@ -1,6 +1,7 @@
 const express = require('express');
 const {
   rejectUnauthenticated,
+  rejectUnauthorized,
 } = require('../modules/authentication-middleware');
 const pool = require('../modules/pool');
 const router = express.Router();
@@ -8,7 +9,7 @@ const router = express.Router();
 /**
  * GET ALL stories route
  */
-router.get('/', async (req, res) => {
+router.get('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   // console.log('GETTING ALL STORIES');
 
   let getAllQueryText = `
@@ -44,19 +45,17 @@ router.get('/', async (req, res) => {
     let contactsInvoiceResponse = contactQueryResponse.rows;
 
     //Step 3.a: Loop over every story object in 'storiesArray
-    for (let i = 0; i < storiesArray.length; i++) {
-      const story = storiesArray[i];
+    for (let story of storiesArray) {
       //for each story object, if tags, contacts, or theme array is null change to empty
       if (story.tags[0] === null) story.tags = [];
       if (story.contacts[0] === null) story.contacts = [];
       if (story.theme[0] === null) story.theme = [];
       //Step 3.b: In each story object, loop over every contact object in contacts array
-      for (let j = 0; j < story.contacts.length; j++) {
-        const contactObj = story.contacts[j];
+      for (let contactObj of story.contacts) {
         //Step 3.c: Loop over every contact object in the contactsInvoiceResponse array (where the story_contact table info for each contact is)
         for (let contactForInvoice of contactsInvoiceResponse) {
           //Step 3.d: Loop over every invoice information object in invoice array
-          for (invoice of contactForInvoice.invoice) {
+          for (let invoice of contactForInvoice.invoice) {
             //for each story object, if all comparison data is present process below
             if (story.id && contactForInvoice.id && contactObj && invoice) {
               // console.log(
@@ -99,7 +98,7 @@ router.get('/', async (req, res) => {
 
 //GET Story by ID
 
-router.get('/current/:id', async (req, res) => {
+router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   let id = req.params.id;
   let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
   FROM "story"
@@ -165,7 +164,7 @@ router.get('/current/:id', async (req, res) => {
 /**
  * POST story route
  */
-router.post('/', async (req, res) => {
+router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   const {
     title,
     subtitle,
@@ -313,7 +312,7 @@ router.post('/', async (req, res) => {
 /**
  * DELETE route template
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // DELETE route code here
   let id = req.params.id;
   let deleteQueryText = 'DELETE FROM "story" WHERE "id"=$1;';
@@ -329,7 +328,7 @@ router.delete('/:id', (req, res) => {
 /**
  * EDIT route for story by id
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
   let id = req.params.id;
   const {
     title,
@@ -471,7 +470,7 @@ router.put('/:id', async (req, res) => {
 
 //POST route for adding a tag to tag data table, returning id of added tag
 // written with assumption that tagId was in the params, and name and description was data in body of request.
-router.post('/tag/:id', (req, res) => {
+router.post('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // CREATE tags for a story
   let tagId = req.params.id;
   let name = req.body.name;
@@ -492,10 +491,13 @@ router.post('/tag/:id', (req, res) => {
 
 //Created with the idea that the tag id was params and story id is in the body of the request
 //Is there a place for this route in our process? Currently embedded in the put route.
-router.delete('/tag/:id', (req, res) => {
+router.delete('/tag/:tagId/:storyId', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // DELETE a tag from a story
-  let tagId = req.params.id;
-  let storyId = req.body.id;
+  console.log('here');
+  let tagId = req.params.tagId;
+  console.log(tagId);
+  let storyId = req.params.storyId;
+  console.log(storyId);
   let deleteTagQueryText =
     'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
   pool
@@ -508,7 +510,7 @@ router.delete('/tag/:id', (req, res) => {
 });
 
 // updates notes, initiated at story details page
-router.put('/notes/:id', rejectUnauthenticated, (req, res) => {
+router.put('/notes/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const queryText = 'UPDATE "story" SET "notes"=$1 WHERE "id"=$2;';
   const queryParams = [req.body.notes, req.params.id];
 
@@ -522,7 +524,7 @@ router.put('/notes/:id', rejectUnauthenticated, (req, res) => {
 });
 
 //Router put for updating the status of checked box on the DOM
-router.put('/status/:id', rejectUnauthenticated, (req, res) => {
+router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const statusToChange = req.body.statusToChange;
   const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
   const queryParams = [req.body.statusValue, req.body.story_id];

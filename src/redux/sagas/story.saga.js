@@ -107,8 +107,9 @@ function* createStoryTag(action) {
 // payload we are receiving will be: {story_id: 'story ID', tag_id: 'tag ID' }
 function* deleteStoryTag(action) {
   try {
-    yield axios.delete(`/api/stories/tag/${action.payload.story_id}`, action.payload.tag_id);
-    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload })
+    yield axios.delete(`/api/stories/tag/${action.payload.tag_id}/${action.payload.story_id}`);
+    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.story_id });
+    yield put({ type: 'GET_ALL_STORIES' });
   } catch (error) {
     console.log('error in deleteStoryTag saga:', error)
   }

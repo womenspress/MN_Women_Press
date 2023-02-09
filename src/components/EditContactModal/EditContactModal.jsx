@@ -8,9 +8,8 @@ import TextField from '@mui/material/TextField';
 import ListTags from '../ListTags/ListTags';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Switch } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {IconButton} from '@mui/material';
+import {Switch, IconButton , Divider} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContactTagSearchCard from '../../assets/TagSearchCard/ContactTagSearchCard';
 
@@ -23,7 +22,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 900,
-    height: 470,
+    height: "fit-content",
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -53,7 +52,10 @@ export default function EditContactModal({contact}){
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false)
+        resetState();
+    };
 
     // contact info values
     // page 1
@@ -62,10 +64,10 @@ export default function EditContactModal({contact}){
     const [email, setEmail] = React.useState(contact.email|| '');
     const [phone, setPhone] = React.useState(contact.phone || '');
     const [expertise, setExpertise] = React.useState(contact.expertise || '');
-    const [tagsArray, setTagsArray] = React.useState(!contact.tags.includes(null) ? contact.tags : []);
+    const [tagsArray, setTagsArray] = React.useState(!contact.tags?.includes(null) ? contact.tags : []);
     // const [location, setLocation] = React.useState(contact.location);
     const [notes, setNotes] = React.useState(contact.note || '')
-    const [rolesArray, setRolesArray] = React.useState(!contact.roles.includes(null) ? contact.roles : []);
+    const [rolesArray, setRolesArray] = React.useState(!contact.roles?.includes(null) ? contact.roles : []);
     
     // page 2
     const [billingAddress, setBillingAddress] = React.useState(contact.billing_address || '');
@@ -83,6 +85,27 @@ export default function EditContactModal({contact}){
     const [searchTag, setSearchTag] = React.useState('');
     const [newTagDescription, setNewTagDescription] = React.useState('');
     const [foundTag, setFoundTag] = React.useState([]);
+
+    // reset state on close 
+    const resetState = () => {
+        setName(contact.name);
+        setPronouns(contact.pronouns);
+        setEmail(contact.email);
+        setPhone(contact.phone);
+        setExpertise(contact.expertise);
+        setTagsArray(!contact.tags.includes(null) ? contact.tags : []);
+        setNotes("");
+        setRolesArray(!contact.roles.includes(null) ? contact.roles : []);
+        setBillingAddress(contact.billing_address || '');
+        setMailingAddress(contact.mailing_address || '');
+        setBio(contact.bio || '');
+        setWebsite(contact.website || '');
+        setTwitter(contact.twitter || '');
+        setFacebook(contact.facebook || '');
+        setInstagram(contact.instagram || '');
+        setLinkedIn(contact.linkedIn || '');
+        setSearchTag('');
+    }
 
     const setSearchTagValue = (tagName) => {
         setSearchTag(tagName);
@@ -125,16 +148,24 @@ export default function EditContactModal({contact}){
         {id: 3, name: 'Editor'},
         {id: 4, name: 'Expert'},
         {id: 5, name: 'Fact checker'},
-        {id: 6, name: "Printer"}
+        {id: 6, name: "Printer"},
+        {id: 7, name: 'Author'},
+        {id: 8, name: 'Underwriter'},
+        {id: 9, name: 'Source'},
+        {id: 10, name: 'Subject'},
     ]
 
     console.log();
-    const [check1, setCheck1] = React.useState(contact.roles.filter(e =>  e?.name == 'Photographer').length>0);
-    const [check2, setCheck2] = React.useState(contact.roles.filter(e =>  e?.name == 'Illustrator').length>0);
-    const [check3, setCheck3] = React.useState(contact.roles.filter(e =>  e?.name == 'Editor').length>0);
-    const [check4, setCheck4] = React.useState(contact.roles.filter(e =>  e?.name == 'Expert').length>0);
-    const [check5, setCheck5] = React.useState(contact.roles.filter(e =>  e?.name == 'Fact Checker').length>0);
-    const [check6, setCheck6] = React.useState(contact.roles.filter(e =>  e?.name == 'Printer').length>0);
+    const [check1, setCheck1] = React.useState(contact.roles?.filter(e =>  e?.name == 'Photographer').length>0);
+    const [check2, setCheck2] = React.useState(contact.roles?.filter(e =>  e?.name == 'Illustrator').length>0);
+    const [check3, setCheck3] = React.useState(contact.roles?.filter(e =>  e?.name == 'Editor').length>0);
+    const [check4, setCheck4] = React.useState(contact.roles?.filter(e =>  e?.name == 'Expert').length>0);
+    const [check5, setCheck5] = React.useState(contact.roles?.filter(e =>  e?.name == 'Fact Checker').length>0);
+    const [check6, setCheck6] = React.useState(contact.roles?.filter(e =>  e?.name == 'Printers').length>0);
+    const [check7, setCheck7] = React.useState(contact.roles?.filter(e =>  e?.name == 'Author').length>0);
+    const [check8, setCheck8] = React.useState(contact.roles?.filter(e =>  e?.name == 'Underwriter').length>0);
+    const [check9, setCheck9] = React.useState(contact.roles?.filter(e =>  e?.name == 'Source').length>0);
+    const [check10, setCheck10] = React.useState(contact.roles?.filter(e =>  e?.name == 'Subject').length>0);
 
     const changeRoleStatus = (checked,id) => {
         console.log(checked);
@@ -177,9 +208,9 @@ export default function EditContactModal({contact}){
         handleClose()
     }
 
-    if (!contact.roles.includes(null)){
-        console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
-    };
+    // if (!contact.roles.includes(null)){
+    //     console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
+    // };
 
     const ModalPages = () => {
         switch(createContactPage){
@@ -194,15 +225,17 @@ export default function EditContactModal({contact}){
                         <TextField sx={{ width: 1}} id="outlined-basic" label="Email" variant="outlined" value={email} onChange={(event)=> setEmail(event.target.value)}/>
                         <TextField sx={{ width: 1}} id="outlined-basic" label="Phone" variant="outlined" value={phone} onChange={(event)=> setPhone(event.target.value)}/>
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Expertise" variant="outlined" value={expertise} onChange={(event)=> setExpertise(event.target.value)}/>
-                        <Box sx={{display: 'flex', width: 1}}>
-                            <Typography id="modal-modal-title" variant="p" component="p">
+                        <Box sx={{display: 'flex', width: 1, padding: 1,  justifyContent: 'space-evenly'  }}>
+                            <Typography sx={{}} id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[0].name}
                                 <Switch 
+                                    sx={{display:'flex'}}
                                     checked={check1} 
                                     onClick={() => setCheck1(!check1)}
                                     onChange={() => changeRoleStatus(!check1, availableRoles[0].id)}
                                 />
                             </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
                             <Typography id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[1].name}
                                 <Switch 
@@ -211,6 +244,7 @@ export default function EditContactModal({contact}){
                                     onChange={() => changeRoleStatus(!check2, availableRoles[1].id)}
                                 />
                             </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
                             <Typography id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[2].name}
                                 <Switch 
@@ -219,6 +253,7 @@ export default function EditContactModal({contact}){
                                     onChange={() => changeRoleStatus(!check3, availableRoles[2].id)}
                                 />
                             </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
                             <Typography id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[3].name}
                                 <Switch 
@@ -227,20 +262,58 @@ export default function EditContactModal({contact}){
                                     onChange={() => changeRoleStatus(!check4, availableRoles[3].id)}
                                 />
                             </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
                             <Typography id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[4].name}
                                 <Switch 
                                     checked={check5} 
                                     onClick={() => setCheck5(!check5)}
-                                    onChange={() => changeRoleStatus(check5, availableRoles[4].id)}
+                                    onChange={() => changeRoleStatus(!check5, availableRoles[4].id)}
                                 />
                             </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
                             <Typography id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[5].name}
                                 <Switch 
                                     checked={check6} 
                                     onClick={() => setCheck6(!check6)}
-                                    onChange={() => changeRoleStatus(check6, availableRoles[5].id)}
+                                    onChange={() => changeRoleStatus(!check6, availableRoles[5].id)}
+                                />
+                            </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[6].name}
+                                <Switch 
+                                    checked={check7} 
+                                    onClick={() => setCheck7(!check7)}
+                                    onChange={() => changeRoleStatus(!check7, availableRoles[6].id)}
+                                />
+                            </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[7].name}
+                                <Switch 
+                                    checked={check8} 
+                                    onClick={() => setCheck8(!check8)}
+                                    onChange={() => changeRoleStatus(!check8, availableRoles[7].id)}
+                                />
+                            </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[8].name}
+                                <Switch 
+                                    checked={check9} 
+                                    onClick={() => setCheck9(!check9)}
+                                    onChange={() => changeRoleStatus(!check9, availableRoles[8].id)}
+                                />
+                            </Typography>
+                            <Divider orientation="vertical" flexItem sx={{margin: 1}}/>
+                            <Typography id="modal-modal-title" variant="p" component="p">
+                                {availableRoles[9].name}
+                                <Switch 
+                                    checked={check10} 
+                                    onClick={() => setCheck10(!check10)}
+                                    onChange={() => changeRoleStatus(!check10, availableRoles[9].id)}
                                 />
                             </Typography>
                         </Box>
@@ -281,7 +354,7 @@ export default function EditContactModal({contact}){
                                 </Box>
                             </Box>                         
                         </Box>
-                        <ListTags tags={tagsArray} numOfDisplay={tagsArray.length} removeTag={removeTag}/>
+                        <ListTags tags={tagsArray} numOfDisplay={tagsArray?.length} removeTag={removeTag}/>
                         {/* <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/> */}
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>

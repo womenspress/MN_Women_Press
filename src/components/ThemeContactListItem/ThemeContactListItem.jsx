@@ -2,11 +2,12 @@ import React from 'react'
 import { useState} from 'react';
 import { Link } from 'react-router-dom';
 
-import { Box, Paper, Typography, Avatar, Collapse, IconButton } from '@mui/material'
+import { Box, Paper, Typography, Avatar, Collapse, IconButton, Button } from '@mui/material'
 import StoryCard from '../StoryCard/StoryCard'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function ThemeContactListItem(props){
 
@@ -40,9 +41,13 @@ export default function ThemeContactListItem(props){
                 <Box sx={{display: 'flex'}}>
                     <Avatar src = {contact?.photo}/>
                     <Typography variant = 'body2'>{contact?.bio}</Typography>
-                    <Link to={"/ContactDetails/"+contact?.id}>
-                        <OpenInNewIcon/>
-                    </Link>
+                    <Button
+                        onClick={() => history.push("/ContactDetails/"+contact?.id)}
+                        size='small'
+                        color='inherit'
+                        endIcon={<ArrowForwardIcon />}>
+                        to contact page
+                    </Button>
                 </Box>
             </Collapse>
         </Paper>

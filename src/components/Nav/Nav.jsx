@@ -1,11 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation} from 'react-router-dom';
 import LogOutButton from '../LogOutButton/LogOutButton';
 import './Nav.css';
 import { useSelector } from 'react-redux';
 
 function Nav() {
   const user = useSelector((store) => store.user);
+
+  const location = useLocation().pathname;
+  // console.log('path name: ', location);
 
   return (
     <div className="nav">
@@ -29,19 +32,19 @@ function Nav() {
               Info Page
             </Link> */}
 
-            <Link className="navLink" to="/StoriesPage">
+            <Link id={location == '/StoriesPage' ? 'active' : ''} className="navLink" to="/StoriesPage">
               Stories
             </Link>
 
-            <Link className="navLink" to="/ContactsPage">
+            <Link id={location == '/ContactsPage' ? 'active' : ''} className="navLink" to="/ContactsPage">
               Contacts
             </Link>
 
-            <Link className="navLink" to="/ThemesPage">
+            <Link id={location == '/ThemesPage' ? 'active' : ''} className="navLink" to="/ThemesPage">
               Themes
             </Link>
 
-            <Link className="navLink" to="/ArchivePage">
+            <Link id={location == '/ArchivePage' ? 'active' : ''}  className="navLink" to="/ArchivePage">
               Archive
             </Link>
 

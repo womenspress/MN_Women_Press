@@ -172,34 +172,43 @@ router.post('/', async (req, res) => {
     article_text,
     article_link,
     notes,
+    photo,
     type,
+    copies_required,
+    number_of_copies,
     copies_sent,
     photo_uploaded,
-    fact_check_completed /*9, changed from name fact_checked, different naming conventions in original design*/,
-    graphic_image_required,
+    fact_check_completed,
+    payment_required,
+    payment_completed,
+    socials_required,
+    socials_completed,
+    underwriter_required,
+    underwriter_completed,
+    photo_submitted,
+    photo_comments,
     external_link,
     word_count,
-    //date_added, //Incoming data that will be handled by default in database.
+    date_added,
     rough_draft_deadline,
     final_draft_deadline,
     publication_date,
-    photo,
-    copies_required,
-    payment_required,
-    payment_completed,
-    photo_required,
-    fact_check_required,
-    graphic_image_completed,
-    number_of_copies,
     contacts,
+    theme,
     tags,
-    copies_destination,
   } = req.body;
 
   // finds contacts who require payment
-  const contactsRequiringPayment = contacts.filter((contact) => contact?.invoice_amount > 0)
+  const contactsRequiringPayment = contacts.filter(
+    (contact) => contact?.invoice_amount > 0
+  );
   let payment_needed;
-  if (contactsRequiringPayment.reduce((sum, contact) => sum + contact.invoice_amount, 0) > 0) {
+  if (
+    contactsRequiringPayment.reduce(
+      (sum, contact) => sum + contact.invoice_amount,
+      0
+    ) > 0
+  ) {
     payment_needed = true;
   } else {
     payment_needed = false;
@@ -207,15 +216,18 @@ router.post('/', async (req, res) => {
 
   let postStoryQuery = `
   INSERT INTO "story" 
-  ("title", "subtitle", "article_text", "article_link", "notes", "type", "copies_sent", "photo_uploaded", 
-  "fact_check_completed", "graphic_image_required", "external_link", "word_count", "rough_draft_deadline",
-  "final_draft_deadline", "publication_date", "photo_required", "fact_check_required","graphic_image_completed", 
-  "number_of_copies", "photo", "copies_required", "payment_required","payment_completed", "copies_destination" )
+  ("title","subtitle","article_text",
+  "article_link","notes","photo",
+  "type","copies_required","number_of_copies",
+  "copies_sent","photo_uploaded",
+  "fact_check_completed","payment_required","payment_completed",
+  "socials_required","socials_completed","underwriter_required",
+  "underwriter_completed","photo_submitted","photo_comments",
+  "external_link","word_count",
+  "rough_draft_deadline","final_draft_deadline","publication_date" )
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
   RETURNING "id";`; //Return id of story
-
-
 
   //Database Query below
   const connection = await pool.connect();
@@ -229,25 +241,26 @@ router.post('/', async (req, res) => {
       article_text, //3
       article_link, //4
       notes, //5
-      type, //6
-      copies_sent, //7
-      photo_uploaded, //8
-      fact_check_completed, //9
-      graphic_image_required, //10
-      external_link, //11
-      word_count, //12
-      rough_draft_deadline, //13
-      final_draft_deadline, //14
-      publication_date, //15
-      photo_required, //16
-      fact_check_required, //17
-      graphic_image_completed, //18
-      number_of_copies, //19
-      photo, //20
-      copies_required, //21
-      payment_needed, //22
-      payment_completed, //23
-      copies_destination, //24
+      photo, //6
+      type, //7
+      copies_required, //8
+      number_of_copies, //9
+      copies_sent, //10
+      photo_uploaded, //11
+      fact_check_completed, //12
+      payment_required, //13
+      payment_completed, //14
+      socials_required, //15
+      socials_completed, //16
+      underwriter_required, //17
+      underwriter_completed, //18
+      photo_submitted, //19
+      photo_comments, //20
+      external_link, //21
+      word_count, //22
+      rough_draft_deadline, //23
+      final_draft_deadline, //24
+      publication_date, //25
     ]);
 
     //**Step 2: Set returning id to storyId variable
@@ -346,9 +359,16 @@ router.put('/:id', async (req, res) => {
     copies_destination,
   } = req.body;
 
-  const contactsRequiringPayment = contacts.filter((contact) => contact?.invoice_amount > 0)
+  const contactsRequiringPayment = contacts.filter(
+    (contact) => contact?.invoice_amount > 0
+  );
   let payment_needed;
-  if (contactsRequiringPayment.reduce((sum, contact) => sum + contact.invoice_amount, 0) > 0) {
+  if (
+    contactsRequiringPayment.reduce(
+      (sum, contact) => sum + contact.invoice_amount,
+      0
+    ) > 0
+  ) {
     payment_needed = true;
   } else {
     payment_needed = false;

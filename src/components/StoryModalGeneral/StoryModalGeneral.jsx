@@ -235,7 +235,7 @@ export default function StoryModalGeneral(props) {
             }}
           />
         </Box>
-        <Grid container spacing={1} sx={{ paddingX: '5%', height: 310, overflow: 'hidden', overflowY: 'scroll'}}>
+        <Grid container spacing={1} sx={{ paddingX: '5%', height: 500, overflow: 'hidden', overflowY: 'scroll'}}>
           {/* title */}
           <Grid item xs={4}>
             <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
@@ -289,7 +289,7 @@ export default function StoryModalGeneral(props) {
                 );
               })}
             </Menu>
-            {inputValues.contacts.lenght &&
+            {inputValues.contacts.length ?
               <Box
                 sx={{
                   bgcolor: 'grey.100',
@@ -311,6 +311,8 @@ export default function StoryModalGeneral(props) {
                     );
                   })}
               </Box>
+              :
+              <></>
             }
           </Grid>
 
@@ -377,7 +379,7 @@ export default function StoryModalGeneral(props) {
                 );
               })}
             </Menu>
-            {inputValues.contacts.lenght &&
+            {inputValues.tags.length ?
               <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
                 {inputValues.tags?.map((tag) => {
                   if (tag) {
@@ -385,6 +387,8 @@ export default function StoryModalGeneral(props) {
                   }
                 })}
               </Box>
+              :
+              <></>
             }
           </Grid>
 
@@ -418,11 +422,14 @@ export default function StoryModalGeneral(props) {
                 );
               })}
             </Menu>
-            {inputValues.contacts.lenght && <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
+            {inputValues.theme.length ? <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
               {inputValues.theme.map((theme) => {
                 return <ThemeSearchCard key={theme.id} theme={theme} />;
+              
               })}
             </Box>
+            :
+            <></>
             }
           </Grid>
           {/* notes */}

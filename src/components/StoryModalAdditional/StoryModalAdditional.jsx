@@ -44,13 +44,13 @@ export default function StoryModalAdditional(props) {
     setInputValues({ ...inputValues, photo_comments: e.target.value })
   }
 
-  const handleSocials = (e) => {
+  const handleGraphic = (e) => {
     console.log('in handleGraphic');
     if (e.target.checked) setInputValues({ ...inputValues, graphic_image_required: true });
     else setInputValues({ ...inputValues, graphic_image_required: false })
   }
 
-  const handleUnderwriter = (e) => {
+  const handleFactCheck = (e) => {
     console.log('in handle fact check');
     if (e.target.checked)
       setInputValues({ ...inputValues, underwriter_required: true });

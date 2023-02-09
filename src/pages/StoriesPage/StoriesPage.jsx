@@ -44,7 +44,7 @@ export default function StoriesPage() {
 
   // passed into modal; used to determine dimensions
   const [step, setStep] = useState('general')
-  const modalDimensions = step ==='general' ? {height: 450, width: 650} : {height: 600, width: 900}
+  const modalDimensions = step ==='general' ? {height: 600, width: 700} : {height: 600, width: 900}
 
   const handleClickPlus = () => {
     setCreateMode(true);

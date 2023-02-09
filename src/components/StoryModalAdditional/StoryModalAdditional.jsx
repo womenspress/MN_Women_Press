@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 // libraries
-import { useDispatch, useSelector } from 'react-redux'
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
-import { DateTime } from 'luxon'
+import { useDispatch, useSelector } from 'react-redux';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { DateTime } from 'luxon';
 
 // components
 import { Box, Typography, Grid, Button, TextField, FormGroup, Checkbox, FormControlLabel, ToggleButtonGroup, ToggleButton, Divider } from '@mui/material'
@@ -14,28 +14,22 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 export default function StoryModalAdditional(props) {
+  const { setModalOpen, setStep, createMode } = props;
 
+  const dispatch = useDispatch();
 
-  const {
-    setModalOpen,
-    setStep,
-    createMode
-  } = props
-
-  const dispatch = useDispatch()
-
-  const currentStory = useSelector(store => store.stories.tempStory)
-  const themes = useSelector(store => store.themes.allThemes)
+  const currentStory = useSelector((store) => store.stories.tempStory);
+  const themes = useSelector((store) => store.themes.allThemes);
 
   const [inputValues, setInputValues] = useState(currentStory);
 
   const handleRoughDraft = (value) => {
-    setInputValues({ ...inputValues, rough_draft_deadline: value })
-  }
+    setInputValues({ ...inputValues, rough_draft_deadline: value });
+  };
 
   const handleFinalDraft = (value) => {
-    setInputValues({ ...inputValues, final_draft_deadline: value })
-  }
+    setInputValues({ ...inputValues, final_draft_deadline: value });
+  };
 
   const handlePublicationDate = (value) => {
     setInputValues({ ...inputValues, publication_date: value })
@@ -50,29 +44,36 @@ export default function StoryModalAdditional(props) {
     setInputValues({ ...inputValues, photo_comments: e.target.value })
   }
 
-  const handleGraphic = (e) => {
+  const handleSocials = (e) => {
     console.log('in handleGraphic');
     if (e.target.checked) setInputValues({ ...inputValues, graphic_image_required: true });
     else setInputValues({ ...inputValues, graphic_image_required: false })
   }
 
-  const handleFactCheck = (e) => {
-    console.log('in handle fact check')
-    if (e.target.checked) setInputValues({ ...inputValues, fact_check_required: true });
-    else setInputValues({ ...inputValues, fact_check_required: false })
-  }
+  const handleUnderwriter = (e) => {
+    console.log('in handle fact check');
+    if (e.target.checked)
+      setInputValues({ ...inputValues, underwriter_required: true });
+    else setInputValues({ ...inputValues, underwriter_required: false });
+  };
 
   const handleCopies = (e) => {
     console.log('in handleCopies');
-    if (e.target.checked) setInputValues({ ...inputValues, copies_required: true })
-    else setInputValues({ ...inputValues, copies_required: false, number_of_copies: 0 })
-  }
+    if (e.target.checked)
+      setInputValues({ ...inputValues, copies_required: true });
+    else
+      setInputValues({
+        ...inputValues,
+        copies_required: false,
+        number_of_copies: 0,
+      });
+  };
 
   const handleCopyNumber = (e) => {
     console.log('handling copy number');
     const numCopies = Number(e.target.value);
-    setInputValues({ ...inputValues, number_of_copies: numCopies })
-  }
+    setInputValues({ ...inputValues, number_of_copies: numCopies });
+  };
 
   const handleCopyDestination = (e) => {
     console.log('handling copy destination');
@@ -94,24 +95,35 @@ export default function StoryModalAdditional(props) {
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
-    dispatch({ type: 'CLEAR_TEMP_STORY' })
-    if (createMode) dispatch({ type: 'CREATE_NEW_STORY', payload: { ...currentStory, ...inputValues } });
-    else dispatch({ type: 'EDIT_STORY', payload: { ...currentStory, ...inputValues } });
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
+    if (createMode)
+      dispatch({
+        type: 'CREATE_NEW_STORY',
+        payload: { ...currentStory, ...inputValues },
+      });
+    else
+      dispatch({
+        type: 'EDIT_STORY',
+        payload: { ...currentStory, ...inputValues },
+      });
     setModalOpen(false);
-  }
+  };
 
   const handleClose = () => {
     setModalOpen(false);
     setCreateMode(true);
-    dispatch({ type: 'CLEAR_TEMP_STORY' })
-  }
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
+  };
 
   // navigation: move to appropriate step, update temp story with the input values
   const navigateGeneral = () => {
     console.log('navigating to general');
-    dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } })
+    dispatch({
+      type: 'SET_TEMP_STORY',
+      payload: { ...currentStory, ...inputValues },
+    });
     setStep('general');
-  }
+  };
 
   // const navigateNeeds = () => {
   //   console.log('navigating to needs');

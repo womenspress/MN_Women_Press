@@ -27,7 +27,10 @@ export default function StoryModalAdditional(props) {
   const currentStory = useSelector((store) => store.stories.tempStory);
   const themes = useSelector((store) => store.themes.allThemes);
 
-  const [inputValues, setInputValues] = useState(currentStory);
+  const [inputValues, setInputValues] = useState({
+    ...currentStory,
+    photo_submitted: false,
+  });
 
   const [photographerSearchTerm, setPhotographerSearchTerm] = useState('');
 
@@ -50,11 +53,18 @@ export default function StoryModalAdditional(props) {
     else setInputValues({ ...inputValues, socials_required: false });
   };
 
-  const handlePhoto = (e) => {
+  const handlePhotoSubmitted = (e) => {
     console.log('in handlePhoto');
     if (e.target.checked)
       setInputValues({ ...inputValues, photo_submitted: true });
     else setInputValues({ ...inputValues, photo_submitted: false });
+  };
+
+  const handlePhotoAssigned = (e) => {
+    console.log('in handlePhoto');
+    if (e.target.checked)
+      setInputValues({ ...inputValues, photo_submitted: false });
+    else setInputValues({ ...inputValues, photo_submitted: true });
   };
 
   const handleUnderwriter = (e) => {
@@ -261,10 +271,19 @@ export default function StoryModalAdditional(props) {
               control={
                 <Checkbox
                   checked={inputValues.photo_submitted}
-                  onChange={handlePhoto}
+                  onChange={handlePhotoSubmitted}
                 />
               }
               label="photo submitted"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!inputValues.photo_submitted}
+                  onChange={handlePhotoAssigned}
+                />
+              }
+              label="photo assigned"
             />
 
             <Box>

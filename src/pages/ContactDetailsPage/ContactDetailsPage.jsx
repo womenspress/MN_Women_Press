@@ -1,15 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
+
+// libraries
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { DateTime } from 'luxon';
+
+// components
 import { Box, Grid, Modal, Typography, TextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import StoryListItem from '../../components/StoryListItem/StoryListItem';
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar'
-
 import EditContactModal from '../../components/EditContactModal/EditContactModal';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
+import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+
 import { largeModal, mainContentBox } from '../../__style'
 
 
@@ -63,8 +67,83 @@ export default function ContactDetailsPage() {
     dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
 
+  //* ============================= SORT/FILTER/SEARCH STUFF ===============================
+
+  const sortOptions = ['date added', 'date published', 'title',]
+  const [sortMethod, setSortMethod] = useState('date added');
+  const [sortDirection, setSortDirection] = useState('ascending')
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchBy, setSearchBy] = useState('all');
+  const searchByOptions = ['all', 'story info', 'theme', 'tag', 'contact']
+
+  const sortResults = (arr) => {
+    let outputArray = arr
+    if (sortDirection === 'descending') outputArray = arr.reverse();
+
+    switch (sortMethod) {
+      case 'date published':
+        return outputArray.sort((a, b) => {
+          if (!a.date_published) return 1
+          if (!b.date_published) return -1
+          if (DateTime.fromISO(a.date_published) > DateTime.fromISO(b.published)) return 1
+          if (DateTime.fromISO(a.date_published) < DateTime.fromISO(b.published)) return -1
+          else return 0
+        })
+      case 'title':
+        return outputArray.sort((a, b) => {
+          if (a.title > b.title) return 1
+          if (a.title < b.title) return -1
+          else return 0
+        })
+      case 'date added':
+        return arr.sort((a, b) => {
+          if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
+          if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
+          else return 0
+        })
+      default:
+        return outputArray;
+    }
+  }
+
+  // 'all', 'story info', 'theme', 'tag', 'contact'
+  const searchResults = (arr) => {
+
+    function getContactsString(story) {
+      return story.contacts.map(contact => contact?.name.toLowerCase()).join('')
+    }
+
+    // story title and notes
+    function getTagsString(story) {
+      const tagsNameString = story.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
+      const tagsDescString = story.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
+      return tagsNameString+tagsDescString
+    }
+
+    switch (searchBy) {
+      case 'all':
+        return arr
+      case 'theme info':
+        return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'contact name':
+        return arr.filter(theme => getContactsString(theme).includes(searchTerm.toLowerCase()))
+      case 'story title':
+        return arr.filter(theme => getStoriesString(theme).includes(searchTerm.toLowerCase()))
+      case 'description':
+        return arr
+    }
+
+    return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm))
+  }
+
+  //! set to all themes temporarily. eventually, set to archiveThemes
+  const storyResults = sortResults(searchResults(contactStories))
+
+
   return (
     <Box>
+      {/* {JSON.stringify(contactStories)} */}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {/* profile image */}
         {contact[0]?.id &&
@@ -78,71 +157,81 @@ export default function ContactDetailsPage() {
           <Typography variant='h6' fontStyle='italic'>{contact[0]?.expertise}</Typography>
         </Box>
       </Box>
-      <Grid container space={1}>
+      <Grid container spacing={1}>
 
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
         <Grid item xs={4} display='flex'>
           <Typography variant='h5' fontWeight='bold' sx={{ mr: 1 }}>General Info </Typography>
           {contact[0] ? <EditContactModal contact={contact[0]} /> : null}
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={2}>
           <Typography variant='h5' fontWeight='bold' sx={{ ml: 2 }}>Contributions</Typography>
         </Grid>
 
         {/* search item, need to finish functionality */}
-        <Grid item xs={4}>
-          <TextField
+        <Grid item xs={6}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <SortFilterSearch
+              sortOptions={sortOptions}
+              sortMethod={sortMethod}
+              setSortMethod={setSortMethod}
+              sortDirection={sortDirection}
+              setSortDirection={setSortDirection}
+              searchByOptions={searchByOptions}
+              searchBy={searchBy}
+              setSearchBy={setSearchBy}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            /></Box>
+          {/* <TextField
             variant='outlined'
             label='Search'
             fullWidth
             size='small'
-          />
+          /> */}
 
         </Grid>
-        {/* this row contains the two large sections of information, general info and contributions */}
-        <Grid container space={1}>
+      </Grid>
+      {/* this row contains the two large sections of information, general info and contributions */}
+      <Grid container space={1}>
 
 
-          {/* general info section */}
-          <Grid item xs={4} id='generalInfoSection' sx={{ ...mainContentBox, m: 0, mt: 1 }}>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Bio</Typography>
-            <Typography variant='body1'>{contact[0]?.bio}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Role(s)</Typography>
-            {contact[0]?.roles?.map((role, i) => {
-              return <Typography key={role?.id} variant='body1'>{role?.name}</Typography>
-            })}
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Mailing Address</Typography>
-            <Typography variant='body1'>{contact[0]?.mailing_address}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Billing Address</Typography>
-            <Typography variant='body1'>{contact[0]?.billing_address}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Email</Typography>
-            <Typography variant='body1'>{contact[0]?.email}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Phone</Typography>
-            <Typography variant='body1'>{contact[0]?.phone}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>LinkedIn</Typography>
-            <Typography variant='body1'>{contact[0]?.linkedin}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Twitter</Typography>
-            <Typography variant='body1'>{contact[0]?.twitter}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Instagram</Typography>
-            <Typography variant='body1'>{contact[0]?.instagram}</Typography>
-            <Typography variant='h6' fontWeight='bold' sx={{ mt: 1 }}>Facebook</Typography>
-            <Typography variant='body1'>{contact[0]?.facebook}</Typography>
-          </Grid>
+        {/* general info section */}
+        <Grid item xs={4} id='generalInfoSection' sx={{ ...mainContentBox, m: 0, mt: 1 }}>
+          <Typography variant='h6' sx={{ mt: 1 }}>Bio</Typography>
+          <Typography variant='body1'>{contact[0]?.bio}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Role(s)</Typography>
+          {contact[0]?.roles?.map((role, i) => {
+            return <Typography key={role?.id} variant='body1'>{role?.name}</Typography>
+          })}
+          <Typography variant='h6' sx={{ mt: 1 }}>Mailing Address</Typography>
+          <Typography variant='body1'>{contact[0]?.mailing_address}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Billing Address</Typography>
+          <Typography variant='body1'>{contact[0]?.billing_address}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Email</Typography>
+          <Typography variant='body1'>{contact[0]?.email}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Phone</Typography>
+          <Typography variant='body1'>{contact[0]?.phone}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>LinkedIn</Typography>
+          <Typography variant='body1'>{contact[0]?.linkedin}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Twitter</Typography>
+          <Typography variant='body1'>{contact[0]?.twitter}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Instagram</Typography>
+          <Typography variant='body1'>{contact[0]?.instagram}</Typography>
+          <Typography variant='h6' sx={{ mt: 1 }}>Facebook</Typography>
+          <Typography variant='body1'>{contact[0]?.facebook}</Typography>
+        </Grid>
 
-
-          {/* contributions section */}
-          <Grid item xs={8} sx={{ pl: 1, backgroundColor: 'white' }}>
-            {/* container so there is margin between general info and contributions while maximizing screen space */}
-            <Grid container space={1} sx={{ ...mainContentBox, m: 0, mt: 1, minHeight: generalInfoHeight + 'px' }}>
-              <Grid item xs={12} sx={{ p: 1 }}>
-                {contactStories[0] && contactStories.map((story) => {
-                  return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen} />
-                })}
-              </Grid>
+        {/* contributions section */}
+        <Grid item xs={8} sx={{ pl: 1, backgroundColor: 'white' }}>
+          {/* container so there is margin between general info and contributions while maximizing screen space */}
+          <Grid container space={1} sx={{ ...mainContentBox, m: 0, mt: 1, minHeight: generalInfoHeight + 'px' }}>
+            <Grid item xs={12} sx={{ p: 1 }}>
+              {contactStories[0] && contactStories.map((story) => {
+                return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen} />
+              })}
             </Grid>
           </Grid>
-
-
         </Grid>
       </Grid>
 

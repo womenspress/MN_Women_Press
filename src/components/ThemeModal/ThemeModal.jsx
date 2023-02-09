@@ -4,11 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DateTime } from 'luxon'
 
-// components
-import { Box, Button, Typography, TextField, Grid, Autocomplete } from '@mui/material';
+// mui components
+import { Box, Button, Typography, TextField, Grid, Autocomplete, IconButton} from '@mui/material';
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+
+//components
 import ThemeStoryListItem from '../ThemeStoryListItem/ThemeStoryListItem';
 import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
-import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
+import AddStoryToTheme from '../../assets/AddStoryToTheme/AddStoryToTheme';
 
 // styling
 import { largeModal, mainContentBox } from '../../__style'
@@ -143,8 +147,8 @@ export default function ThemeModal(props) {
     const storyResults = ascDesc(sortResults(searchResults(themeStoriesArray)))
 
   return (
-      <Box sx={{ marginX: 5 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{ marginX: 2}}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           {/* {JSON.stringify(theme)} */}
           {edit ? <TextField
             sx={{ mt: 2, width: 1 }}
@@ -178,7 +182,7 @@ export default function ThemeModal(props) {
               {description}
             </Typography>
           }
-        <Box>
+        <Box sx={{marginBottom: 2 }}>
 
           {edit ?
             <>
@@ -191,15 +195,15 @@ export default function ThemeModal(props) {
         </Box>
       {/* //* ================ stories ============== */}
           {/* Search and add to theme method for stories */}
+          <Box sx={{display: 'flex', bgcolor: 'white'}}>
+              <Typography sx={{px: 1}} color="primary"  variant="h5" component="h4">Stories</Typography>
+              <Typography sx={{px: 1}} variant="h5" component="h4">Contacts</Typography>
+          </Box>
           <Box sx={{bgcolor: 'grey.100', borderRadius: 2, px: 2, py: 1 }}>
-            <Box sx={{ display: 'flex', width: 1}}>
-              <Typography
-                id="modal-modal-description"
-                sx={{ mt: 2, width: .5 }}
-                variant="h4" component="h4"
-              >
-                Stories:
-              </Typography>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', width: 1}}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AddStoryToTheme theme={theme} options={storyOptions}/>
+              </Box>
               
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
                 <SortFilterSearch

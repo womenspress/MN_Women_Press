@@ -23,7 +23,7 @@ export default function ThemeArchive() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchBy, setSearchBy] = useState('all');
-  const searchByOptions = ['all', 'theme info', 'contact name', 'story title', 'description']
+  const searchByOptions = ['all', 'theme name', 'contact name', 'story title', 'description']
 
   const allThemes = useSelector(store => store.themes.allThemes).filter(theme => theme.name != ' ');
   const archiveThemes = Array.isArray(allThemes) && allThemes.length ? allThemes.filter(theme => Date.parse(theme.month_year) < DateTime.now()) : [];
@@ -58,30 +58,29 @@ export default function ThemeArchive() {
 
 
     function getContactsString(theme) {
-      return theme.contacts?.map(contact=>contact?.name.toLowerCase()).join('')
+      return theme.contacts?.map(contact => contact?.name.toLowerCase()).join('')
     }
 
     // story title and notes
     function getStoriesString(theme) {
-      const titlesString = theme.stories?.map(story=>story?.title.toLowerCase()).join('')
-      const notesString = theme.stories?.map(story=>story?.notes.toLowerCase()).join('')
-      return titlesString+notesString
+      const titlesString = theme.stories?.map(story => story?.title.toLowerCase()).join('')
+      const notesString = theme.stories?.map(story => story?.notes.toLowerCase()).join('')
+      return titlesString + notesString
     }
 
     switch (searchBy) {
-      case 'all':
-        return arr
-      case 'theme info':
-        return arr.filter(theme=>theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'theme name':
+        return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()))
       case 'contact name':
-        return arr.filter(theme=>getContactsString(theme).includes(searchTerm.toLowerCase()))
+        return arr.filter(theme => getContactsString(theme).includes(searchTerm.toLowerCase()))
       case 'story title':
-        return arr.filter(theme=>getStoriesString(theme).includes(searchTerm.toLowerCase()))
+        return arr.filter(theme => getStoriesString(theme).includes(searchTerm.toLowerCase()))
       case 'description':
-        return arr
+        return arr.filter(theme => theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'all':
+        return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(theme).includes(searchTerm.toLowerCase()) || getStoriesString(theme).includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
     }
 
-    return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm))
   }
 
   //! set to all themes temporarily. eventually, set to archiveThemes

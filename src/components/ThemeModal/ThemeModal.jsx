@@ -82,7 +82,7 @@ export default function ThemeModal(props) {
   
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('all');
-    const searchByOptions = ['all', 'story info', 'theme', 'tag', 'contact']
+    const searchByOptions = ['all', 'story info'] //['all', 'story info', 'theme', 'tag', 'contact']
   
   
     const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
@@ -125,16 +125,16 @@ export default function ThemeModal(props) {
       }
   
       switch (searchBy) {
-        case 'contact':
-          return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
+        // case 'contact':
+        //   return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
         case 'story info':
           return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
-        case 'theme':
-          return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
+        // case 'theme':
+        //   return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
         // case 'tag':
         //   return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
         case 'all':
-          return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story?.subtitle.toLowerCase().includes(searchTerm.toLowerCase())|| story.notes.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+          return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.subtitle?.toLowerCase().includes(searchTerm.toLowerCase())|| story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
         default:
           return arr
       }
@@ -190,29 +190,31 @@ export default function ThemeModal(props) {
           }
         </Box>
       {/* //* ================ stories ============== */}
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
           {/* Search and add to theme method for stories */}
-          <Box sx={{   bgcolor: 'grey.100', padding: 1, borderRadius: 2, }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{bgcolor: 'grey.100', borderRadius: 2, px: 2, py: 1 }}>
+            <Box sx={{ display: 'flex', width: 1}}>
               <Typography
                 id="modal-modal-description"
-                sx={{ mt: 2, width: .25 }}
+                sx={{ mt: 2, width: .5 }}
                 variant="h4" component="h4"
               >
                 Stories:
               </Typography>
-              <SortFilterSearch
-                sortOptions={sortOptions}
-                sortMethod={sortMethod}
-                setSortMethod={setSortMethod}
-                sortDirection={sortDirection}
-                setSortDirection={setSortDirection}
-                searchByOptions={searchByOptions}
-                searchBy={searchBy}
-                setSearchBy={setSearchBy}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-              />
+              
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
+                <SortFilterSearch
+                  sortOptions={sortOptions}
+                  sortMethod={sortMethod}
+                  setSortMethod={setSortMethod}
+                  sortDirection={sortDirection}
+                  setSortDirection={setSortDirection}
+                  searchByOptions={searchByOptions}
+                  searchBy={searchBy}
+                  setSearchBy={setSearchBy}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+              </Box>
             </Box>
             <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
               {storyResults.length ? storyResults.map((story,index) => {
@@ -225,7 +227,6 @@ export default function ThemeModal(props) {
               }
             </Box>
           </Box>
-        </Box>
           {/* {themeStoriesArray.map((story, index) => {
             return (
               <ThemeStoryListItem story={story} key={index} />

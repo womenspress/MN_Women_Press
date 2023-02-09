@@ -339,11 +339,14 @@ router.post('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =>
     });
 });
 
-router.delete('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
+router.delete('/tag/:contact_id/:tag_id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   // DELETE a tag from a contact. delete a row from the junction table
   const deleteTagContactQuery = `DELETE FROM "tag_contact" WHERE "contact_id" = $1 AND "tag_id" = $2;`;
+
+  console.log('in delete tag router')
+
   pool
-    .query(deleteTagContactQuery, [req.body.tag.id, req.params.id]) //NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY
+    .query(deleteTagContactQuery, [req.params.contact_id, req.params.tag_id]) //NOT SURE HOW THIS DATA WILL BE RECIEVED, MAY NEED TO ALTER REQ.BODY - FYI Cant have req.body on delete requests
     .then(() => res.sendStatus(200))
     .catch((err) => {
       console.log('delete contact tag failed: ', err);

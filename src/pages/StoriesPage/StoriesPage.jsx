@@ -141,10 +141,10 @@ export default function StoriesPage() {
           />
         </Box>
         <Box>
-          {storyResults.length ? storyResults.map(story => {
+          {storyResults.length ? storyResults.map((story,index) => {
             return (
               <StoryListItem
-                key={story.title}
+                key={index}
                 story={story}
                 createMode={createMode}
                 setCreateMode={setCreateMode}

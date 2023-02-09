@@ -146,7 +146,7 @@ export default function StoriesPage() {
 
   // remove tag from story
   const removeTag = (tagID) => {
-    console.log('remove tag', tagID, 'from story: ', id);
+    // console.log('remove tag', tagID, 'from story: ', id);
     const story_id = id;
     dispatch({type: 'DELETE_STORY_TAG', payload: {tag_id: tagID, story_id: story_id}})
   }

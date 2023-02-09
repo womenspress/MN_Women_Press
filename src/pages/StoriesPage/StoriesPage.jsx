@@ -42,6 +42,10 @@ export default function StoriesPage() {
   const [createMode, setCreateMode] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // passed into modal; used to determine dimensions
+  const [step, setStep] = useState('general')
+  const modalDimensions = step ==='general' ? {height: 450, width: 650} : {height: 600, width: 900}
+
   const handleClickPlus = () => {
     setCreateMode(true);
     setModalOpen(true);
@@ -147,7 +151,7 @@ export default function StoriesPage() {
           />
         </Box>
         <Box>
-          {storyResults.length ? storyResults.map((story,index) => {
+          {storyResults.length ? storyResults.map((story, index) => {
             return (
               <StoryListItem
                 key={index}
@@ -166,8 +170,8 @@ export default function StoriesPage() {
       <Modal
         open={modalOpen}
         onClose={handleClose}>
-        <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} />
+        <Box sx={{ ...largeModal, height: modalDimensions.height, width: modalDimensions.width }}>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step = {step} setStep = {setStep}/>
         </Box>
       </Modal>
 

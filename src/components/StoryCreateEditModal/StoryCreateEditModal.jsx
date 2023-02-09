@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Box, Typography, Grid, Button } from '@mui/material'
 import StoryModalGeneral from '../StoryModalGeneral/StoryModalGeneral';
 import StoryModalAdditional from '../StoryModalAdditional/StoryModalAdditional';
-import StoryModalNeeds from '../StoryModalNeeds/StoryModalNeeds';
 
 
 export default function (props) {
@@ -17,7 +16,10 @@ export default function (props) {
     setModalOpen,
     createMode,
     setCreateMode,
+    step,
+    setStep
   } = props
+
 
 
   const dispatch = useDispatch();
@@ -27,15 +29,16 @@ export default function (props) {
   // const contacts = useSelector(store => store.contacts.allContacts)
   // const tags = useSelector(store => store.tags.allTags)
 
-  const [step, setStep] = useState('general')
   const [inputValues, setInputValues] = useState({ title: '', contacts: [], notes: '', tags: [] })
 
+ 
+
+
   return (
-    <Box>
-      {step === 'general' && <StoryModalGeneral createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} setCreateMode={setCreateMode}/>}
-      {step === 'additional' && <StoryModalAdditional createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} setCreateMode={setCreateMode}/>}
-      {step === 'needs' && <StoryModalNeeds createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} setCreateMode={setCreateMode}/>}
-    </Box>
+    <>
+      {step === 'general' && <StoryModalGeneral createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} setCreateMode={setCreateMode} />}
+      {step === 'additional' && <StoryModalAdditional createMode={createMode} setModalOpen={setModalOpen} setStep={setStep} setCreateMode={setCreateMode} />}
+    </>
   )
 }
 

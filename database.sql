@@ -242,3 +242,7 @@ ALTER TABLE "story"
 DROP COLUMN "photo_required"
 DROP COLUMN "graphic_image_completed",
 DROP COLUMN "graphic_image_required";
+
+ALTER TABLE "story"
+DROP COLUMN "fact_check_required", 
+ADD "fact_check_required" BOOLEAN DEFAULT TRUE; 

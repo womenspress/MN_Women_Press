@@ -23,7 +23,7 @@ export default function ContactDetailsPage() {
 
   useEffect(() => {
     setGeneralInfoHeight(document.getElementById("generalInfoSection").offsetHeight - 1)
-  })
+  }, [document.getElementById("generalInfoSection")])
 
   useEffect(() => {
     dispatch({ type: 'GET_ALL_CONTACTS' });
@@ -31,7 +31,7 @@ export default function ContactDetailsPage() {
   }, [])
 
   const { id } = useParams();
-  const allContacts = useSelector(store => store.contacts.allContacts)
+  const allContacts = useSelector(store => store.contacts.allContacts);
   const allStories = useSelector(store => store.stories.allStories);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -77,33 +77,38 @@ export default function ContactDetailsPage() {
   const [searchBy, setSearchBy] = useState('all');
   const searchByOptions = ['all', 'story info', 'theme', 'tag', 'contact']
 
-  const sortResults = (arr) => {
-    let outputArray = arr
-    if (sortDirection === 'descending') outputArray = arr.reverse();
+  const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
 
+  // const sortOptions = ['date added', 'date published', 'title',]
+  const sortResults = (arr) => {
     switch (sortMethod) {
       case 'date published':
-        return outputArray.sort((a, b) => {
-          if (!a.date_published) return 1
-          if (!b.date_published) return -1
-          if (DateTime.fromISO(a.date_published) > DateTime.fromISO(b.published)) return 1
-          if (DateTime.fromISO(a.date_published) < DateTime.fromISO(b.published)) return -1
+        console.log('sorting by date published')
+        return arr.sort((a, b) => {
+          if (!a.publication_date) return 1
+          if (!b.publication_date) return -1
+          if (DateTime.fromISO(a.publication_date) > DateTime.fromISO(b.publication_date)) return 1
+          if (DateTime.fromISO(a.publication_date) < DateTime.fromISO(b.publication_date)) return -1
           else return 0
         })
       case 'title':
-        return outputArray.sort((a, b) => {
-          if (a.title > b.title) return 1
-          if (a.title < b.title) return -1
-          else return 0
+        console.log('sorting by title')
+        return arr.sort((a, b) => {
+          if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+          if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+          else {
+            return 0
+          }
         })
       case 'date added':
+        console.log('sorting by date added')
         return arr.sort((a, b) => {
-          if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
-          if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
-          else return 0
-        })
+        if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
+        if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
+        else return 0
+      })
       default:
-        return outputArray;
+        return arr
     }
   }
 
@@ -116,34 +121,37 @@ export default function ContactDetailsPage() {
 
     // story title and notes
     function getTagsString(story) {
-      const tagsNameString = story.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
-      const tagsDescString = story.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
-      return tagsNameString+tagsDescString
+      const tagsNameString = story.tags?.map(tag => tag?.name?.toLowerCase()).join('');
+      const tagsDescString = story.tags?.map(tag => tag?.description?.toLowerCase()).join('')
+      return tagsNameString + tagsDescString
+    }
+
+    function getThemesString(story) {
+      const themesNameString = story.theme?.map(theme => theme?.title?.toLowerCase()).join('');
+      const themesDescString = story.theme?.map(theme => theme?.description?.toLowerCase()).join('');
+      return themesNameString + themesDescString
     }
 
     switch (searchBy) {
+      case 'story info':
+        return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'theme':
+        return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
+      case 'tag':
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
+      case 'contact':
+        return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
       case 'all':
-        return arr
-      case 'theme info':
-        return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      case 'contact name':
-        return arr.filter(theme => getContactsString(theme).includes(searchTerm.toLowerCase()))
-      case 'story title':
-        return arr.filter(theme => getStoriesString(theme).includes(searchTerm.toLowerCase()))
-      case 'description':
-        return arr
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
     }
-
-    return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm))
   }
 
   //! set to all themes temporarily. eventually, set to archiveThemes
-  const storyResults = sortResults(searchResults(contactStories))
-
+  const storyResults = ascDesc(sortResults(searchResults(contactStories)))
 
   return (
     <Box>
-      {/* {JSON.stringify(contactStories)} */}
+      {/* <pre>{JSON.stringify(contactStories, null, 2)}</pre> */}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {/* profile image */}
         {contact[0]?.id &&
@@ -182,7 +190,8 @@ export default function ContactDetailsPage() {
               setSearchBy={setSearchBy}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
-            /></Box>
+            />
+          </Box>
           {/* <TextField
             variant='outlined'
             label='Search'
@@ -227,7 +236,7 @@ export default function ContactDetailsPage() {
           {/* container so there is margin between general info and contributions while maximizing screen space */}
           <Grid container space={1} sx={{ ...mainContentBox, m: 0, mt: 1, minHeight: generalInfoHeight + 'px' }}>
             <Grid item xs={12} sx={{ p: 1 }}>
-              {contactStories[0] && contactStories.map((story) => {
+              {storyResults[0] && storyResults.map((story) => {
                 return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen} />
               })}
             </Grid>

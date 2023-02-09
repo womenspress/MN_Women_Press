@@ -11,9 +11,8 @@ export function makeStatusColor(story) {
   // console.log('publication date', story)
 
 
-  //! BUG: this errors if there are no contacts attached to the story
-  const hasAuthor = !!story.contacts?.filter(contact => contact?.role === 'author').length
-  // console.log('author?', hasAuthor)
+  const hasAuthor = !!story.contacts?.filter(contact => contact?.story_association === 'author').length
+  // console.log('author?', hasAuthor, story.contacts)
 
   const paymentRequired = !!story.contacts?.filter(contact => contact?.invoice_amount > 0).length
   // console.log('payment required?', paymentRequired)
@@ -62,18 +61,25 @@ export function makeStatusColor(story) {
       status: paymentRequired,
       complete: story.payment_completed,
     },
+    {
+      name: 'post social',
+      name_db: 'socials_completed',
+      status: story.socials_required,
+      complete: story.socials_completed,
+    },
   ].filter(piece => piece.status);
   // console.log(piecesToTrack);
 
   const piecesReady = !piecesToTrack.filter(piece => !piece.complete).length
-  // console.log('pieces ready', piecesReady);
+  console.log('pieces ready', piecesReady, story.title);
   // const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
   // console.log('pieces ready', piecesReady);
 
   if (story.publication_date < DateTime.now().toISO()) return { color: 'grey', notes: 'story is complete and past' }
 
   // need to add deadlines and author to progress from red to yellow
-  if (!story.rough_draft_deadline || !story.final_draft_deadline || !hasAuthor) return { color: 'red', notes: 'story is missing a rough draft deadline, final draft deadline, or author' }
+  if (!story.rough_draft_deadline && !story.final_draft_deadline && !story.publication_date) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
+  if (!story.rough_draft_deadline || !story.final_draft_deadline || !story.publication_date || !hasAuthor) return { color: 'red', notes: 'story is missing deadlines or an author' }
   if (!piecesReady) return { color: 'yellow', notes: 'story has key info ready but is missing some to-do tasks' }
   if (piecesReady) return { color: 'green', notes: 'story is ready to publish!' }
 

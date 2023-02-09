@@ -174,7 +174,7 @@ export default function StoryModalGeneral(props) {
 
   // on submit: close modal. create mode true => POST data, clear temp story. create mode false => PUT data.
   const handleSubmit = () => {
-    console.log('saved and submitted');
+    console.log('saved and submitted:', { ...currentStory, ...inputValues });
     dispatch({ type: 'CLEAR_TEMP_STORY' });
     if (createMode)
       dispatch({

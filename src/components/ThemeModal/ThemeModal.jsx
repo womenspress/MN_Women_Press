@@ -143,7 +143,6 @@ export default function ThemeModal(props) {
     const storyResults = ascDesc(sortResults(searchResults(themeStoriesArray)))
 
   return (
-    <>
       <Box sx={{ marginX: 5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           {/* {JSON.stringify(theme)} */}
@@ -164,22 +163,21 @@ export default function ThemeModal(props) {
           </Typography>
 
         </Box>
-        {edit ?
-          <TextField
-            sx={{ mt: 2, width: 1 }}
-            id="outlined-textarea"
-            label="Theme Description"
-            placeholder="Description"
-            onChange={(event) => setEditValues({ ...editValues, description: event.target.value })}
-            value={editValues.description}
-            multiline
-          />
-          :
-          <Typography id="modal-modal-description" sx={{ mt: 2, width: 1 }}>
-            {description}
-          </Typography>
-        }
-
+          {edit ?
+            <TextField
+              sx={{ mt: 2, width: 1 }}
+              id="outlined-textarea"
+              label="Theme Description"
+              placeholder="Description"
+              onChange={(event) => setEditValues({ ...editValues, description: event.target.value })}
+              value={editValues.description}
+              multiline
+            />
+            :
+            <Typography id="modal-modal-description" sx={{ mt: 2, width: 1 }}>
+              {description}
+            </Typography>
+          }
         <Box>
 
           {edit ?
@@ -191,76 +189,48 @@ export default function ThemeModal(props) {
             <Button onClick={activateEdit}>Edit</Button>
           }
         </Box>
-      </Box>
       {/* //* ================ stories ============== */}
-
-      <Grid container>
-        <Grid item >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
-            <Typography
-              id="modal-modal-description"
-              sx={{ mt: 2, width: .25 }}
-              variant="h4" component="h4"
-            >
-              Stories:
-            </Typography>
-
-            {/* Search and add to theme method for stories */}
-            <form onSubmit={handleStorySubmit}>
-              <Box sx={{ display: 'flex' }}>
-                <Autocomplete
-                  size='small'
-                  sx={{ width: 200 }}
-                  options={storyOptions}
-                  renderInput={(params) => <TextField {...params} size='small' label='story' />}
-                  value={contactToAdd}
-                />
-                <Button
-                  type='submit'
-                >add</Button>
-              </Box>
-            </form>
-
-            <Box
-        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <SortFilterSearch
-            sortOptions={sortOptions}
-            sortMethod={sortMethod}
-            setSortMethod={setSortMethod}
-            sortDirection={sortDirection}
-            setSortDirection={setSortDirection}
-            searchByOptions={searchByOptions}
-            searchBy={searchBy}
-            setSearchBy={setSearchBy}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
-        </Box>
-        <Box>
-          {storyResults.length ? storyResults.map((story,index) => {
-            return (
-              <StoryListItem
-                key={index}
-                story={story}
-                createMode={createMode}
-                setCreateMode={setCreateMode}
-                setModalOpen={setModalOpen}
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+          {/* Search and add to theme method for stories */}
+          <Box sx={{   bgcolor: 'grey.100', padding: 1, borderRadius: 2, }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Typography
+                id="modal-modal-description"
+                sx={{ mt: 2, width: .25 }}
+                variant="h4" component="h4"
+              >
+                Stories:
+              </Typography>
+              <SortFilterSearch
+                sortOptions={sortOptions}
+                sortMethod={sortMethod}
+                setSortMethod={setSortMethod}
+                sortDirection={sortDirection}
+                setSortDirection={setSortDirection}
+                searchByOptions={searchByOptions}
+                searchBy={searchBy}
+                setSearchBy={setSearchBy}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
               />
-            )
-          })
-            :
-            <></>
-          }
-        </Box>
-      </Box>
+            </Box>
+            <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
+              {storyResults.length ? storyResults.map((story,index) => {
+                return (
+                  <ThemeStoryListItem story={story} key={index} />
+                )
+              })
+                :
+                <></>
+              }
+            </Box>
           </Box>
-
-          {themeStoriesArray.map((story, index) => {
+        </Box>
+          {/* {themeStoriesArray.map((story, index) => {
             return (
               <ThemeStoryListItem story={story} key={index} />
             )
-          })}
+          })} */}
           {/* //* ================ contacts ============== */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
             <Typography
@@ -280,15 +250,11 @@ export default function ThemeModal(props) {
             /> */}
 
           </Box>
-          {filteredContactsArray.map((contact, index) => {
+          {contacts.map((contact, index) => {
             return (
               <ThemeContactListItem contact={contact} key={index} />
             )
           })}
-          {/* </Box> */}
-          </Grid>
-        {/* </Modal> */}
-        </Grid>
-    </>
+    </Box>
   );
 }

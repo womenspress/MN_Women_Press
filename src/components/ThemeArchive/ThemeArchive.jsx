@@ -58,25 +58,25 @@ export default function ThemeArchive() {
 
 
     function getContactsString(theme) {
-      return theme.contacts?.map(contact=>contact?.name.toLowerCase()).join('')
+      return theme.contacts?.map(contact => contact?.name.toLowerCase()).join('')
     }
 
     // story title and notes
     function getStoriesString(theme) {
-      const titlesString = theme.stories?.map(story=>story?.title.toLowerCase()).join('')
-      const notesString = theme.stories?.map(story=>story?.notes.toLowerCase()).join('')
-      return titlesString+notesString
+      const titlesString = theme.stories?.map(story => story?.title.toLowerCase()).join('')
+      const notesString = theme.stories?.map(story => story?.notes.toLowerCase()).join('')
+      return titlesString + notesString
     }
 
     switch (searchBy) {
+      case 'theme info':
+        return arr.filter(theme => theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      case 'contact name':
+        return arr.filter(theme => getContactsString(theme).includes(searchTerm.toLowerCase()))
+      case 'story title':
+        return arr.filter(theme => getStoriesString(theme).includes(searchTerm.toLowerCase()))
       case 'all':
         return arr
-      case 'theme info':
-        return arr.filter(theme=>theme.name.toLowerCase().includes(searchTerm.toLowerCase()) || theme.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      case 'contact name':
-        return arr.filter(theme=>getContactsString(theme).includes(searchTerm.toLowerCase()))
-      case 'story title':
-        return arr.filter(theme=>getStoriesString(theme).includes(searchTerm.toLowerCase()))
       case 'description':
         return arr
     }

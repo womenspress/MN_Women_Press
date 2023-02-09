@@ -64,10 +64,10 @@ export default function EditContactModal({contact}){
     const [email, setEmail] = React.useState(contact.email|| '');
     const [phone, setPhone] = React.useState(contact.phone || '');
     const [expertise, setExpertise] = React.useState(contact.expertise || '');
-    const [tagsArray, setTagsArray] = React.useState(!contact.tags.includes(null) ? contact.tags : []);
+    const [tagsArray, setTagsArray] = React.useState(!contact.tags?.includes(null) ? contact.tags : []);
     // const [location, setLocation] = React.useState(contact.location);
     const [notes, setNotes] = React.useState(contact.note || '')
-    const [rolesArray, setRolesArray] = React.useState(!contact.roles.includes(null) ? contact.roles : []);
+    const [rolesArray, setRolesArray] = React.useState(!contact.roles?.includes(null) ? contact.roles : []);
     
     // page 2
     const [billingAddress, setBillingAddress] = React.useState(contact.billing_address || '');
@@ -156,16 +156,16 @@ export default function EditContactModal({contact}){
     ]
 
     console.log();
-    const [check1, setCheck1] = React.useState(contact.roles.filter(e =>  e?.name == 'Photographer').length>0);
-    const [check2, setCheck2] = React.useState(contact.roles.filter(e =>  e?.name == 'Illustrator').length>0);
-    const [check3, setCheck3] = React.useState(contact.roles.filter(e =>  e?.name == 'Editor').length>0);
-    const [check4, setCheck4] = React.useState(contact.roles.filter(e =>  e?.name == 'Expert').length>0);
-    const [check5, setCheck5] = React.useState(contact.roles.filter(e =>  e?.name == 'Fact Checker').length>0);
-    const [check6, setCheck6] = React.useState(contact.roles.filter(e =>  e?.name == 'Printers').length>0);
-    const [check7, setCheck7] = React.useState(contact.roles.filter(e =>  e?.name == 'Author').length>0);
-    const [check8, setCheck8] = React.useState(contact.roles.filter(e =>  e?.name == 'Underwriter').length>0);
-    const [check9, setCheck9] = React.useState(contact.roles.filter(e =>  e?.name == 'Source').length>0);
-    const [check10, setCheck10] = React.useState(contact.roles.filter(e =>  e?.name == 'Subject').length>0);
+    const [check1, setCheck1] = React.useState(contact.roles?.filter(e =>  e?.name == 'Photographer').length>0);
+    const [check2, setCheck2] = React.useState(contact.roles?.filter(e =>  e?.name == 'Illustrator').length>0);
+    const [check3, setCheck3] = React.useState(contact.roles?.filter(e =>  e?.name == 'Editor').length>0);
+    const [check4, setCheck4] = React.useState(contact.roles?.filter(e =>  e?.name == 'Expert').length>0);
+    const [check5, setCheck5] = React.useState(contact.roles?.filter(e =>  e?.name == 'Fact Checker').length>0);
+    const [check6, setCheck6] = React.useState(contact.roles?.filter(e =>  e?.name == 'Printers').length>0);
+    const [check7, setCheck7] = React.useState(contact.roles?.filter(e =>  e?.name == 'Author').length>0);
+    const [check8, setCheck8] = React.useState(contact.roles?.filter(e =>  e?.name == 'Underwriter').length>0);
+    const [check9, setCheck9] = React.useState(contact.roles?.filter(e =>  e?.name == 'Source').length>0);
+    const [check10, setCheck10] = React.useState(contact.roles?.filter(e =>  e?.name == 'Subject').length>0);
 
     const changeRoleStatus = (checked,id) => {
         console.log(checked);
@@ -354,7 +354,7 @@ export default function EditContactModal({contact}){
                                 </Box>
                             </Box>                         
                         </Box>
-                        <ListTags tags={tagsArray} numOfDisplay={tagsArray.length} removeTag={removeTag}/>
+                        <ListTags tags={tagsArray} numOfDisplay={tagsArray?.length} removeTag={removeTag}/>
                         {/* <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/> */}
                         <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>

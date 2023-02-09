@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Box, Grid, Typography, TextField } from '@mui/material';
+import { Box, Grid, Modal, Typography, TextField } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { mainContentBox } from '../../__style';
 import StoryListItem from '../../components/StoryListItem/StoryListItem';
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar'
 
 import EditContactModal from '../../components/EditContactModal/EditContactModal';
+import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
+import { largeModal, mainContentBox } from '../../__style'
+
 
 
 export default function ContactDetailsPage() {
@@ -28,11 +30,14 @@ export default function ContactDetailsPage() {
   const allContacts = useSelector(store => store.contacts.allContacts)
   const allStories = useSelector(store => store.stories.allStories);
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [createMode, setCreateMode] = useState(true);
   const [contact, setContact] = useState({ name: 'asdf', });
   const [contactStories, setContactStories] = useState([]);
 
   const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
+
+  // createMode: will the big story modal be in create or edit mode?
 
   useEffect(() => {
     setContact(allContacts.filter((contact) => contact.id == id));
@@ -51,6 +56,11 @@ export default function ContactDetailsPage() {
     height: 60,
     width: 60,
     margin: 1
+  }
+
+  const handleClose = () => {
+    setModalOpen(false)
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
 
   return (
@@ -72,8 +82,8 @@ export default function ContactDetailsPage() {
 
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
         <Grid item xs={4} display='flex'>
-          <Typography variant='h5' fontWeight='bold' sx={{mr: 1}}>General Info </Typography>
-          {contact[0] ? <EditContactModal contact={contact[0]}/> : null }
+          <Typography variant='h5' fontWeight='bold' sx={{ mr: 1 }}>General Info </Typography>
+          {contact[0] ? <EditContactModal contact={contact[0]} /> : null}
         </Grid>
         <Grid item xs={4}>
           <Typography variant='h5' fontWeight='bold' sx={{ ml: 2 }}>Contributions</Typography>
@@ -126,7 +136,7 @@ export default function ContactDetailsPage() {
             <Grid container space={1} sx={{ ...mainContentBox, m: 0, mt: 1, minHeight: generalInfoHeight + 'px' }}>
               <Grid item xs={12} sx={{ p: 1 }}>
                 {contactStories[0] && contactStories.map((story) => {
-                  return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} />
+                  return <StoryListItem key={story?.id} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen} />
                 })}
               </Grid>
             </Grid>
@@ -135,6 +145,15 @@ export default function ContactDetailsPage() {
 
         </Grid>
       </Grid>
+
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}>
+        <Box sx={largeModal}>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} />
+        </Box>
+      </Modal>
+
     </Box >
   )
 }

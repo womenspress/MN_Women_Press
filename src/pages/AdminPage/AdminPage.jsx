@@ -58,8 +58,7 @@ export default function AdminPage() {
                         {viewState === 'unauthorized' ?
                             unauthorizedUsers.map(user => {
                                 return (
-                                    <Grid item xs={3} key={user.id} sx={{ border: '1px solid #951c2a', borderRadius: 1, m: 1 }}>
-                                        <Card>
+                                        <Card sx={{ width: '250px',  border: '1px solid #951c2a', borderRadius: 1, m: 1}}>
                                             <CardContent>
                                                 <Typography variant='h5'>{user.username}</Typography>
                                                 <Typography variant='h6' mt={2}>Status: Pending</Typography>
@@ -69,14 +68,12 @@ export default function AdminPage() {
                                                 <Button variant='contained' color='error' onClick={() => handleDeleteClick(user)}>Delete <DeleteForeverIcon sx={{pl:1}}/></Button>
                                             </CardActions>
                                         </Card>
-                                    </Grid>
                                 )
                             })
                             :
                             authorizedUsers.map(user => {
                                 return (
-                                    <Grid item xs={3} key={user.id} sx={{ border: '1px solid #951c2a', borderRadius: 1, m: 1 }}>
-                                        <Card>
+                                        <Card sx={{ width: '250px',border: '1px solid #951c2a', borderRadius: 1, m: 1 }}>
                                             <CardContent>
                                                 <Typography variant='h5'>{user.username}</Typography>
                                                 <Typography variant='h6' mt={2}>Authorized</Typography>
@@ -85,7 +82,6 @@ export default function AdminPage() {
                                                 <Button variant='contained'  sx={{ color: 'primary', borderColor: 'primary'}} onClick={() => handleAuthorizeClick(user)}>Deactivate <DoDisturbIcon sx={{pl:1}}/></Button>
                                             </CardActions>
                                         </Card>
-                                    </Grid>
                                 )
                             })
                         }

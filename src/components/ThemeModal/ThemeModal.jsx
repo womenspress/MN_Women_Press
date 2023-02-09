@@ -8,26 +8,23 @@ import { DateTime } from 'luxon'
 import { Box, Button, Typography, TextField, Grid, Autocomplete } from '@mui/material';
 import ThemeStoryListItem from '../ThemeStoryListItem/ThemeStoryListItem';
 import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
+import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 
-// internal
-// import { largeModal, smallModal } from '../../__style';
+// styling
+import { largeModal, mainContentBox } from '../../__style'
 
 
 export default function ThemeModal(props) {
   const dispatch = useDispatch();
 
   let theme = props.theme;
-  let id = props.id || -1;
   let name = props.name || "undefined";
   let description = props.description || "undefined description";
   let stories = props.stories || [{ id: -1, title: "title not found", subtitle: "bugs", article_text: "beans", notes: "worms" }];
   let contacts = props.contacts || [{ id: -1, name: "contact not found", pronouns: 'she/they/them', expertise: "ice skating and catching butterflies", bio: "extreme mountain climber", note: "perfect photo dance session" }];
-
-
   const storiesIds = stories ? stories?.map(story => story?.id) : [];
   const allContacts = useSelector(store => store.contacts.allContacts);
   const allStories = useSelector(store => store.stories.allStories);
-
   const [contactToAdd, setContactToAdd] = useState({ id: 0, label: '' })
 
 
@@ -69,48 +66,81 @@ export default function ThemeModal(props) {
       return all array item that contain text.
   */
   const [searchStoryText, setSearchStoryText] = React.useState("");
-  const [filteredStoriesArray, setFilteredStoryArray] = React.useState(stories);
-
-  React.useEffect(() => {
-    // setFilteredStoryArray(stories.filter(function(obj) {
-    //         if (
-    //             obj.title?.includes(searchStoryText) || 
-    //             obj.subtitle?.includes(searchStoryText) || 
-    //             obj.article_text?.includes(searchStoryText) ||
-    //             obj.notes?.includes(searchStoryText)
-    //             ){
-    //             console.log('passed filter:', obj);
-    //             return obj;
-    //         }
-    //     }
-    // ))
-  }, [searchStoryText]);
-
-  // search contact function
-  const [searchContactText, setSearchContactText] = React.useState("");
-  const [filteredContactsArray, setFilteredContactsArray] = React.useState(contacts);
-
-  React.useEffect(() => {
-    // setFilteredContactsArray(contacts.filter(function(obj) {
-    //         if (
-    //             obj.name?.includes(searchContactText) || 
-    //             obj.pronouns?.includes(searchContactText) || 
-    //             obj.expertise?.includes(searchContactText) ||
-    //             obj.bio?.includes(searchContactText) ||
-    //             obj.note?.includes(searchContactText)
-    //             ){
-    //             console.log('passed filter:', obj);
-    //             return obj;
-    //         }
-    //     }
-    // ))
-  }, [searchContactText]);
+  const [themeStoriesArray, setFilteredStoryArray] = React.useState(stories || []);
 
   const handleStorySubmit = (e) => {
     e.preventDefault;
     console.log('submitting story')
     dispatch({ type: 'ADD_STORY_TO_THEME', })
   }
+
+    //* ============ SORT/FILTER/SEARCH STUFF ===============
+
+    const sortOptions = ['date added', 'title']
+    const [sortMethod, setSortMethod] = useState('date added');
+    const [sortDirection, setSortDirection] = useState('ascending')
+  
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('all');
+    const searchByOptions = ['all', 'story info', 'theme', 'tag', 'contact']
+  
+  
+    const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
+  
+    const sortResults = (arr) => {
+      switch (sortMethod) {
+        case 'date added':
+          return arr.sort((a, b) => {
+            if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
+            if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
+            else return 0
+          })
+        case 'title':
+          return arr.sort((a, b) => {
+            if (a.title > b.title) return 1
+            if (a.title < b.title) return -1
+            else return 0
+          })
+        default:
+          return arr;
+      }
+    }
+  
+    // const searchByOptions = ['all', 'theme', 'tag', 'contact', 'story info']
+    const searchResults = (arr) => {
+      function getContactsString(story) {
+        return story.contacts.map(contact => contact?.name.toLowerCase()).join('')
+      }
+  
+      function getTagsString(story) {
+        const tagsNameString = story.tags?.map(tag => tag?.name?.toLowerCase()).join('');
+        const tagsDescString = story.tags?.map(tag => tag?.description?.toLowerCase()).join('')
+        return tagsNameString + tagsDescString
+      }
+  
+      function getThemesString(story) {
+        const themesNameString = story.theme?.map(theme => theme?.title?.toLowerCase()).join('');
+        const themesDescString = story.theme?.map(theme => theme?.description?.toLowerCase()).join('');
+        return themesNameString + themesDescString
+      }
+  
+      switch (searchBy) {
+        case 'contact':
+          return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
+        case 'story info':
+          return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
+        case 'theme':
+          return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
+        // case 'tag':
+        //   return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
+        case 'all':
+          return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story?.subtitle.toLowerCase().includes(searchTerm.toLowerCase())|| story.notes.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+        default:
+          return arr
+      }
+    }
+
+    const storyResults = ascDesc(sortResults(searchResults(themeStoriesArray)))
 
   return (
     <>
@@ -174,6 +204,8 @@ export default function ThemeModal(props) {
             >
               Stories:
             </Typography>
+
+            {/* Search and add to theme method for stories */}
             <form onSubmit={handleStorySubmit}>
               <Box sx={{ display: 'flex' }}>
                 <Autocomplete
@@ -188,9 +220,43 @@ export default function ThemeModal(props) {
                 >add</Button>
               </Box>
             </form>
+
+            <Box
+        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <SortFilterSearch
+            sortOptions={sortOptions}
+            sortMethod={sortMethod}
+            setSortMethod={setSortMethod}
+            sortDirection={sortDirection}
+            setSortDirection={setSortDirection}
+            searchByOptions={searchByOptions}
+            searchBy={searchBy}
+            setSearchBy={setSearchBy}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        </Box>
+        <Box>
+          {storyResults.length ? storyResults.map((story,index) => {
+            return (
+              <StoryListItem
+                key={index}
+                story={story}
+                createMode={createMode}
+                setCreateMode={setCreateMode}
+                setModalOpen={setModalOpen}
+              />
+            )
+          })
+            :
+            <></>
+          }
+        </Box>
+      </Box>
           </Box>
 
-          {filteredStoriesArray.map((story, index) => {
+          {themeStoriesArray.map((story, index) => {
             return (
               <ThemeStoryListItem story={story} key={index} />
             )
@@ -204,12 +270,14 @@ export default function ThemeModal(props) {
             >
               Contacts:
             </Typography>
-            <Autocomplete
+
+            {/* Search Contacts and add it to the theme */}
+            {/* <Autocomplete
               size='small'
               sx={{ width: 200 }}
               options={allContacts.map(contact => contact.name)}
               renderInput={(params) => <TextField {...params} size='small' label='contact' />}
-            />
+            /> */}
 
           </Box>
           {filteredContactsArray.map((contact, index) => {

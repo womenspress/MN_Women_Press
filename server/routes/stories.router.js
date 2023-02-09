@@ -311,7 +311,7 @@ router.post(
       INSERT INTO "theme_story" 
       ("story_id","theme_id") 
       VALUES 
-      ($1, $2;`;
+      ($1, $2);`;
 
         return connection.query(postContactsQuery, [storyId, theme.id]);
       });

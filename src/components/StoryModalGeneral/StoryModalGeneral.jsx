@@ -235,7 +235,7 @@ export default function StoryModalGeneral(props) {
             }}
           />
         </Box>
-        <Grid container spacing={1} sx={{ paddingX: '5%', height: 500, overflow: 'hidden', overflowY: 'scroll'}}>
+        <Grid container spacing={1} sx={{ paddingX: '5%', maxHeight: 480, overflow: 'hidden', overflowY: 'scroll'}}>
           {/* title */}
           <Grid item xs={4}>
             <Typography sx={{ textAlign: 'right', marginRight: 3 }}>

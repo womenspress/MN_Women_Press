@@ -307,13 +307,13 @@ router.post(
       });
 
       const themePromises = theme.map((theme) => {
-        let postContactsQuery = `
+        let postThemesQuery = `
       INSERT INTO "theme_story" 
       ("story_id","theme_id") 
       VALUES 
       ($1, $2);`;
 
-        return connection.query(postContactsQuery, [storyId, theme.id]);
+        return connection.query(postThemesQuery, [storyId, theme.id]);
       });
 
       //Querying database to add contacts and tags to joiner tables
@@ -361,27 +361,30 @@ router.put(
       article_text,
       article_link,
       notes,
+      photo,
       type,
+      copies_required,
+      number_of_copies,
       copies_sent,
       photo_uploaded,
-      fact_check_completed, // same as fact_checked, different naming conventions in data
-      graphic_image_required,
+      fact_check_completed,
+      payment_required,
+      payment_completed,
+      socials_required,
+      socials_completed,
+      underwriter_required,
+      underwriter_completed,
+      photo_submitted,
+      photo_comments,
       external_link,
       word_count,
-      //date_added, // Don't need, auto populating with SQL
+      date_added,
       rough_draft_deadline,
       final_draft_deadline,
       publication_date,
-      photo_required,
-      fact_check_required,
-      graphic_image_completed,
-      payment_required,
-      payment_completed,
-      photo,
-      copies_required,
-      tags,
       contacts,
-      number_of_copies,
+      theme,
+      tags,
       copies_destination,
     } = req.body;
 
@@ -407,49 +410,81 @@ router.put(
 
       //**Step 1: delete all current tags and contacts associations
       let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
-
       let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
+      let deleteThemesQuery = `DELETE FROM "theme_story" WHERE "story_id" = $1;`;
 
       const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
       const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
+      const deleteThemesPromise = connection.query(deleteThemesQuery, [id]);
 
-      await Promise.all([deleteTagsPromise, deleteContactsPromise]);
+      await Promise.all([
+        deleteTagsPromise,
+        deleteContactsPromise,
+        deleteThemesPromise,
+      ]);
 
       //**Step 2: update Story details with a put request
       let updateStoryQueryText = `
     UPDATE "story"
     SET
-    "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
-    "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
-    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-    "payment_completed" = $20, "photo" = $21, "copies_required" = $22
-    WHERE "id" = $23;`;
+    title =$1,
+    subtitle =$2,
+    article_text =$3,
+    article_link=$4,
+    notes=$5,
+    photo=$6,
+    type=$7,
+    copies_required=$8,
+    number_of_copies=$9,
+    copies_sent=$10,
+    photo_uploaded=$11,
+    fact_check_completed=$12,
+    payment_required=$13,
+    payment_completed=$14,
+    socials_required=$15,
+    socials_completed=$16,
+    underwriter_required=$17,
+    underwriter_completed=$18,
+    photo_submitted=$19,
+    photo_comments=$20,
+    external_link=$21,
+    word_count=$22,
+    date_added=$23,
+    rough_draft_deadline=$24,
+    final_draft_deadline=$25,
+    publication_date=$26,
+    copies_destination =$27
+    WHERE "id" = $28;`;
 
       let updateStoryData = [
-        title, //1
-        subtitle, //2
-        article_text, //3
-        article_link, //4
-        notes, //5
-        type, //6
-        copies_sent, //7
-        photo_uploaded, //8
-        fact_check_completed, //9, same as fact_checked, different naming conventions in data
-        graphic_image_required, //10
-        external_link, //11
-        word_count, //12
-        //date_added, // don't need, auto populating with SQL
-        rough_draft_deadline, //13
-        final_draft_deadline, //14
-        publication_date, //15
-        photo_required, //16
-        fact_check_required, //17
-        graphic_image_completed, //18
-        payment_required, // 19
-        payment_completed, //20
-        photo, // 21
-        copies_required, //22
-        id, //23
+        title,
+        subtitle,
+        article_text,
+        article_link,
+        notes,
+        photo,
+        type,
+        copies_required,
+        number_of_copies,
+        copies_sent,
+        photo_uploaded,
+        fact_check_completed,
+        payment_required,
+        payment_completed,
+        socials_required,
+        socials_completed,
+        underwriter_required,
+        underwriter_completed,
+        photo_submitted,
+        photo_comments,
+        external_link,
+        word_count,
+        date_added,
+        rough_draft_deadline,
+        final_draft_deadline,
+        publication_date,
+        copies_destination,
+        id,
       ];
 
       await connection.query(updateStoryQueryText, updateStoryData);
@@ -479,8 +514,20 @@ router.put(
           contact.story_association,
         ]);
       });
+      const themePromises = theme.map((theme) => {
+        let postThemesQuery = `
+      INSERT INTO "theme_story" 
+      ("story_id","theme_id") 
+      VALUES 
+      ($1, $2);`;
 
-      await Promise.all([...attachContactsPromise, ...attachTagsPromise]);
+        return connection.query(postThemesQuery, [id, theme.id]);
+      });
+      await Promise.all([
+        ...attachContactsPromise,
+        ...attachTagsPromise,
+        ...themePromises,
+      ]);
 
       await connection.query('COMMIT');
       res.sendStatus(200);

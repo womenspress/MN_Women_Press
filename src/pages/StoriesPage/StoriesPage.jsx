@@ -44,7 +44,7 @@ export default function StoriesPage() {
 
   // passed into modal; used to determine dimensions
   const [step, setStep] = useState('general')
-  const modalDimensions = step ==='general' ? {height: 600, width: 700} : {height: 600, width: 900}
+  const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
 
   const handleClickPlus = () => {
     setCreateMode(true);
@@ -58,7 +58,7 @@ export default function StoriesPage() {
 
   //* ============ SORT/FILTER/SEARCH STUFF ===============
 
-  const sortOptions = ['date added', 'title']
+  const sortOptions = ['date added', 'title', 'status']
   const [sortMethod, setSortMethod] = useState('date added');
   const [sortDirection, setSortDirection] = useState('ascending')
 
@@ -68,6 +68,7 @@ export default function StoriesPage() {
 
 
   const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
+
 
   const sortResults = (arr) => {
     switch (sortMethod) {
@@ -82,6 +83,13 @@ export default function StoriesPage() {
           if (a.title > b.title) return 1
           if (a.title < b.title) return -1
           else return 0
+        })
+      case 'status':
+        const statusArr = ['grey.100', 'red', 'yellow', 'green', 'grey']
+        return arr.sort((a, b) => {
+          if (statusArr.indexOf(a.statusColor.color) > statusArr.indexOf(b.statusColor.color)) return 1
+          if (statusArr.indexOf(a.statusColor.color) < statusArr.indexOf(b.statusColor.color)) return -1
+          return 0
         })
       default:
         return arr;
@@ -128,15 +136,14 @@ export default function StoriesPage() {
   return (
     <Box>
       {/* {JSON.stringify(currentStories)} */}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Typography variant='h3'>Stories</Typography>
-        <IconButton onClick={handleClickPlus}>
-          <ControlPointIcon />
-        </IconButton>
-      </Box>
-      <Box
-        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginX: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant='h3'>Stories</Typography>
+          <IconButton onClick={handleClickPlus} color='primary'>
+            <ControlPointIcon />
+          </IconButton>
+        </Box>
+        <Box>
           <SortFilterSearch
             sortOptions={sortOptions}
             sortMethod={sortMethod}
@@ -150,6 +157,9 @@ export default function StoriesPage() {
             setSearchTerm={setSearchTerm}
           />
         </Box>
+      </Box>
+      <Box
+        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
         <Box>
           {storyResults.length ? storyResults.map((story, index) => {
             return (
@@ -171,7 +181,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={{ ...largeModal, height: modalDimensions.height, width: modalDimensions.width }}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step = {step} setStep = {setStep}/>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step={step} setStep={setStep} />
         </Box>
       </Modal>
 

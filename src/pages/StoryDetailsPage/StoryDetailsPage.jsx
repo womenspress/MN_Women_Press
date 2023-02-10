@@ -22,7 +22,7 @@ export default function StoriesPage() {
   const history = useHistory();
 
   // redux variables
-  const allStories = useSelector(store => store.stories.allStories)
+  // const allStories = useSelector(store => store.stories.allStories)
   const currentStory = useSelector(store => store.stories.currentStory);
 
 
@@ -45,7 +45,7 @@ export default function StoriesPage() {
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
     dispatch({ type: 'GET_CURRENT_STORY', payload: id })
-    dispatch({ type: 'GET_ALL_STORIES' })
+    // dispatch({ type: 'GET_ALL_STORIES' })
   }, [])
 
   // updates notes on DOM, checks status color, and refreshes task item states when current story changes

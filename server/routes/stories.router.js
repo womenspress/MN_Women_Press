@@ -119,7 +119,7 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
 
   const connection = await pool.connect();
   try {
-    await connection.query('BEGIN;');
+    // await connection.query('BEGIN;');
     //**Step 1: get all details related to the current story
     let response = await connection.query(getDetailsQueryText, [id]);
     // set story response to a variable
@@ -152,16 +152,16 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
       }
     }
 
-      //5. Send modified array as response
-      // console.log('Response for individual story:', currentStoryDetails);
-      res.send(currentStoryDetails);
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    } finally {
-      connection.release();
-    }
+    //5. Send modified array as response
+    // console.log('Response for individual story:', currentStoryDetails);
+    res.send(currentStoryDetails);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  } finally {
+    connection.release();
   }
+}
 );
 
 /**
@@ -398,7 +398,7 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
 
     const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
     const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
-    const deleteThemePromise= connection.query(deleteThemeQuery, [id])
+    const deleteThemePromise = connection.query(deleteThemeQuery, [id])
 
     await Promise.all([deleteTagsPromise, deleteContactsPromise]);
 
@@ -476,7 +476,7 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
       return connection.query(attachThemeQuery, [id, theme.id])
     })
 
-    await Promise.all([...attachContactsPromise, ...attachTagsPromise,...attachThemePromises]);
+    await Promise.all([...attachContactsPromise, ...attachTagsPromise, ...attachThemePromises]);
 
     await connection.query('COMMIT');
     res.sendStatus(200);
@@ -547,11 +547,12 @@ router.put('/notes/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =
 //Router put for updating the status of checked box on the DOM
 router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const statusToChange = req.body.statusToChange;
-  const queryText = `UPDATE "story" SET "${statusToChange}"=$1 WHERE "id"=$2 RETURNING "${statusToChange}";`;
-  const queryParams = [req.body.statusValue, req.body.story_id];
+  const queryText = `UPDATE "story" SET ${statusToChange} = NOT ${statusToChange} WHERE "id"=$1 RETURNING "${statusToChange}";`;
+  const queryParams = [req.body.story_id];
 
   console.log(queryText);
-  console.log('$1=' +  queryParams[0], ', $2='+queryParams[1]);
+  console.log('type', typeof req.body.statusValue);
+  console.log('$1=' + queryParams[0]);// ', $2=' + queryParams[1]);
 
   pool
     .query(queryText, queryParams)

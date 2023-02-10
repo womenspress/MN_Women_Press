@@ -392,7 +392,7 @@ export default function ThemeModal(props) {
           <Box sx={{bgcolor: 'grey.100', borderRadius: 2, px: 2, py: 1 }}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', width: 1}}>
               <Box sx={{ display: 'flex' }}>
-                <AddContactToTheme  theme={theme} options={storyOptions}/>
+                {/* <AddContactToTheme  theme={theme} options={storyOptions}/> */}
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
                 <SortFilterSearch

@@ -12,13 +12,15 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditContactModal from '../EditContactModal/EditContactModal'
 import StoryCard from '../StoryCard/StoryCard'
-import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+//import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar';
 import ListTags from '../ListTags/ListTags';
 
-export default function ContactListItem({ contact }) {
+export default function ContactListItem({contact, numOfTagsToDisplay}) {
   const history = useHistory()
   const dispatch = useDispatch();
+
+  const [numOfTagsDisplay, setNumOfTagsDisplayed] = useState(numOfTagsToDisplay || 3);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -91,7 +93,7 @@ export default function ContactListItem({ contact }) {
   }
 
   return (
-    <Paper sx={{ paddingX: 1, marginY: .5 }}>
+    <Paper sx={{ paddingX: 1, marginY: .5, height: "fit-content"}}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: .35 }}>
           <IconButton
@@ -102,8 +104,8 @@ export default function ContactListItem({ contact }) {
           <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
           <Typography>{contact.pronouns}</Typography>
         </Box>
-        <Box sx={{width: .3 }}>
-          <ListTags numOfDisplay={contact?.tags.length} tags={contact?.tags} removeTag={removeTag} />
+        <Box sx={{width: .3, height: .50 }}>
+          <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
           <Typography sx={{ ml: 1 }}>{contact.roles[0]?.name}</Typography>

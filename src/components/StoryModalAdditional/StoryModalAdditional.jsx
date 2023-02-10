@@ -53,8 +53,8 @@ export default function StoryModalAdditional(props) {
   const handleFactCheck = (e) => {
     console.log('in handle fact check');
     if (e.target.checked)
-      setInputValues({ ...inputValues, underwriter_required: true });
-    else setInputValues({ ...inputValues, underwriter_required: false });
+      setInputValues({ ...inputValues, fact_check_required: true });
+    else setInputValues({ ...inputValues, fact_check_required: false });
   };
 
   const handleCopies = (e) => {

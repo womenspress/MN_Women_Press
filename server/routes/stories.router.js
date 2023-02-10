@@ -528,7 +528,7 @@ router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) 
   const statusToChange = req.body.statusToChange;
   const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
   const queryParams = [req.body.statusValue, req.body.story_id];
-
+  // console.log('in story status update router', statusToChange, req.body.statusValue)
   pool
     .query(queryText, queryParams)
     .then(() => {

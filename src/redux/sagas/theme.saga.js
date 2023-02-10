@@ -52,6 +52,7 @@ function* themeStoryAdd(action) {
   console.log('in theme story add',action);
   try{
     yield axios.post(`/api/themes/themestoryadd`, action.payload);
+    yield put({ type: 'GET_ALL_THEMES' });
     console.log('addThemeStory');
   } catch (error){
     console.log('error in themeStoryAdd saga:', error);

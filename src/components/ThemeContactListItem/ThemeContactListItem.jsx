@@ -12,6 +12,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 export default function ThemeContactListItem(props){
 
     const contact = props.contact;
+    console.log(contact);
     
     const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -24,7 +25,7 @@ export default function ThemeContactListItem(props){
                         onClick={() => setDetailsOpen(!detailsOpen)}>
                         {detailsOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                     </IconButton>
-                    <Typography sx={{ marginRight: 1 }}>{contact?.name}</Typography>
+                    <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
                     <Typography>{contact?.pronouns}</Typography>
                 </Box>
                 {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>

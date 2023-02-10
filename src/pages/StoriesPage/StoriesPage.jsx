@@ -58,7 +58,7 @@ export default function StoriesPage() {
 
   //* ============ SORT/FILTER/SEARCH STUFF ===============
 
-  const sortOptions = ['date added', 'title']
+  const sortOptions = ['date added', 'title', 'status']
   const [sortMethod, setSortMethod] = useState('date added');
   const [sortDirection, setSortDirection] = useState('ascending')
 
@@ -83,6 +83,13 @@ export default function StoriesPage() {
           if (a.title > b.title) return 1
           if (a.title < b.title) return -1
           else return 0
+        })
+      case 'status':
+        const statusArr = ['grey.100', 'red', 'yellow', 'green', 'grey']
+        return arr.sort((a, b) => {
+          if (statusArr.indexOf(a.statusColor.color) > statusArr.indexOf(b.statusColor.color)) return 1
+          if (statusArr.indexOf(a.statusColor.color) < statusArr.indexOf(b.statusColor.color)) return -1
+          return 0
         })
       default:
         return arr;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
 
-// libraries
 
 // libraries
 import { useHistory } from 'react-router-dom';
@@ -65,10 +64,10 @@ export default function StoryListItem(props) {
 
   // console.log('story list item, story:', story)
 
-  const statusColor = makeStatusColor(story)
+  // const statusColor = makeStatusColor(story)
 
   const statusStyle = {
-    bgcolor: statusColor.color,
+    bgcolor: story.statusColor.color,
     width: 16,
     height: 16,
     minWidth: 16,
@@ -128,7 +127,7 @@ export default function StoryListItem(props) {
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
           <Grid item xs={5}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Tooltip title={statusColor.notes}>
+              <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
               <IconButton

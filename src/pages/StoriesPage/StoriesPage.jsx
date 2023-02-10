@@ -73,8 +73,8 @@ export default function StoriesPage() {
     switch (sortMethod) {
       case 'date added':
         return arr.sort((a, b) => {
-          if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
-          if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
+          if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return -1
+          if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return +1
           else return 0
         })
       case 'title':
@@ -129,7 +129,7 @@ export default function StoriesPage() {
     <Box>
       {/* {JSON.stringify(currentStories)} */}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Typography variant='h3'>Stories Page</Typography>
+        <Typography variant='h3'>Stories</Typography>
         <IconButton onClick={handleClickPlus}>
           <ControlPointIcon />
         </IconButton>

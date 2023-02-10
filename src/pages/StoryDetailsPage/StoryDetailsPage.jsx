@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import ListTags from '../../components/ListTags/ListTags';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // internal
@@ -17,30 +17,26 @@ import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCre
 
 export default function StoriesPage() {
   // hooks
-  const ref = useRef(null);
   const dispatch = useDispatch();
   const { id } = useParams();
+  const history = useHistory();
 
   // redux variables
+  const allStories = useSelector(store => store.stories.allStories)
   const currentStory = useSelector(store => store.stories.currentStory);
 
 
   //------------- tracks status of todo list items-----------------//
-  // using local state to hold checkmark required variables, otherwise uncontrolled checkboxes would render first
-  // despite my attempts with other methods
-  const [photoStatus, setPhotoStatus] = useState(currentStory.photo_uploaded);
-  const [photoRequired, setPhotoRequired] = useState(currentStory.photo_required);
-  const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(currentStory.graphic_image_completed);
-  const [graphicPhotoRequired, setGraphicPhotoRequired] = useState(currentStory.graphic_image_required);
-  const [copiesStatus, setCopiesStatus] = useState(currentStory.copies_sent);
-  const [copiesRequired, setCopiesRequired] = useState(currentStory.copies_required);
-  const [paymentStatus, setPaymentStatus] = useState(currentStory.payment_completed);
-  const [paymentRequired, setPaymentRequired] = useState(currentStory.payment_required);
-  const [factChecked, setFactChecked] = useState(currentStory.fact_check_completed);
-  const [factCheckRequired, setFactCheckRequired] = useState(currentStory.fact_check_required);
+  const [photoStatus, setPhotoStatus] = useState(false);
+  const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(false);
+  const [copiesStatus, setCopiesStatus] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(false);
+  const [factChecked, setFactChecked] = useState(false);
+  const [underwriterStatus, setUnderwriterStatus] = useState(false);
+  const [socialsStatus, setSocialsStatus] = useState(false);
 
 
-  const [notes, setNotes] = useState(currentStory.notes);
+  const [notes, setNotes] = useState(currentStory?.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
   const [statusColor, setStatusColor] = useState({});
   const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
@@ -49,28 +45,35 @@ export default function StoriesPage() {
   const [createMode, setCreateMode] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // passed into modal; used to determine dimensions
+  const [step, setStep] = useState('general')
+  const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
+
+  const [showTodo, setShowTodo ] = useState(false);
+
 
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
     dispatch({ type: 'GET_CURRENT_STORY', payload: id })
+    dispatch({ type: 'GET_ALL_STORIES' })
   }, [])
 
   // updates notes on DOM, checks status color, and refreshes task item states when current story changes
   useEffect(() => {
-    setNotes(currentStory.notes)
     setStatusColor(makeStatusColor(currentStory))
+    setNotes(currentStory.notes);
     setPhotoStatus(currentStory.photo_uploaded);
-    setPhotoRequired(currentStory.photo_required);
+
     setFactChecked(currentStory.fact_check_completed);
-    setFactCheckRequired(currentStory.fact_check_required);
     setGraphicPhotoStatus(currentStory.graphic_image_completed);
-    setGraphicPhotoRequired(currentStory.graphic_image_required);
     setCopiesStatus(currentStory.copies_sent);
-    setCopiesRequired(currentStory.copies_required);
     setPaymentStatus(currentStory.payment_completed);
-    setPaymentRequired(currentStory.payment_required);
+    setSocialsStatus(currentStory.socials_completed);
+    setUnderwriterStatus(currentStory.underwriter_completed);
+    
     dispatch({ type: 'SET_TEMP_STORY', payload: currentStory });
     setGeneralInfoHeight(document.getElementById("storiesGeneralSection").offsetHeight)
+    setShowTodo(true);
   }, [currentStory])
 
 
@@ -100,7 +103,7 @@ export default function StoriesPage() {
     setModalOpen(false);
     setCreateMode(true);
     dispatch({ type: 'GET_CURRENT_STORY', payload: id });
-    dispatch({ type: 'CLEAR_TEMP_STORY'});
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
   }
 
   //------- handle the check/uncheck of todo list items --------------//
@@ -134,6 +137,16 @@ export default function StoriesPage() {
         statusValue = !paymentStatus;
         setPaymentStatus(!paymentStatus)
         break;
+      case 'underwriting complete':
+        statusToChange = 'underwriter_completed';
+        statusValue = !underwriterStatus;
+        setUnderwriterStatus(!underwriterStatus)
+        break;
+      case 'socials posted':
+        statusToChange = 'socials_completed';
+        statusValue = !socialsStatus;
+        setSocialsStatus(!socialsStatus);
+        break;
     }
     dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })
   }
@@ -148,10 +161,25 @@ export default function StoriesPage() {
   const removeTag = (tagID) => {
     // console.log('remove tag', tagID, 'from story: ', id);
     const story_id = id;
-    dispatch({type: 'DELETE_STORY_TAG', payload: {tag_id: tagID, story_id: story_id}})
+    dispatch({ type: 'DELETE_STORY_TAG', payload: { tag_id: tagID, story_id: story_id } })
   }
 
-  
+  const contactCard = (contact) => {
+    return (
+      <Grid container spacing={1} key={contact.id} onClick={() => history.push(`/contactdetails/${contact.id}`)}>
+        {/* The below portion can be swapped out with a contact card component once created */}
+        <Grid item xs={12}>
+          <Box component={Paper} p={1} m={1} sx={{ '&:hover': { cursor: 'pointer', backgroundColor: 'grey.200' } }}>
+            <Typography fontWeight='bold'>{contact.name}</Typography>
+            <Typography>{contact.email}</Typography>
+            <Typography>{contact.invoice_amount ? <>${contact.invoice_amount}, {contact.invoice_paid ? 'paid' : 'not paid'}</> : <Typography variant='body2'>payment not required</Typography>}</Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    )
+  }
+
+
 
 
   return (
@@ -160,7 +188,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={largeModal}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={false} setCreateMode={setCreateMode}/>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={false} setCreateMode={setCreateMode} step={step} setStep={setStep} />
         </Box>
       </Modal>
 
@@ -173,12 +201,12 @@ export default function StoriesPage() {
             <Tooltip title={statusColor.notes}>
               <Box sx={statusStyle}></Box>
             </Tooltip>
-            <Typography variant='h4' sx={{ ml: 1 }}>{currentStory.title}</Typography>
+            <Typography variant='h4' sx={{ ml: 1 }}>{currentStory?.title}</Typography>
           </Box>
         </Grid>
         <Grid item xs={4}>
           <Box>
-            <ListTags numOfDisplay={currentStory.tags?.length} tags={currentStory.tags} removeTag={removeTag} />
+            <ListTags numOfDisplay={currentStory?.tags?.length} tags={currentStory?.tags} removeTag={removeTag} />
           </Box>
         </Grid>
 
@@ -190,10 +218,7 @@ export default function StoriesPage() {
               <Typography variant='h6'>General Info</Typography>
             </Grid>
             <Grid item xs={1}>
-
               <EditIcon onClick={handleClickPlus} sx={{ '&:hover': { cursor: 'pointer' } }} />
-
-
             </Grid>
 
             {/*--------- Maps contacts, order: author, photographer, fact checker, other ----------- */}
@@ -203,17 +228,9 @@ export default function StoriesPage() {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              {currentStory.contacts?.filter(e => e?.story_association === 'author').map((contact) => {
+              {currentStory?.contacts?.filter(e => e?.story_association === 'author').map((contact) => {
                 return (
-                  <Grid container spacing={1} key={contact.id}>
-                    {/* The below portion can be swapped out with a contact card component once created */}
-                    <Grid item xs={12}>
-                      <Box component={Paper} p={1} m={1}>
-                        <Typography fontWeight='bold'>{contact.name}</Typography>
-                        <Typography>{contact.email}</Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
+                  contactCard(contact)
                 )
               })}
             </Grid>
@@ -221,26 +238,18 @@ export default function StoriesPage() {
 
             {/* Maps photographer and fact checker conditionally, if they 
             are required for the story and none are assigned it will indicate accordingly*/}
-            {currentStory.photo_required || currentStory.contacts?.filter(e => e?.story_association === 'photographer').length > 0 ?
+            {currentStory?.contacts?.filter(e => e?.story_association === 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Photographer
                   </Typography>
                 </Grid>
-                {currentStory.contacts.filter(e => e?.story_association === 'photographer').length > 0 ?
+                {currentStory?.contacts.filter(e => e?.story_association === 'photographer').length > 0 ?
                   <Grid item xs={9}>
-                    {currentStory.contacts.filter(e => e?.story_association === 'photographer').map((contact) => {
+                    {currentStory?.contacts.filter(e => e?.story_association === 'photographer').map((contact) => {
                       return (
-                        <Grid container spacing={1} key={contact.id}>
-                          {/* The below portion can be swapped out with a contact card component once created */}
-                          <Grid item xs={12}>
-                            <Box component={Paper} p={1} m={1}>
-                              <Typography fontWeight='bold'>{contact.name}</Typography>
-                              <Typography>{contact.email}</Typography>
-                            </Box>
-                          </Grid>
-                        </Grid>
+                        contactCard(contact)
                       )
                     })}
                   </Grid>
@@ -252,26 +261,18 @@ export default function StoriesPage() {
               :
               null
             }
-            {currentStory.fact_check_required || currentStory.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
+            {currentStory?.fact_check_required || currentStory?.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
                     Fact Checker
                   </Typography>
                 </Grid>
-                {currentStory.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
+                {currentStory?.contacts?.filter(e => e?.story_association === 'fact checker').length > 0 ?
                   <Grid item xs={9}>
-                    {currentStory.contacts.filter(e => e?.story_association === 'fact checker').map((contact) => {
+                    {currentStory?.contacts.filter(e => e?.story_association === 'fact checker').map((contact) => {
                       return (
-                        <Grid container spacing={1} key={contact.id}>
-                          {/* The below portion can be swapped out with a contact card component once created */}
-                          <Grid item xs={12}>
-                            <Box component={Paper} p={1} m={1}>
-                              <Typography fontWeight='bold'>{contact.name}</Typography>
-                              <Typography>{contact.email}</Typography>
-                            </Box>
-                          </Grid>
-                        </Grid>
+                        contactCard(contact)
                       )
                     })}
                   </Grid>
@@ -286,7 +287,7 @@ export default function StoriesPage() {
 
 
             {/* Other contacts that are not fact checker, author, photographer go here */}
-            {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').length > 0 ?
+            {currentStory?.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').length > 0 ?
               <>
                 <Grid item xs={3}>
                   <Typography variant='body1' sx={{ ...displayFlex, flexDirection: 'row-reverse', mt: 1, p: 1 }}>
@@ -294,16 +295,9 @@ export default function StoriesPage() {
                   </Typography>
                 </Grid>
                 <Grid item xs={9}>
-                  {currentStory.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').map((contact) => {
+                  {currentStory?.contacts?.filter(e => e?.story_association !== 'fact checker' && e?.story_association !== 'author' && e?.story_association !== 'photographer').map((contact) => {
                     return (
-                      <Grid container spacing={1} key={contact ? contact.id : 1}>
-                        <Grid item xs={12}>
-                          <Box component={Paper} p={1} m={1}>
-                            <Typography fontWeight='bold'>{contact?.name}</Typography>
-                            <Typography>{contact?.email}</Typography>
-                          </Box>
-                        </Grid>
-                      </Grid>
+                      contactCard(contact)
                     )
                   })}
                 </Grid>
@@ -319,7 +313,7 @@ export default function StoriesPage() {
               </Typography>
             </Grid>
             <Grid item xs={9} sx={displayFlex}>
-              {currentStory.theme ? currentStory.theme[0]?.name : null}
+              {currentStory?.theme ? currentStory.theme[0]?.name : null}
             </Grid>
 
             {/* Publication date */}
@@ -345,7 +339,7 @@ export default function StoriesPage() {
         </Grid>
 
 
-        
+
         {/* End general info section, next is the section that holds to-do and comments */}
         <Grid item xs={5}>
           <Grid container spacing={1} sx={mainContentBox}>
@@ -356,17 +350,26 @@ export default function StoriesPage() {
             {/* using the below grid to space the to-do list one item over */}
             <Grid item xs={1}><></></Grid>
 
-            {/* using local state for a conditional before rendering the checkboxes, otherwise they 
-            will have an issue with going from uncontrolled to controlled since redux is async*/}
-            {photoRequired || graphicPhotoRequired || factCheckRequired || copiesRequired || paymentRequired ?
+            {showTodo ?
               <>
                 <Grid item xs={11}>
-                  {/* photo required? */}
-                  {currentStory.photo_required ?
+
+                  <FormGroup>
+                    <FormControlLabel
+                      label={`Photo Uploaded (${currentStory?.photo_submitted ? 'Submitted' : 'Assigned'})`}
+                      control={<Checkbox id={'upload photo'} checked={currentStory?.photo_uploaded} />}
+                      onChange={handleCheck}
+                    />
+                  </FormGroup>
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+                  {/* graphic image required? */}
+                  {currentStory?.graphic_image_required ?
                     <FormGroup>
                       <FormControlLabel
-                        label={'Photo Uploaded'}
-                        control={<Checkbox id={'upload photo'} checked={photoStatus} />}
+                        label={'Graphic Image Uploaded'}
+                        control={<Checkbox id={'upload graphic'} checked={currentStory?.graphic_image_completed} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -376,24 +379,42 @@ export default function StoriesPage() {
                 </Grid>
                 <Grid item xs={1}><></></Grid>
                 <Grid item xs={11}>
-                  {/* graphic image required? */}
-                  {currentStory.graphic_image_required ?
+                  {/* fact check required? */}
+                  {currentStory?.fact_check_required ?
                     <FormGroup>
                       <FormControlLabel
-                        label={'Graphic Image Uploaded'}
-                        control={<Checkbox id={'upload graphic'} checked={graphicPhotoStatus} />}
+                        label={'Fact Checked'}
+                        control={<Checkbox id={'fact-check story'} checked={currentStory?.fact_check_completed} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
                     :
                     null
                   }
-                  {/* fact check required? */}
-                  {currentStory.fact_check_required ?
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+                  {/* underwriter required? */}
+                  {currentStory?.underwriter_required ?
                     <FormGroup>
                       <FormControlLabel
-                        label={'Fact Checked'}
-                        control={<Checkbox id={'fact-check story'} checked={factChecked} />}
+                        label={'Underwritten'}
+                        control={<Checkbox id={'underwriting complete'} checked={currentStory?.underwriter_completed} />}
+                        onChange={handleCheck}
+                      />
+                    </FormGroup>
+                    :
+                    null
+                  }
+                </Grid>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+                  {/* socials required? */}
+                  {currentStory?.socials_required ?
+                    <FormGroup>
+                      <FormControlLabel
+                        label={'Socials Posted'}
+                        control={<Checkbox id={'socials posted'} checked={currentStory?.socials_completed} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -404,11 +425,11 @@ export default function StoriesPage() {
                 <Grid item xs={1}><></></Grid>
                 <Grid item xs={11}>
                   {/* payments required? */}
-                  {currentStory.payment_required ?
+                  {currentStory?.payment_required ?
                     <FormGroup>
                       <FormControlLabel
                         label={'Payment(s) Sent'}
-                        control={<Checkbox id={'make payments'} checked={paymentStatus} />}
+                        control={<Checkbox id={'make payments'} checked={currentStory?.payment_completed} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -419,11 +440,11 @@ export default function StoriesPage() {
                 <Grid item xs={1}><></></Grid>
                 <Grid item xs={11}>
                   {/* copies sent? */}
-                  {currentStory.copies_required > 0 ?
+                  {currentStory?.copies_required > 0 ?
                     <FormGroup>
                       <FormControlLabel
-                        label={'Copies sent, required: ' + (currentStory.number_of_copies !== null ? currentStory.number_of_copies : '')}
-                        control={<Checkbox id={'copies sent'} checked={copiesStatus} />}
+                        label={'Copies sent, required: ' + (currentStory?.number_of_copies !== null ? currentStory?.number_of_copies : '')}
+                        control={<Checkbox id={'copies sent'} checked={currentStory?.copies_sent === undefined ? false : currentStory.copies_sent} />}
                         onChange={handleCheck}
                       />
                     </FormGroup>
@@ -431,14 +452,16 @@ export default function StoriesPage() {
                     null
                   }
                 </Grid>
-                
-                {/* end to-do items */}
               </>
               :
-              null}
+              <></>
+            }
+
+
+
+            {/* end to-do items */}
 
             <Grid item xs={12}></Grid>
-
 
 
             {/* start comments section */}
@@ -452,7 +475,7 @@ export default function StoriesPage() {
                 <Typography sx={{ '&:hover': { cursor: 'pointer' } }} >Edit <EditIcon /></Typography>
               }
             </Grid>
-            <Grid item xs={12} mr={1} height={generalInfoHeight + 'px'}>
+            <Grid item xs={12} mr={1} height={generalInfoHeight + 'px'} maxHeight={'100vh'}>
               {editNotesMode ?
                 <TextField
                   id='notesEditField'

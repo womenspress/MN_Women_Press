@@ -2,6 +2,8 @@
 
 import { combineReducers } from 'redux';
 import { DateTime } from 'luxon';
+import { makeStatusColor } from '../../modules/makeStatusColor';
+
 
 /* 
   - all themes in store
@@ -44,7 +46,14 @@ const storyObject = {
 };
 
 const allStories = (state = [], action) => {
-  if (action.type === 'SET_ALL_STORIES') return action.payload;
+  if (action.type === 'SET_ALL_STORIES') {
+    const allStories = action.payload;
+    for (let story of allStories) {
+      story.statusColor = makeStatusColor(story)
+      console.log('status color of story ', story.id, story.statusColor)
+    }
+    return allStories
+  }
   return state;
 };
 

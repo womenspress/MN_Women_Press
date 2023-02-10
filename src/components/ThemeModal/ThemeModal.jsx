@@ -35,7 +35,7 @@ export default function ThemeModal(props) {
 
 
   // story options: all available stories that are not already in the theme, bundled up for rendering in the autocomplete
-  const storyOptions = allStories.filter(story => !storiesIds.includes(story.id)).map(story => { return { id: story.id, label: story.name } })
+  const storyOptions = allStories.filter(story => !storiesIds.includes(story.id)).map(story => { return { id: story.id, label: story.title } })
 
   // secondary theme stow edited values
   const [editValues, setEditValues] = useState(theme);

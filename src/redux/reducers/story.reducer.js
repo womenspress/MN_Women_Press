@@ -50,7 +50,7 @@ const allStories = (state = [], action) => {
     const allStories = action.payload;
     for (let story of allStories) {
       story.statusColor = makeStatusColor(story)
-      console.log('status color of story ', story.id, story.statusColor)
+      // console.log('status color of story ', story.id, story.statusColor)
     }
     return allStories
   }
@@ -58,7 +58,11 @@ const allStories = (state = [], action) => {
 };
 
 const currentStory = (state = storyObject, action) => {
-  if (action.type === 'SET_CURRENT_STORY') return action.payload;
+  if (action.type === 'SET_CURRENT_STORY') {
+    const currentStory = action.payload
+    currentStory.statusColor = makeStatusColor(currentStory)
+    return currentStory
+  };
   return state;
 };
 

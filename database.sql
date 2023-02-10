@@ -72,7 +72,14 @@ CREATE TABLE "story" (
     "date_added" DATE DEFAULT CURRENT_DATE,
     "rough_draft_deadline" DATE,
     "final_draft_deadline" DATE,
-    "publication_date" DATE
+    "publication_date" DATE, 
+    "socials_required" boolean, 
+    "socials_completed" boolean, 
+    "underwriter_required" boolean, 
+    "underwriter_completed" boolean,
+    "photo_submitted" boolean,  
+    "photo_comments" VARCHAR, 
+    "copies_destination" VARCHAR
 );
 
 
@@ -139,17 +146,6 @@ Special sections: Holiday, Pets', '11/01/2023'),
 Our annual issue focused on 10 people and organizations who made change in 2023 around equity, justice, and self-determination for women and children.
 Special sections: Healing, Holiday', '12/01/2023');
 
-DECLARE @count INT 
-DECLARE @monthdate DATE 
-SET @count = 0
-SET @monthdate = '01/01/2024'
-WHILE (@count <= 12)
-BEGIN
-INSERT INTO "theme"
-("date")
-VALUES 
-(DATEADD(month, @count, @monthdate))
-END; 
 
 /*Stories */
 INSERT INTO "story"
@@ -243,9 +239,7 @@ ADD photo_submitted boolean,
 ADD photo_comments VARCHAR; 
 
 ALTER TABLE "story"
-DROP COLUMN "photo_required"
-DROP COLUMN "graphic_image_completed",
-DROP COLUMN "graphic_image_required";
+DROP COLUMN "photo_required";
 
 ALTER TABLE "story"
 DROP COLUMN "fact_check_required", 

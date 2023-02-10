@@ -16,6 +16,9 @@ import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar';
 import ListTags from '../ListTags/ListTags';
 
+//internal
+import { largeModal, smallModal } from '../../__style';
+
 export default function ContactListItem({ contact }) {
   const history = useHistory()
   const dispatch = useDispatch();
@@ -23,11 +26,9 @@ export default function ContactListItem({ contact }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   // delete 
-  const [openDelete, setDeleteOpen] = React.useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  const handleDeleteOpen = () => {
-    setDeleteOpen(true);
-  };
 
   const handleDeleteClose = () => {
     setDeleteOpen(false);
@@ -37,25 +38,24 @@ export default function ContactListItem({ contact }) {
     handleDeleteOpen();
   }
 
-  const deleteContact = (id) => {
-    console.log('delete contact id:', id);
-    dispatch({ type: "DELETE_CONTACT", payload: id })
+  const handleDelete = () => {
+    console.log('delete contact id:');
+    dispatch({ type: "DELETE_CONTACT", payload: contact.id })
     handleDeleteClose();
   }
 
-  // edit
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 900,
-    height: 700,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    padding: 2,
-  };
+
+  const getTransform = (position) => {
+    // mousePos: [x,y]
+    // bottom right corner
+    if (position.x > 1200 && position.y > 900) return 'translate(-5%,-5%)';
+    // bottom
+    if (position.x > 1200) return 'translate(-95%,-105%)';
+    // right
+    if (position.y > 750) return 'translate(-5%,-105%)';
+    // else
+    return 'translate(-5%,5%)'
+  }
 
   const avatarStyle = {
     height: 30,
@@ -70,12 +70,9 @@ export default function ContactListItem({ contact }) {
     setEditOpen(true);
   }
 
-  const handleEditClose = () => {
-    setEditOpen(false);
-  }
-
-  const openEditModal = () => {
-    handleEditOpen()
+  const handleDeleteOpen = (e) => {
+    setMousePos({ x: e.clientX, y: e.clientY })
+    setDeleteOpen(true);
   }
 
   const editContact = (contact) => {
@@ -128,7 +125,7 @@ export default function ContactListItem({ contact }) {
             <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
             <Box sx={{ width: .40, mr: 5, ml: 5 }}>
               <Typography variant='body2' fontSize={18}>Bio:</Typography>
-              <Typography variant = 'body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize = {14}>
+              <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={14}>
                 {contact.bio}
               </Typography>
             </Box>
@@ -139,10 +136,10 @@ export default function ContactListItem({ contact }) {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content' }}>
             {contact !== undefined && <EditContactModal contact={contact} />}
-            <IconButton size='small' onClick={() => openDeleteDialog(contact.id)}>
+            <IconButton size='small' onClick={handleDeleteOpen}>
               <DeleteIcon />
             </IconButton>
-            <Dialog
+            {/* <Dialog
               open={openDelete}
               onClose={handleDeleteClose}
               aria-labelledby="alert-dialog-title"
@@ -162,7 +159,7 @@ export default function ContactListItem({ contact }) {
                   Delete
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
             <Button
               onClick={() => history.push(`/ContactDetails/${contact.id}`)}
@@ -174,6 +171,20 @@ export default function ContactListItem({ contact }) {
           </Box>
         </Box>
       </Collapse>
+      <Modal
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+      >
+        <Box
+          sx={{ ...smallModal, height: 70, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>
+          <Typography variant='h6' sx={{ fontSize: 16 }}>delete this story?</Typography>
+          <Typography variant='body2' sx={{ fontSize: 13 }}>this action can't be undone</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button onClick={handleDelete}>delete</Button>
+            <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+          </Box>
+        </Box>
+      </Modal>
     </Paper>
   )
 }

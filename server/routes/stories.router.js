@@ -1,3 +1,4 @@
+const { query } = require('express');
 const express = require('express');
 const {
   rejectUnauthenticated,
@@ -151,16 +152,16 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
       }
     }
 
-    //5. Send modified array as response
-    console.log('Response for individual story:', currentStoryDetails);
-    res.send(currentStoryDetails);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  } finally {
-    connection.release();
+      //5. Send modified array as response
+      // console.log('Response for individual story:', currentStoryDetails);
+      res.send(currentStoryDetails);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } finally {
+      connection.release();
+    }
   }
-}
 );
 
 /**
@@ -546,12 +547,16 @@ router.put('/notes/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =
 //Router put for updating the status of checked box on the DOM
 router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const statusToChange = req.body.statusToChange;
-  const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
+  const queryText = `UPDATE "story" SET "${statusToChange}"=$1 WHERE "id"=$2 RETURNING "${statusToChange}";`;
   const queryParams = [req.body.statusValue, req.body.story_id];
+
+  console.log(queryText);
+  console.log('$1=' +  queryParams[0], ', $2='+queryParams[1]);
 
   pool
     .query(queryText, queryParams)
-    .then(() => {
+    .then((response) => {
+      console.log('response from /status/:id query: ', response)
       res.sendStatus(200);
     })
     .catch((err) => {

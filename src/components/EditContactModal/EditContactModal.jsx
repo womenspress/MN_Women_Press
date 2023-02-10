@@ -46,9 +46,9 @@ export default function EditContactModal({contact}){
 
     const dispatch = useDispatch();
 
-    React.useEffect(() => {
-        dispatch({type: "GET_ALL_TAGS"});
-    }, []);
+    // React.useEffect(() => {
+    //     dispatch({type: "GET_ALL_TAGS"});
+    // }, []);
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);

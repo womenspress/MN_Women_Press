@@ -33,10 +33,10 @@ export default function BasicCard(props) {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
+    <>
     <Button
       size='small'
-      onClick={() => setModalOpen(!modalOpen)}
-
+      onClick={() => setModalOpen(true)}
       sx={{ textTransform: 'none', width: '100%' }}
       disableRipple
     >
@@ -58,29 +58,28 @@ export default function BasicCard(props) {
             </Box>
           </Box>
         </CardContent>
-        <CardActions>
-          <Modal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-          >
-            <Box sx={{...largeModal, padding: 4}}>
-              <ThemeModal
-                theme={theme}
-                id={id}
-                name={name}
-                description={description}
-                month={month}
-                year={year}
-                stories={stories}
-                contacts={contacts}
-              />
-            </Box>
-          </Modal>
-
-        </CardActions>
-
-
       </Card>
     </Button>
+    <CardActions>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      >
+        <Box sx={{...largeModal, padding: 4}}>
+          <ThemeModal
+            theme={theme}
+            id={id}
+            name={name}
+            description={description}
+            month={month}
+            year={year}
+            stories={stories}
+            contacts={contacts}
+          />
+        </Box>
+      </Modal>
+
+    </CardActions>
+    </>
   );
 }

@@ -12,6 +12,7 @@ import {
   TextField,
   Menu,
   Autocomplete,
+  IconButton
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
@@ -20,6 +21,7 @@ import ThemeDropdownItem from '../../assets/ThemeDropdownItem/ThemeDropdownItem'
 import ContactSearchCard from '../../assets/ContactSearchCard/ContactSearchCard';
 import TagSearchCard from '../../assets/TagSearchCard/TagSearchCard';
 import ThemeSearchCard from '../../assets/ThemeSearchCard/ThemeSearchCard';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Modal from '@mui/material/Modal';
@@ -206,235 +208,265 @@ export default function StoryModalGeneral(props) {
   };
 
   return (
-    <Box>
-      {/* inputValues themes: {JSON.stringify(inputValues.theme)} */}
-      {/* input values: {JSON.stringify(inputValues)}
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+      <Box>
+        {/* inputValues themes: {JSON.stringify(inputValues.theme)} */}
+        {/* input values: {JSON.stringify(inputValues)}
       contactId: {JSON.stringify(contactIds)}
       
       tags: {JSON.stringify(tags)} */}
-      {/* contactResults: {JSON.stringify(contactSearchResults)} */}
-      {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
+        {/* contactResults: {JSON.stringify(contactSearchResults)} */}
+        {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
       contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
-      {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
-      {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Typography variant="h4">
-          {createMode ? 'New Story - general' : 'Edit Story - general'}
-        </Typography>
-        <CloseIcon
-          onClick={handleClose}
-          sx={{
-            '&:hover': {
-              cursor: 'pointer',
-              backgroundColor: 'lightgrey',
-            },
-          }}
-        />
-      </Box>
-      <Grid container spacing={1}>
-        {/* title */}
-        <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            title *
+        {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
+        {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }} >
+          <Box></Box>
+          <Typography variant="h4">
+            {createMode ? 'New Story - general' : 'Edit Story - general'}
           </Typography>
-        </Grid>
-        <Grid item xs={9}>
-          <TextField
-            size="small"
-            value={inputValues.title}
-            onChange={(e) =>
-              setInputValues({ ...inputValues, title: e.target.value })
-            }
+          <CloseIcon
+            onClick={handleClose}
+            sx={{
+              '&:hover': {
+                cursor: 'pointer',
+                backgroundColor: 'lightgrey',
+              },
+            }}
           />
-        </Grid>
+        </Box>
+        <Grid container spacing={1} sx={{ paddingX: '5%', maxHeight: 480, overflow: 'hidden', overflowY: 'scroll' }}>
+          {/* title */}
+          <Grid item xs={4}>
+            <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+              title *
+            </Typography>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              sx={{ width: '90%' }}
+              size="small"
+              value={inputValues.title}
+              onChange={(e) =>
+                setInputValues({ ...inputValues, title: e.target.value })
+              }
+            />
+          </Grid>
 
-        {/* notes */}
-        <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            notes
-          </Typography>
-        </Grid>
-        <Grid item xs={9}>
-          <TextField
-            size="small"
-            value={inputValues.notes}
-            onChange={(e) =>
-              setInputValues({ ...inputValues, notes: e.target.value })
-            }
-          />
-        </Grid>
 
-        {/* contact(s) */}
-        <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            contacts
-          </Typography>
-        </Grid>
-        <Grid item xs={9}>
-          {/* <Autocomplete
+          {/* contact(s) */}
+          <Grid item xs={4}>
+            <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+              contacts
+            </Typography>
+          </Grid>
+          <Grid item xs={7}>
+            {/* <Autocomplete
           disablePortal
           options = {['hello world']}
           /> */}
 
-          <TextField
-            size="small"
-            value={contactSearchTerm}
-            onChange={(e) => setContactSearchTerm(e.target.value)}
-          />
-          <Button onClick={handleSearchContacts}>search</Button>
-          <Menu
-            anchorEl={contactAnchor}
-            open={contactOpen}
-            onClose={handleContactsClose}
-          >
-            {contactSearchResults?.map((contact) => {
-              return (
-                <ContactDropdownItem
-                  key={contact.id}
-                  handleClose={handleContactsClose}
-                  contact={contact}
-                  setInputValues={setInputValues}
-                  inputValues={inputValues}
-                />
-              );
-            })}
-          </Menu>
-          <Box
-            sx={{
-              bgcolor: 'grey.100',
-              padding: 0.5,
-              display: 'flex',
-              flexWrap: 'wrap',
-            }}
-          >
-            {inputValues.contacts
-              ?.sort((a, b) => a.id - b.id)
-              .map((contact) => {
+            <TextField
+              size="small"
+              value={contactSearchTerm}
+              onChange={(e) => setContactSearchTerm(e.target.value)}
+            />
+            <Button onClick={handleSearchContacts}>search</Button>
+            <Menu
+              anchorEl={contactAnchor}
+              open={contactOpen}
+              onClose={handleContactsClose}
+            >
+              {contactSearchResults?.map((contact) => {
                 return (
-                  <ContactSearchCard
+                  <ContactDropdownItem
                     key={contact.id}
+                    handleClose={handleContactsClose}
                     contact={contact}
-                    inputValues={inputValues}
                     setInputValues={setInputValues}
+                    inputValues={inputValues}
                   />
                 );
               })}
-          </Box>
-        </Grid>
-
-        {/* tags */}
-        <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            tags
-          </Typography>
-        </Grid>
-        <Grid item xs={9}>
-          <TextField
-            size="small"
-            value={tagSearchTerm}
-            onChange={(e) => setTagSearchTerm(e.target.value)}
-          />
-          <Button onClick={handleSearchTags}>search</Button>
-          <Button onClick={handleOpenCreateTag}>
-            <AddCircleOutlineIcon />
-          </Button>
-          <Modal
-            open={openCreateTag}
-            onClose={handleCloseCreateTag}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={smallStyle}>
-              <Typography
-                sx={{ width: 1 }}
-                id="modal-modal-title"
-                variant="h6"
-                component="h2"
+            </Menu>
+            {inputValues.contacts.length ?
+              <Box
+                sx={{
+                  bgcolor: 'grey.100',
+                  padding: 0.5,
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                }}
               >
-                Create Tag of {tagSearchTerm}
-              </Typography>
-              <TextField
-                sx={{ width: 1 }}
-                autoComplete="off"
-                id="outlined-basic"
-                label="Tag Description"
-                variant="outlined"
-                value={newTagDescription}
-                onChange={(event) => setNewTagDescription(event.target.value)}
-              />
-              <Box sx={{ width: 1 }}>
-                <Button onClick={() => handleCloseCreateTag()}>Cancel</Button>
-                <Button
-                  onClick={() => createNewTag(tagSearchTerm, newTagDescription)}
-                >
-                  Create A New Tag
-                </Button>
+                {inputValues.contacts
+                  ?.sort((a, b) => a.id - b.id)
+                  .map((contact) => {
+                    return (
+                      <ContactSearchCard
+                        key={contact.id}
+                        contact={contact}
+                        inputValues={inputValues}
+                        setInputValues={setInputValues}
+                      />
+                    );
+                  })}
               </Box>
-            </Box>
-          </Modal>
-          <Menu anchorEl={tagAnchor} open={tagOpen} onClose={handleTagsClose}>
-            {tagSearchResults?.map((tag) => {
-              return (
-                <TagDropdownItem
-                  key={tag.id}
-                  handleClose={handleTagsClose}
-                  tag={tag}
-                  setInputValues={setInputValues}
-                  inputValues={inputValues}
-                />
-              );
-            })}
-          </Menu>
-          <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
-            {inputValues.tags?.map((tag) => {
-              if (tag) {
-                return <TagSearchCard key={tag?.id} tag={tag} />;
-              }
-            })}
-          </Box>
-        </Grid>
+              :
+              <></>
+            }
+          </Grid>
 
-        {/* theme */}
-        <Grid item xs={3}>
-          <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
-            theme
-          </Typography>
-        </Grid>
-        <Grid item xs={9}>
-          <TextField
-            size="small"
-            value={themeSearchTerm}
-            onChange={(e) => setThemeSearchTerm(e.target.value)}
-          />
-          <Button onClick={handleSearchThemes}>search</Button>
-          <Menu
-            anchorEl={themeAnchor}
-            open={themeOpen}
-            onClose={handleThemesClose}
-          >
-            {themeSearchResults?.map((theme) => {
-              return (
-                <ThemeDropdownItem
+          {/* tags */}
+          <Grid item xs={4}>
+            <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+              tags
+            </Typography>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              size="small"
+              value={tagSearchTerm}
+              onChange={(e) => setTagSearchTerm(e.target.value)}
+            />
+            <Button onClick={handleSearchTags}>search</Button>
+            <IconButton color='primary' onClick={handleOpenCreateTag}>
+              <AddCircleOutlineIcon />
+            </IconButton>
+            <Modal
+              open={openCreateTag}
+              onClose={handleCloseCreateTag}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={smallStyle}>
+                <Typography
+                  sx={{ width: 1 }}
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                >
+                  Create Tag of {tagSearchTerm}
+                </Typography>
+                <TextField
+                  sx={{ width: 1 }}
+                  autoComplete="off"
+                  id="outlined-basic"
+                  label="Tag Description"
+                  variant="outlined"
+                  value={newTagDescription}
+                  onChange={(event) => setNewTagDescription(event.target.value)}
+                />
+                <Box sx={{ width: 1 }}>
+                  <Button onClick={() => handleCloseCreateTag()}>Cancel</Button>
+                  <Button
+                    onClick={() => createNewTag(tagSearchTerm, newTagDescription)}
+                  >
+                    Create A New Tag
+                  </Button>
+                </Box>
+              </Box>
+            </Modal>
+            <Menu anchorEl={tagAnchor} open={tagOpen} onClose={handleTagsClose}>
+              {tagSearchResults?.map((tag) => {
+                return (
+                  <TagDropdownItem
+                    key={tag.id}
+                    handleClose={handleTagsClose}
+                    tag={tag}
+                    setInputValues={setInputValues}
+                    inputValues={inputValues}
+                  />
+                );
+              })}
+            </Menu>
+            {inputValues.tags.length ?
+              <Box sx={{ bgcolor: 'grey.100', padding: 0.5, display: 'flex', flexWrap: 'wrap' }}>
+                {inputValues.tags?.map((tag) => {
+                  if (tag) {
+                    return <TagSearchCard
+                      key={tag?.id}
+                      tag={tag}
+                      inputValues={inputValues}
+                      setInputValues={setInputValues} />;
+                  }
+                })}
+              </Box>
+              :
+              <></>
+            }
+          </Grid>
+
+          {/* theme */}
+          <Grid item xs={4}>
+            <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+              theme
+            </Typography>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              size="small"
+              value={themeSearchTerm}
+              onChange={(e) => setThemeSearchTerm(e.target.value)}
+            />
+            <Button onClick={handleSearchThemes}>search</Button>
+            <Menu
+              anchorEl={themeAnchor}
+              open={themeOpen}
+              onClose={handleThemesClose}
+            >
+              {themeSearchResults?.map((theme) => {
+                return (
+                  <ThemeDropdownItem
+                    key={theme.id}
+                    handleClose={handleThemesClose}
+                    theme={theme}
+                    setInputValues={setInputValues}
+                    inputValues={inputValues}
+                  />
+                );
+              })}
+            </Menu>
+            {inputValues.theme.length ? <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
+              {inputValues.theme.map((theme) => {
+                return <ThemeSearchCard
                   key={theme.id}
-                  handleClose={handleThemesClose}
                   theme={theme}
-                  setInputValues={setInputValues}
                   inputValues={inputValues}
-                />
-              );
-            })}
-          </Menu>
-          <Box sx={{ bgcolor: 'grey.100', padding: 0.5 }}>
-            {inputValues.theme.map((theme) => {
-              return <ThemeSearchCard key={theme.id} theme={theme} />;
-            })}
-          </Box>
-        </Grid>
-      </Grid>
+                  setInputValues={setInputValues} />;
 
+              })}
+            </Box>
+              :
+              <></>
+            }
+          </Grid>
+          {/* notes */}
+          <Grid item xs={4}>
+            <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
+              notes
+            </Typography>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              sx={{ width: '90%' }}
+              multiline
+              rows={3}
+              size="small"
+              value={inputValues.notes}
+              onChange={(e) =>
+                setInputValues({ ...inputValues, notes: e.target.value })
+              }
+            />
+          </Grid>
+        </Grid>
+
+      </Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Button onClick={handleSubmit}>save and submit</Button>
-        <Button onClick={navigateAdditional}>additional info</Button>
+        <Button
+          onClick={navigateAdditional}
+          endIcon={<ArrowForwardIcon />}
+        >additional info</Button>
       </Box>
     </Box>
   );

@@ -14,9 +14,11 @@ import {
   FormControlLabel,
   TextField,
   InputAdornment,
+  IconButton,
 } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CloseIcon from '@mui/icons-material/Close';
 
 // internal
 import { smallCard } from '../../__style';
@@ -47,10 +49,23 @@ export default function ContactSearchCard(props) {
     setRolesAnchor(null);
   };
 
+  const handleRemoveContact = () => {
+    setInputValues({
+      ...inputValues,
+      contacts: inputValues.contacts.filter((el) => el.id !== contact.id),
+    });
+  };
+
   return (
     <Paper sx={{ ...smallCard, width: 300, height: 80 }}>
       {/* {JSON.stringify([contact.name, paymentRequired,])} */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Typography>{contact?.name}</Typography>
         <Button
           sx={{ textTransform: 'none', p: 0, color: 'inherit' }}
@@ -61,6 +76,13 @@ export default function ContactSearchCard(props) {
         >
           {contact.story_association ? contact.story_association : 'role'}
         </Button>
+        <IconButton
+          sx={{ height: 24, width: 24 }}
+          onClick={handleRemoveContact}
+        >
+          <CloseIcon sx={{ heigh: 20, width: 20 }} />
+        </IconButton>
+
         <Menu
           anchorEl={rolesAnchor}
           open={rolesOpen}

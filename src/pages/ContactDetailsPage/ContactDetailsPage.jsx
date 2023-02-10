@@ -13,8 +13,10 @@ import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar'
 import EditContactModal from '../../components/EditContactModal/EditContactModal';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+import ListTags from '../../components/ListTags/ListTags';
 
 import { largeModal, mainContentBox } from '../../__style'
+
 
 
 
@@ -36,7 +38,7 @@ export default function ContactDetailsPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [createMode, setCreateMode] = useState(true);
-  const [contact, setContact] = useState({ name: 'asdf', });
+  const [contact, setContact] = useState({ name: '', });
   const [contactStories, setContactStories] = useState([]);
 
   const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
@@ -66,6 +68,13 @@ export default function ContactDetailsPage() {
     setModalOpen(false)
     dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
+
+    // remove tag from contact
+    const removeTag = (tagID) => {
+      // console.log('remove tag', tagID, 'from story: ', id);
+      const story_id = id;
+      dispatch({type: 'DELETE_CONTACT_TAG', payload: {tag_id: tagID, contact_id: id}})
+    }
 
   //* ============================= SORT/FILTER/SEARCH STUFF ===============================
 
@@ -103,10 +112,10 @@ export default function ContactDetailsPage() {
       case 'date added':
         console.log('sorting by date added')
         return arr.sort((a, b) => {
-        if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
-        if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
-        else return 0
-      })
+          if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
+          if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
+          else return 0
+        })
       default:
         return arr
     }
@@ -151,22 +160,29 @@ export default function ContactDetailsPage() {
 
   return (
     <Box>
-      {/* <pre>{JSON.stringify(contactStories, null, 2)}</pre> */}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        {/* profile image */}
-        {contact[0]?.id &&
-          <ContactAvatar contact={contact[0]} avatarStyle={avatarStyle} />}
-        {/* holds name, pronouns, and expertise */}
-        <Box display='flex' flexDirection='column' justifyContent='center' height={150}>
-          <Box display='flex' flexDirection='row' alignItems='flex-end'>
-            <Typography variant='h3'>{contact[0]?.name}</Typography>
-            <Typography variant='h6' sx={{ ml: 1 }}>{contact[0] ? <>({contact[0]?.pronouns})</> : null}</Typography>
+
+      <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
+        {/* <pre>{JSON.stringify(contactStories, null, 2)}</pre> */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {/* profile image */}
+          {contact[0]?.id &&
+            <ContactAvatar contact={contact[0]} avatarStyle={avatarStyle} />}
+          {/* holds name, pronouns, and expertise */}
+          <Box display='flex' flexDirection='column' justifyContent='center' height={150}>
+            <Box display='flex' flexDirection='row' alignItems='flex-end'>
+              <Typography variant='h3'>{contact[0]?.name}</Typography>
+              <Typography variant='h6' sx={{ ml: 1 }}>{contact[0] ? <>({contact[0]?.pronouns})</> : null}</Typography>
+            </Box>
+            <Typography variant='h6' fontStyle='italic'>{contact[0]?.expertise}</Typography>
           </Box>
-          <Typography variant='h6' fontStyle='italic'>{contact[0]?.expertise}</Typography>
+        </Box>
+
+        <Box ml={2}>
+          <ListTags numOfDisplay={contact[0]?.tags.length} tags={contact[0]?.tags} removeTag={removeTag} />
         </Box>
       </Box>
-      <Grid container spacing={1}>
 
+      <Grid container spacing={1}>
         {/* start of row that holds general info and contribution headers, as well as sort by an search field */}
         <Grid item xs={4} display='flex'>
           <Typography variant='h5' fontWeight='bold' sx={{ mr: 1 }}>General Info </Typography>

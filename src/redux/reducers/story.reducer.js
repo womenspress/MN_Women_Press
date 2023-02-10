@@ -59,7 +59,6 @@ const blankStory = {
   photo: '',
   type: '',
   copies_required: false,
-  number_of_copies: 0,
   copies_sent: false,
   photo_uploaded: false,
   fact_check_completed: false,

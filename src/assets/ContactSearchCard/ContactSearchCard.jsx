@@ -56,9 +56,9 @@ export default function ContactSearchCard(props) {
   return (
     <Paper sx={{ ...smallCard, width: 300, height: 80 }}>
       {/* {JSON.stringify([contact.name, paymentRequired,])} */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
+      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} > */}
 {/* merge issue duplicate Box */}
-      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}> */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
         <Typography>{contact?.name}</Typography>
         <Button

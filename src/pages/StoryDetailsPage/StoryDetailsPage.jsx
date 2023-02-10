@@ -62,7 +62,7 @@ export default function StoriesPage() {
 
 
   const statusStyle = {
-    bgcolor: currentStory.statusColor.color,
+    bgcolor: currentStory.statusColor?.color,
     width: 20,
     height: 20,
     borderRadius: '50%'

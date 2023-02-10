@@ -148,16 +148,17 @@ router.get(
           // if contact id for story contacts array and contact invoice match, add invoice info to currentStoryDetails array
 
           if (invoiceDetail.contact_id === storyContact.id) {
-            const { story_association, invoice_total, invoice_paid } =
+            const { story_association, invoice_amount, invoice_paid } =
               invoiceDetail;
             storyContact.story_association = story_association;
             storyContact.invoice_paid = invoice_paid;
-            storyContact.invoice_total = invoice_total;
+            storyContact.invoice_amount = invoice_amount;
           }
         }
       }
 
       //5. Send modified array as response
+      console.log('Response for individual story:', currentStoryDetails);
       res.send(currentStoryDetails);
     } catch (err) {
       console.log(err);

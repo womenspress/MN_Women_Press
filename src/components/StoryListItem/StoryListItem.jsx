@@ -140,10 +140,10 @@ export default function StoryListItem(props) {
           </Grid>
           <Grid item xs={2}>
             {/*  */}
-            {/* <Typography>{story.theme && `Theme: ${story.theme[0].name}`}</Typography> */}
+            <Typography>{story.theme[0] !== undefined && `Theme: ${story.theme[0]?.name}`}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography>{author?.length ? <>by: {author[0].name}</> : null}</Typography>
+            <Typography>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
           </Grid>
           <Grid item xs={2} display='flex' flexDirection='row-reverse'>
             <StatusDropdown story={story} />

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DateTime } from 'luxon'
 
 // mui components
-import { Box, Button, Typography, TextField, Grid, Autocomplete, IconButton} from '@mui/material';
+import { Box, Button, Typography, TextField, Modal} from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
 //components
@@ -13,6 +13,8 @@ import ThemeStoryListItem from '../ThemeStoryListItem/ThemeStoryListItem';
 import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 import AddStoryToTheme from '../../assets/AddStoryToTheme/AddStoryToTheme';
+import AddContactToTheme from '../../assets/AddContactToTheme/AddContactToTheme';
+
 
 // styling
 import { largeModal, mainContentBox } from '../../__style'
@@ -146,19 +148,35 @@ export default function ThemeModal(props) {
 
     const storyResults = ascDesc(sortResults(searchResults(themeStoriesArray)))
 
+    // page story / contacts
+    const [page, setPage] = useState('stories');
+
+    const pageType = (page) => {
+      switch (page){
+        case 'stories':
+          console.log('story');
+          break;
+        case 'contacts':
+          console.log('contacts')
+          break;
+        default:
+          console.log('stories');
+      }
+    }
+
   return (
-      <Box sx={{ marginX: 2}}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+      <div>
+        <Box sx={{height: 64,  mt: 2,   display: 'flex', justifyContent: 'space-between'}}>
           {/* {JSON.stringify(theme)} */}
           {edit ? <TextField
-            sx={{ mt: 2, width: 1 }}
+            sx={{ width: .75 }}
             id="outlined-basic"
             label="Theme Name"
             variant="outlined"
             onChange={(event) => setEditValues({ ...editValues, name: event.target.value })}
             value={editValues.name}
           /> :
-            <Typography id="modal-modal-title" variant="h3" component="h2">
+            <Typography id="modal-modal-title" variant="h3" component="h1">
               {name}
             </Typography>
           }
@@ -169,7 +187,7 @@ export default function ThemeModal(props) {
         </Box>
           {edit ?
             <TextField
-              sx={{ mt: 2, width: 1 }}
+              sx={{width: 1 }}
               id="outlined-textarea"
               label="Theme Description"
               placeholder="Description"
@@ -193,12 +211,19 @@ export default function ThemeModal(props) {
             <Button onClick={activateEdit}>Edit</Button>
           }
         </Box>
-      {/* //* ================ stories ============== */}
-          {/* Search and add to theme method for stories */}
-          <Box sx={{display: 'flex', bgcolor: 'white'}}>
-              <Typography sx={{px: 1}} color="primary"  variant="h5" component="h4">Stories</Typography>
-              <Typography sx={{px: 1}} variant="h5" component="h4">Contacts</Typography>
-          </Box>
+      
+        {/* Search and add to theme method for stories */}
+        <Box sx={{display: 'flex', bgcolor: 'white'}}>
+          <Typography sx={{px: 1, cursor: "pointer", mr: 1}} color={page === "stories" ? "primary" : "black"}  variant="h5" component="h4" onClick={() => setPage('stories')}>
+            Stories
+          </Typography>
+          <Typography sx={{px: 1, cursor: "pointer"}} color={page === "contacts" ? "primary" : "black"}  variant="h5" component="h5" onClick={() => setPage('contacts')}>
+            Contacts
+          </Typography>
+        </Box>
+{/* //* ================ pages ============== */}
+        {/* //* ================ stories ============== */}
+        {page === 'stories' && 
           <Box sx={{bgcolor: 'grey.100', borderRadius: 2, px: 2, py: 1 }}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', width: 1}}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -231,35 +256,39 @@ export default function ThemeModal(props) {
               }
             </Box>
           </Box>
-          {/* {themeStoriesArray.map((story, index) => {
-            return (
-              <ThemeStoryListItem story={story} key={index} />
-            )
-          })} */}
-          {/* //* ================ contacts ============== */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Typography
-              id="modal-modal-description"
-              sx={{ mt: 2, width: .25 }}
-              variant="h4" component="h4"
-            >
-              Contacts:
-            </Typography>
-
-            {/* Search Contacts and add it to the theme */}
-            {/* <Autocomplete
-              size='small'
-              sx={{ width: 200 }}
-              options={allContacts.map(contact => contact.name)}
-              renderInput={(params) => <TextField {...params} size='small' label='contact' />}
-            /> */}
-
+        }
+        {/* //* ================ contacts ============== */}
+        {page === 'contacts' && 
+          
+          <Box sx={{bgcolor: 'grey.100', borderRadius: 2, px: 2, py: 1 }}>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', width: 1}}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AddContactToTheme theme={theme} options={storyOptions}/>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
+                <SortFilterSearch
+                  sortOptions={sortOptions}
+                  sortMethod={sortMethod}
+                  setSortMethod={setSortMethod}
+                  sortDirection={sortDirection}
+                  setSortDirection={setSortDirection}
+                  searchByOptions={searchByOptions}
+                  searchBy={searchBy}
+                  setSearchBy={setSearchBy}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+              </Box>
+            </Box>
+            <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
+            {contacts.map((contact, index) => {
+              return (
+                <ThemeContactListItem contact={contact} key={index} />
+              )
+            })}
+            </Box>
           </Box>
-          {contacts.map((contact, index) => {
-            return (
-              <ThemeContactListItem contact={contact} key={index} />
-            )
-          })}
-    </Box>
+        }
+      </div>
   );
 }

@@ -40,7 +40,7 @@ export function makeStatusColor(story) {
     {
       name: 'upload photo',
       name_db: 'photo_uploaded',
-      status: story.photo_required,
+      status: true,
       complete: story.photo_uploaded,
     },
     {
@@ -58,7 +58,7 @@ export function makeStatusColor(story) {
     {
       name: 'make payments',
       name_db: 'payment_completed',
-      status: paymentRequired,
+      status: story.payment_required,
       complete: story.payment_completed,
     },
     {
@@ -66,6 +66,12 @@ export function makeStatusColor(story) {
       name_db: 'socials_completed',
       status: story.socials_required,
       complete: story.socials_completed,
+    },
+    {
+      name: 'underwritten',
+      name_db: 'underwriter_required',
+      status: story.underwriter_required,
+      complete: story.underwriter_completed,
     },
   ].filter(piece => piece.status);
   // console.log(piecesToTrack);

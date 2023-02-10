@@ -98,9 +98,13 @@ router.get('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
 
 //GET Story by ID
 
-router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
-  let id = req.params.id;
-  let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
+router.get(
+  '/current/:id',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  async (req, res) => {
+    let id = req.params.id;
+    let getDetailsQueryText = `SELECT "story".*,  json_agg(DISTINCT "tag") AS "tags",  json_agg(DISTINCT "contact") AS "contacts", json_agg(DISTINCT "theme") AS "theme"
   FROM "story"
   LEFT JOIN "story_tag" ON "story"."id" = "story_tag"."story_id"
   LEFT JOIN "tag" ON "tag"."id" = "story_tag"."tag_id"
@@ -112,109 +116,117 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
   GROUP BY "story"."id"
   ;`;
 
-  let getContactDetails = `SELECT * 
+    let getContactDetails = `SELECT * 
   FROM "story_contact"
   WHERE "story_id" = $1; `;
 
-  const connection = await pool.connect();
-  try {
-    await connection.query('BEGIN;');
-    //**Step 1: get all details related to the current story
-    let response = await connection.query(getDetailsQueryText, [id]);
-    // set story response to a variable
-    let currentStoryDetails = response.rows[0];
+    const connection = await pool.connect();
+    try {
+      await connection.query('BEGIN;');
+      //**Step 1: get all details related to the current story
+      let response = await connection.query(getDetailsQueryText, [id]);
+      // set story response to a variable
+      let currentStoryDetails = response.rows[0];
 
-    //**Step 2: get story contact invoice details (invoice total, invoice paid, project_association)
-    let storyContactResponse = await connection.query(getContactDetails, [id]);
-    let contactInvoiceDetails = storyContactResponse.rows;
+      //**Step 2: get story contact invoice details (invoice total, invoice paid, project_association)
+      let storyContactResponse = await connection.query(getContactDetails, [
+        id,
+      ]);
+      let contactInvoiceDetails = storyContactResponse.rows;
 
-    //If tags, contacts, or theme array is null, change to empty array
-    if (currentStoryDetails.tags[0] === null) currentStoryDetails.tags = [];
-    if (currentStoryDetails.contacts[0] === null)
-      currentStoryDetails.contacts = [];
-    if (currentStoryDetails.theme[0] === null) currentStoryDetails.theme = [];
+      //If tags, contacts, or theme array is null, change to empty array
+      if (currentStoryDetails.tags[0] === null) currentStoryDetails.tags = [];
+      if (currentStoryDetails.contacts[0] === null)
+        currentStoryDetails.contacts = [];
+      if (currentStoryDetails.theme[0] === null) currentStoryDetails.theme = [];
 
-    //**Step 3: Loop over every contact object in the story contact array
-    for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
-      let storyContact = currentStoryDetails.contacts[i];
-      //**Step 4: For each contact object in story, loop over each contactInvoiceDetail
-      for (let invoiceDetail of contactInvoiceDetails) {
-        // if contact id for story contacts array and contact invoice match, add invoice info to currentStoryDetails array
+      //**Step 3: Loop over every contact object in the story contact array
+      for (let i = 0; i < currentStoryDetails.contacts.length; i++) {
+        let storyContact = currentStoryDetails.contacts[i];
+        //**Step 4: For each contact object in story, loop over each contactInvoiceDetail
+        for (let invoiceDetail of contactInvoiceDetails) {
+          // if contact id for story contacts array and contact invoice match, add invoice info to currentStoryDetails array
 
-        if (invoiceDetail.contact_id === storyContact.id) {
-          const { story_association, invoice_total, invoice_paid } =
-            invoiceDetail;
-          storyContact.story_association = story_association;
-          storyContact.invoice_paid = invoice_paid;
-          storyContact.invoice_total = invoice_total;
+          if (invoiceDetail.contact_id === storyContact.id) {
+            const { story_association, invoice_amount, invoice_paid } =
+              invoiceDetail;
+            storyContact.story_association = story_association;
+            storyContact.invoice_paid = invoice_paid;
+            storyContact.invoice_amount = invoice_amount;
+          }
         }
       }
-    }
 
-    //5. Send modified array as response
-    res.send(currentStoryDetails);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  } finally {
-    connection.release();
+      //5. Send modified array as response
+      console.log('Response for individual story:', currentStoryDetails);
+      res.send(currentStoryDetails);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } finally {
+      connection.release();
+    }
   }
-});
+);
 
 /**
  * POST story route
  */
-router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
-  const {
-    title,
-    subtitle,
-    article_text,
-    article_link,
-    notes,
-    photo,
-    type,
-    copies_required,
-    number_of_copies,
-    copies_sent,
-    photo_uploaded,
-    fact_check_completed,
-    payment_required,
-    payment_completed,
-    socials_required,
-    socials_completed,
-    underwriter_required,
-    underwriter_completed,
-    photo_submitted,
-    photo_comments,
-    external_link,
-    word_count,
-    date_added,
-    rough_draft_deadline,
-    final_draft_deadline,
-    publication_date,
-    contacts,
-    theme,
-    tags,
-    copies_destination,
-  } = req.body;
+router.post(
+  '/',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  async (req, res) => {
+    const {
+      title,
+      subtitle,
+      article_text,
+      article_link,
+      notes,
+      photo,
+      type,
+      copies_required,
+      number_of_copies,
+      copies_sent,
+      photo_uploaded,
+      fact_check_completed,
+      payment_required,
+      payment_completed,
+      socials_required,
+      socials_completed,
+      underwriter_required,
+      underwriter_completed,
+      photo_submitted,
+      photo_comments,
+      external_link,
+      word_count,
+      date_added,
+      rough_draft_deadline,
+      final_draft_deadline,
+      publication_date,
+      contacts,
+      theme,
+      tags,
+      copies_destination,
+    } = req.body;
 
-  // finds contacts who require payment
-  const contactsRequiringPayment = contacts.filter(
-    (contact) => contact?.invoice_amount > 0
-  );
-  let payment_needed;
-  if (
-    contactsRequiringPayment.reduce(
-      (sum, contact) => sum + contact.invoice_amount,
-      0
-    ) > 0
-  ) {
-    payment_needed = true;
-  } else {
-    payment_needed = false;
-  }
+    // finds contacts who require payment
+    const contactsRequiringPayment = contacts.filter(
+      (contact) => contact?.invoice_amount > 0
+    );
+    let payment_needed;
+    if (
+      contactsRequiringPayment.reduce(
+        (sum, contact) => sum + contact.invoice_amount,
+        0
+      ) > 0
+    ) {
+      payment_needed = true;
+    } else {
+      payment_needed = false;
+    }
 
-  let postStoryQuery = `
+    let postStoryQuery = `
   INSERT INTO "story" 
   ("title","subtitle","article_text",
   "article_link","notes","photo",
@@ -229,85 +241,95 @@ router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => 
   ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)
   RETURNING "id";`; //Return id of story
 
-  //Database Query below
-  const connection = await pool.connect();
+    //Database Query below
+    const connection = await pool.connect();
 
-  try {
-    await connection.query('BEGIN;');
-    // **Step 1: query database to post story information, returning the id of the story created
-    let storyResponse = await connection.query(postStoryQuery, [
-      title, //1
-      subtitle, //2
-      article_text, //3
-      article_link, //4
-      notes, //5
-      photo, //6
-      type, //7
-      copies_required, //8
-      number_of_copies, //9
-      copies_sent, //10
-      photo_uploaded, //11
-      fact_check_completed, //12
-      payment_required, //13
-      payment_completed, //14
-      socials_required, //15
-      socials_completed, //16
-      underwriter_required, //17
-      underwriter_completed, //18
-      photo_submitted, //19
-      photo_comments, //20
-      external_link, //21
-      word_count, //22
-      rough_draft_deadline, //23
-      final_draft_deadline, //24
-      publication_date, //25
-      copies_destination, //26
-    ]);
+    try {
+      await connection.query('BEGIN;');
+      // **Step 1: query database to post story information, returning the id of the story created
+      let storyResponse = await connection.query(postStoryQuery, [
+        title, //1
+        subtitle, //2
+        article_text, //3
+        article_link, //4
+        notes, //5
+        photo, //6
+        type, //7
+        copies_required, //8
+        number_of_copies, //9
+        copies_sent, //10
+        photo_uploaded, //11
+        fact_check_completed, //12
+        payment_required, //13
+        payment_completed, //14
+        socials_required, //15
+        socials_completed, //16
+        underwriter_required, //17
+        underwriter_completed, //18
+        photo_submitted, //19
+        photo_comments, //20
+        external_link, //21
+        word_count, //22
+        rough_draft_deadline, //23
+        final_draft_deadline, //24
+        publication_date, //25
+        copies_destination, //26
+      ]);
 
-    //**Step 2: Set returning id to storyId variable
-    let storyId = storyResponse.rows[0].id;
+      //**Step 2: Set returning id to storyId variable
+      let storyId = storyResponse.rows[0].id;
 
-    //**Step 3: query database to attach all tags and contacts to the story via joiner tables*/
+      //**Step 3: query database to attach all tags and contacts to the story via joiner tables*/
 
-    //Reducing multiple tags queries down to run in sequence with contacts
-    const tagPromises = tags.map((tag) => {
-      const attachTagsQuery = `
+      //Reducing multiple tags queries down to run in sequence with contacts
+      const tagPromises = tags.map((tag) => {
+        const attachTagsQuery = `
       INSERT INTO "story_tag"
       ( "tag_id","story_id")
       VALUES 
       ($1,$2);`;
-      return connection.query(attachTagsQuery, [tag.id, storyId]);
-    });
-    //Reducing multiple contacts queries down to run in sequence with tags
-    const contactPromises = contacts.map((contact) => {
-      let postContactsQuery = `
+        return connection.query(attachTagsQuery, [tag.id, storyId]);
+      });
+      //Reducing multiple contacts queries down to run in sequence with tags
+      const contactPromises = contacts.map((contact) => {
+        let postContactsQuery = `
       INSERT INTO "story_contact" 
       ("contact_id","story_id","invoice_paid", "invoice_amount", "story_association") 
       VALUES 
       ($1, $2, $3, $4, $5);`;
 
-      return connection.query(postContactsQuery, [
-        contact.id,
-        storyId,
-        contact.invoice_paid,
+        return connection.query(postContactsQuery, [
+          contact.id,
+          storyId,
+          contact.invoice_paid,
+          contact.invoice_amount,
+          contact.story_association,
+        ]);
+      });
 
-        contact.invoice_amount,
-        contact.story_association,
-      ]);
-    });
+      const themePromises = theme.map((theme) => {
+        let postThemesQuery = `
+      INSERT INTO "theme_story" 
+      ("story_id","theme_id") 
+      VALUES 
+      ($1, $2);`;
 
-    //Querying database to add contacts and tags to joiner tables
-    await Promise.all([...tagPromises, ...contactPromises]);
-    await connection.query('COMMIT;');
-    res.sendStatus(200);
-  } catch (err) {
-    console.log(err);
-    await connection.query('ROLLBACK');
-    res.sendStatus(500);
-  } finally {
-    connection.release();
+        return connection.query(postThemesQuery, [storyId, theme.id]);
+      });
+
+      //Querying database to add contacts and tags to joiner tables
+      await Promise.all([...tagPromises, ...contactPromises, ...themePromises]);
+      await connection.query('COMMIT;');
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      await connection.query('ROLLBACK');
+      res.sendStatus(500);
+    } finally {
+      connection.release();
+    }
   }
-});
+);
 
 /**
  * DELETE route template
@@ -328,216 +350,288 @@ router.delete('/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
 /**
  * EDIT route for story by id
  */
-router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) => {
-  let id = req.params.id;
-  const {
-    title,
-    subtitle,
-    article_text,
-    article_link,
-    notes,
-    type,
-    copies_sent,
-    photo_uploaded,
-    fact_check_completed, // same as fact_checked, different naming conventions in data
-    graphic_image_required,
-    external_link,
-    word_count,
-    //date_added, // Don't need, auto populating with SQL
-    rough_draft_deadline,
-    final_draft_deadline,
-    publication_date,
-    photo_required,
-    fact_check_required,
-    graphic_image_completed,
-    payment_required,
-    payment_completed,
-    photo,
-    copies_required,
-    tags,
-    contacts,
-    number_of_copies,
-    copies_destination,
-  } = req.body;
+router.put(
+  '/:id',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  async (req, res) => {
+    let id = req.params.id;
+    const {
+      title,
+      subtitle,
+      article_text,
+      article_link,
+      notes,
+      photo,
+      type,
+      copies_required,
+      number_of_copies,
+      copies_sent,
+      photo_uploaded,
+      fact_check_completed,
+      payment_required,
+      payment_completed,
+      socials_required,
+      socials_completed,
+      underwriter_required,
+      underwriter_completed,
+      photo_submitted,
+      photo_comments,
+      external_link,
+      word_count,
+      date_added,
+      rough_draft_deadline,
+      final_draft_deadline,
+      publication_date,
+      contacts,
+      theme,
+      tags,
+      copies_destination,
+    } = req.body;
 
-  const contactsRequiringPayment = contacts.filter(
-    (contact) => contact?.invoice_amount > 0
-  );
-  let payment_needed;
-  if (
-    contactsRequiringPayment.reduce(
-      (sum, contact) => sum + contact.invoice_amount,
-      0
-    ) > 0
-  ) {
-    payment_needed = true;
-  } else {
-    payment_needed = false;
-  }
+    const contactsRequiringPayment = contacts.filter(
+      (contact) => contact?.invoice_amount > 0
+    );
+    let payment_needed;
+    if (
+      contactsRequiringPayment.reduce(
+        (sum, contact) => sum + contact.invoice_amount,
+        0
+      ) > 0
+    ) {
+      payment_needed = true;
+    } else {
+      payment_needed = false;
+    }
 
-  //Query
-  const connection = await pool.connect();
-  try {
-    await connection.query('BEGIN;');
+    //Query
+    const connection = await pool.connect();
+    try {
+      await connection.query('BEGIN;');
 
-    //**Step 1: delete all current tags and contacts associations
-    let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
+      //**Step 1: delete all current tags and contacts associations
+      let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
+      let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
+      let deleteThemesQuery = `DELETE FROM "theme_story" WHERE "story_id" = $1;`;
 
-    let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
+      const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
+      const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
+      const deleteThemesPromise = connection.query(deleteThemesQuery, [id]);
 
-    const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
-    const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
+      await Promise.all([
+        deleteTagsPromise,
+        deleteContactsPromise,
+        deleteThemesPromise,
+      ]);
 
-    await Promise.all([deleteTagsPromise, deleteContactsPromise]);
-
-    //**Step 2: update Story details with a put request
-    let updateStoryQueryText = `
+      //**Step 2: update Story details with a put request
+      let updateStoryQueryText = `
     UPDATE "story"
     SET
-    "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
-    "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
-    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-    "payment_completed" = $20, "photo" = $21, "copies_required" = $22
-    WHERE "id" = $23;`;
+    title =$1,
+    subtitle =$2,
+    article_text =$3,
+    article_link=$4,
+    notes=$5,
+    photo=$6,
+    type=$7,
+    copies_required=$8,
+    number_of_copies=$9,
+    copies_sent=$10,
+    photo_uploaded=$11,
+    fact_check_completed=$12,
+    payment_required=$13,
+    payment_completed=$14,
+    socials_required=$15,
+    socials_completed=$16,
+    underwriter_required=$17,
+    underwriter_completed=$18,
+    photo_submitted=$19,
+    photo_comments=$20,
+    external_link=$21,
+    word_count=$22,
+    date_added=$23,
+    rough_draft_deadline=$24,
+    final_draft_deadline=$25,
+    publication_date=$26,
+    copies_destination =$27
+    WHERE "id" = $28;`;
 
-    let updateStoryData = [
-      title, //1
-      subtitle, //2
-      article_text, //3
-      article_link, //4
-      notes, //5
-      type, //6
-      copies_sent, //7
-      photo_uploaded, //8
-      fact_check_completed, //9, same as fact_checked, different naming conventions in data
-      graphic_image_required, //10
-      external_link, //11
-      word_count, //12
-      //date_added, // don't need, auto populating with SQL
-      rough_draft_deadline, //13
-      final_draft_deadline, //14
-      publication_date, //15
-      photo_required, //16
-      fact_check_required, //17
-      graphic_image_completed, //18
-      payment_required, // 19
-      payment_completed, //20
-      photo, // 21
-      copies_required, //22
-      id, //23
-    ];
+      let updateStoryData = [
+        title,
+        subtitle,
+        article_text,
+        article_link,
+        notes,
+        photo,
+        type,
+        copies_required,
+        number_of_copies,
+        copies_sent,
+        photo_uploaded,
+        fact_check_completed,
+        payment_required,
+        payment_completed,
+        socials_required,
+        socials_completed,
+        underwriter_required,
+        underwriter_completed,
+        photo_submitted,
+        photo_comments,
+        external_link,
+        word_count,
+        date_added,
+        rough_draft_deadline,
+        final_draft_deadline,
+        publication_date,
+        copies_destination,
+        id,
+      ];
 
-    await connection.query(updateStoryQueryText, updateStoryData);
+      await connection.query(updateStoryQueryText, updateStoryData);
 
-    //**Step 3: re-attach tags and contacts
-    const attachTagsPromise = tags.map((tag) => {
-      let attachTagsQuery = `
+      //**Step 3: re-attach tags and contacts
+      const attachTagsPromise = tags.map((tag) => {
+        let attachTagsQuery = `
       INSERT INTO "story_tag"
       ( "tag_id","story_id")
       VALUES 
       ($1,$2);`;
-      return connection.query(attachTagsQuery, [tag.id, id]);
-    });
+        return connection.query(attachTagsQuery, [tag.id, id]);
+      });
 
-    const attachContactsPromise = contacts.map((contact) => {
-      let attachContactsQuery = `
+      const attachContactsPromise = contacts.map((contact) => {
+        let attachContactsQuery = `
       INSERT INTO "story_contact" 
       ("contact_id","story_id","invoice_paid", "invoice_amount", "story_association") 
       VALUES 
       ($1, $2, $3, $4, $5);`;
 
-      return connection.query(attachContactsQuery, [
-        contact.id,
-        id,
-        contact.invoice_paid,
-        contact.invoice_amount,
-        contact.story_association,
+        return connection.query(attachContactsQuery, [
+          contact.id,
+          id,
+          contact.invoice_paid,
+          contact.invoice_amount,
+          contact.story_association,
+        ]);
+      });
+      const themePromises = theme.map((theme) => {
+        let postThemesQuery = `
+      INSERT INTO "theme_story" 
+      ("story_id","theme_id") 
+      VALUES 
+      ($1, $2);`;
+
+        return connection.query(postThemesQuery, [id, theme.id]);
+      });
+      await Promise.all([
+        ...attachContactsPromise,
+        ...attachTagsPromise,
+        ...themePromises,
       ]);
-    });
 
-    await Promise.all([...attachContactsPromise, ...attachTagsPromise]);
-
-    await connection.query('COMMIT');
-    res.sendStatus(200);
-  } catch (err) {
-    console.log(err);
-    await connection.query('ROLLBACK');
-    res.sendStatus(500);
-  } finally {
-    await connection.release();
+      await connection.query('COMMIT');
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      await connection.query('ROLLBACK');
+      res.sendStatus(500);
+    } finally {
+      await connection.release();
+    }
   }
-});
+);
 
 //POST route for adding a tag to tag data table, returning id of added tag
 // written with assumption that tagId was in the params, and name and description was data in body of request.
-router.post('/tag/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
-  // CREATE tags for a story
-  let tagId = req.params.id;
-  let name = req.body.name;
-  let description = req.body.description;
-  let postTagQueryText =
-    'INSERT INTO "tag" ("name","description") VALUES ($1, $2) RETURNING "id";';
-  pool
-    .query(postTagQueryText, [name, description])
-    .then((response) => {
-      let id = response.rows[0].id;
-      res.send(id);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
+router.post(
+  '/tag/:id',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  (req, res) => {
+    // CREATE tags for a story
+    let tagId = req.params.id;
+    let name = req.body.name;
+    let description = req.body.description;
+    let postTagQueryText =
+      'INSERT INTO "tag" ("name","description") VALUES ($1, $2) RETURNING "id";';
+    pool
+      .query(postTagQueryText, [name, description])
+      .then((response) => {
+        let id = response.rows[0].id;
+        res.send(id);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  }
+);
 
 //Created with the idea that the tag id was params and story id is in the body of the request
 //Is there a place for this route in our process? Currently embedded in the put route.
-router.delete('/tag/:tagId/:storyId', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
-  // DELETE a tag from a story
-  console.log('here');
-  let tagId = req.params.tagId;
-  console.log(tagId);
-  let storyId = req.params.storyId;
-  console.log(storyId);
-  let deleteTagQueryText =
-    'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
-  pool
-    .query(deleteTagQueryText, [storyId, tagId])
-    .then(res.sendStatus(200))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
+router.delete(
+  '/tag/:tagId/:storyId',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  (req, res) => {
+    // DELETE a tag from a story
+    console.log('here');
+    let tagId = req.params.tagId;
+    console.log(tagId);
+    let storyId = req.params.storyId;
+    console.log(storyId);
+    let deleteTagQueryText =
+      'DELETE FROM "story_tag" WHERE "story_id" = $1 AND "tag_id" = $2;';
+    pool
+      .query(deleteTagQueryText, [storyId, tagId])
+      .then(res.sendStatus(200))
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  }
+);
 
 // updates notes, initiated at story details page
-router.put('/notes/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
-  const queryText = 'UPDATE "story" SET "notes"=$1 WHERE "id"=$2;';
-  const queryParams = [req.body.notes, req.params.id];
+router.put(
+  '/notes/:id',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  (req, res) => {
+    const queryText = 'UPDATE "story" SET "notes"=$1 WHERE "id"=$2;';
+    const queryParams = [req.body.notes, req.params.id];
 
-  pool
-    .query(queryText, queryParams)
-    .then(() => res.sendStatus(200))
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
-});
+    pool
+      .query(queryText, queryParams)
+      .then(() => res.sendStatus(200))
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  }
+);
 
 //Router put for updating the status of checked box on the DOM
-router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
-  const statusToChange = req.body.statusToChange;
-  const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
-  const queryParams = [req.body.statusValue, req.body.story_id];
-  // console.log('in story status update router', statusToChange, req.body.statusValue)
-  pool
-    .query(queryText, queryParams)
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch((err) => {
-      console.log('error in update status query:', err);
-      res.sendStatus(500);
-    });
-});
+router.put(
+  '/status/:id',
+  rejectUnauthenticated,
+  rejectUnauthorized,
+  (req, res) => {
+    const statusToChange = req.body.statusToChange;
+    const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
+    const queryParams = [req.body.statusValue, req.body.story_id];
+
+    pool
+      .query(queryText, queryParams)
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch((err) => {
+        console.log('error in update status query:', err);
+        res.sendStatus(500);
+      });
+  }
+);
 
 module.exports = router;

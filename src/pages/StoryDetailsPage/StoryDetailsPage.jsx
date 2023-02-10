@@ -62,7 +62,7 @@ export default function StoriesPage() {
 
 
   const statusStyle = {
-    bgcolor: currentStory.statusColor?.color,
+    bgcolor: currentStory?.statusColor?.color,
     width: 20,
     height: 20,
     borderRadius: '50%'
@@ -173,7 +173,7 @@ export default function StoriesPage() {
         {/*------- This grid row contains story header and tags---------- */}
         <Grid item xs={8}>
           <Box display='flex' flexDirection='row' alignItems='center'>
-            <Tooltip title={currentStory.statusColor.notes}>
+            <Tooltip title={currentStory.statusColor?.notes}>
               <Box sx={statusStyle}></Box>
             </Tooltip>
             <Typography variant='h4' sx={{ ml: 1 }}>{currentStory?.title}</Typography>

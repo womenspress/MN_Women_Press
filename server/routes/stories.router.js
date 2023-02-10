@@ -550,9 +550,9 @@ router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) 
   const queryText = `UPDATE "story" SET ${statusToChange} = NOT ${statusToChange} WHERE "id"=$1 RETURNING "${statusToChange}";`;
   const queryParams = [req.body.story_id];
 
-  console.log(queryText);
-  console.log('type', typeof req.body.statusValue);
-  console.log('$1=' + queryParams[0]);// ', $2=' + queryParams[1]);
+  // console.log(queryText);
+  // console.log('type', typeof req.body.statusValue);
+  // console.log('$1=' + queryParams[0]);// ', $2=' + queryParams[1]);
 
   pool
     .query(queryText, queryParams)

@@ -35,7 +35,15 @@ export default function ContactsPage() {
       case 'date added':
         return arr
       case 'name':
-        return arr
+        return arr.sort(function (a, b) {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
       case 'last contribution':
         return arr
       default:

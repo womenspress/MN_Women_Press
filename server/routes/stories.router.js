@@ -349,7 +349,7 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     rough_draft_deadline,
     final_draft_deadline,
     publication_date,
-    photo_required,
+    // photo_required,
     fact_check_required,
     graphic_image_completed,
     payment_required,
@@ -398,9 +398,9 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     SET
     "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
     "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
-    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-    "payment_completed" = $20, "photo" = $21, "copies_required" = $22
-    WHERE "id" = $23;`;
+    "final_draft_deadline"= $14, "publication_date"= $15, "fact_check_required"= $16,"graphic_image_completed"= $17, "payment_required" = $18, 
+    "payment_completed" = $19, "photo" = $20, "copies_required" = $21
+    WHERE "id" = $22;`;
 
     let updateStoryData = [
       title, //1
@@ -419,14 +419,14 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
       rough_draft_deadline, //13
       final_draft_deadline, //14
       publication_date, //15
-      photo_required, //16
-      fact_check_required, //17
-      graphic_image_completed, //18
-      payment_required, // 19
-      payment_completed, //20
-      photo, // 21
-      copies_required, //22
-      id, //23
+      // photo_required, //16XX
+      fact_check_required, //16
+      graphic_image_completed, //17
+      payment_required, // 18
+      payment_completed, //19
+      photo, // 20
+      copies_required, //21
+      id, //22
     ];
 
     await connection.query(updateStoryQueryText, updateStoryData);

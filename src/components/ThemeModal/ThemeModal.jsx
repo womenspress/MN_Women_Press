@@ -26,7 +26,7 @@ import { largeModal, mainContentBox } from '../../__style'
 export default function ThemeModal(props) {
   const dispatch = useDispatch();
 
-  let theme = props.theme;
+  const theme = props.theme;
   let name = props.name || "undefined";
   let description = props.description || "undefined description";
   let stories = props.stories || [{ id: -1, title: "title not found", subtitle: "bugs", article_text: "beans", notes: "worms" }];
@@ -34,7 +34,8 @@ export default function ThemeModal(props) {
   const storiesIds = stories ? stories?.map(story => story?.id) : [];
   const allContacts = useSelector(store => store.contacts.allContacts);
   const allStories = useSelector(store => store.stories.allStories);
-  const [contactToAdd, setContactToAdd] = useState({ id: 0, label: '' })
+  const [contactToAdd, setContactToAdd] = useState({ id: 0, label: '' });
+  const themeStoriesArray = stories || [];
 
 
   // story options: all available stories that are not already in the theme, bundled up for rendering in the autocomplete
@@ -96,7 +97,7 @@ export default function ThemeModal(props) {
       return all array item that contain text.
   */
   const [searchStoryText, setSearchStoryText] = React.useState("");
-  const [themeStoriesArray, setFilteredStoryArray] = React.useState(stories || []);
+  
 
   const handleStorySubmit = (e) => {
     e.preventDefault;

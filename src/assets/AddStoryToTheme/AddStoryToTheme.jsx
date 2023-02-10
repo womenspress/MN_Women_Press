@@ -12,13 +12,13 @@ import IconButton from '@mui/material/IconButton';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import Box from '@mui/material/Box';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { useEffect } from 'react';
 
 export default function AddStoryToTheme({theme, options})  {
     const [open, setOpen] = React.useState(false);
     const [storyChoice, setStoryChoice] = React.useState('');
 
     const dispatch = useDispatch();
-
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -37,9 +37,14 @@ export default function AddStoryToTheme({theme, options})  {
     const addStoryToTheme = () => {
         console.log(`Convert to DISPATCH. story_id:${storyChoice}, theme_id:${theme.id}`);
         dispatch({ type: 'THEME_STORY_ADD', payload: {story_id: storyChoice, theme_id: theme.id} });
-        //();
+        dispatch({ type: 'GET_ALL_THEMES' });
+        dispatch({ type: 'GET_ALL_CONTACTS' });
+        dispatch({ type: 'GET_ALL_STORIES' });
+        dispatch({type:'GET_ALL_TAGS'});
         setOpen(false);
     };
+
+
 
     return (
         <div>

@@ -118,10 +118,10 @@ export default function ContactListItem({ contact }) {
         <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{borderTop: '1px solid lightgrey', m: 1 }}>
           <Box sx={{ display: 'flex', mb: 2 }}>
             <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
-            <Typography sx={{ width: .40, mr: 5, ml: 5 }} variant='body2'>
+            <Box sx={{ width: .40, mr: 5, ml: 5 }} variant='body2'>
               <Typography fontSize={22}>Bio:</Typography>
-              <Box sx={{ maxHeight: '60px', overflow: 'auto' }}>{contact.bio}</Box>
-            </Typography>
+              <Typography sx={{ maxHeight: '60px', overflow: 'auto' }}>{contact.bio}</Typography>
+            </Box>
             <Box sx={{ width: .45 }} >
               <Typography fontSize={22}>Recent contribution:</Typography>
               <StoryCard story={contact.stories[0]} />

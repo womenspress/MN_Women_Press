@@ -10,7 +10,6 @@ import { DateTime } from 'luxon'
 export function makeStatusColor(story) {
   // console.log('publication date', story)
 
-
   const hasAuthor = !!story.contacts?.filter(contact => contact?.story_association === 'author').length
   // console.log('author?', hasAuthor, story.contacts)
 
@@ -23,7 +22,7 @@ export function makeStatusColor(story) {
   // console.log('publication date', story.publication_date)
 
   // const hasAuthor = true;
-  
+
   // !!story.contacts?.filter(contact => contact.role === 'author').length
   // console.log('author?', hasAuthor)
 
@@ -81,10 +80,10 @@ export function makeStatusColor(story) {
   // const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
   // console.log('pieces ready', piecesReady);
 
-  if (story.publication_date < DateTime.now().toISO()) return { color: 'grey', notes: 'story is complete and past' }
 
   // need to add deadlines and author to progress from red to yellow
-  if (!story.rough_draft_deadline && !story.final_draft_deadline && !story.publication_date) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
+  if ((story.final_draft_deadline === story.rough_draft_deadline) && (story.final_draft_deadline === story.publication_date) && !piecesReady) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
+  if (story.publication_date < DateTime.now().toISO()) return { color: 'grey', notes: 'story is complete and past' }
   if (!story.rough_draft_deadline || !story.final_draft_deadline || !story.publication_date || !hasAuthor) return { color: 'red', notes: 'story is missing deadlines or an author' }
   if (!piecesReady) return { color: 'yellow', notes: 'story has key info ready but is missing some to-do tasks' }
   if (piecesReady) return { color: 'green', notes: 'story is ready to publish!' }

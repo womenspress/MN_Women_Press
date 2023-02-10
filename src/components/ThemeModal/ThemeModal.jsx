@@ -80,7 +80,7 @@ export default function ThemeModal(props) {
     dispatch({ type: 'ADD_STORY_TO_THEME', })
   }
 
-    //* ============ SORT/FILTER/SEARCH STUFF ===============
+    //* ============ Story: SORT/FILTER/SEARCH STUFF ===============
 
     const sortOptions = ['date added', 'title']
     const [sortMethod, setSortMethod] = useState('date added');
@@ -148,21 +148,76 @@ export default function ThemeModal(props) {
 
     const storyResults = ascDesc(sortResults(searchResults(themeStoriesArray)))
 
+    //* ============ Contact: SORT/FILTER/SEARCH STUFF ===============
+
+    const sortOptionsContacts = ['date added', 'name', 'last contribution']
+    const [sortMethodContacts, setSortMethodContacts] = useState('date added');
+    const [sortDirectionContacts, setSortDirectionContacts] = useState('ascending')
+  
+    const [searchTermContacts, setSearchTermContacts] = useState('');
+    const [searchByContacts, setSearchByContacts] = useState('all');
+    const searchByOptionsContacts = ['all', 'contact info'] //['all', 'contact info', 'tag', 'role', 'story']
+  
+    const ascDescContacts = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
+  
+    const sortResultsContacts = (arr) => {
+      switch (sortMethodContacts) {
+        case 'date added':
+          return arr
+        case 'name':
+          return arr
+        case 'last contribution':
+          return arr
+        default:
+          return arr
+      }
+  
+    }
+  
+    const searchResultsContacts = (arr) => {
+  
+      function getContactString(contact) {
+        return contact.name.toLowerCase()+contact?.expertise?.toLowerCase()+contact?.bio?.toLowerCase()+contact.note?.toLowerCase()
+      }
+      
+  
+      function getTagsString(contact) {
+        const tagsNameString = contact.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
+        const tagsDescString = contact.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
+        return tagsNameString+tagsDescString
+      }
+  
+      function getRolesString(contact) {
+        return contact.roles?.map(role=>role.name?.toLowerCase()).join('');
+      }
+  
+      function getContactStoriesString(contact) {
+        return contact.stories?.map(story=>story.title?.toLowerCase()).join('');
+      
+      }
+  
+      switch (searchByContacts) {
+        case 'contact info':
+          return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()))
+        case 'tag':
+          return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()))
+        case 'role':
+          return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()))
+        case 'story':
+          return arr.filter(contact=>getContactStoriesString(contact).includes(searchTermContacts.toLowerCase()))
+        case 'all':
+          //return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()) || getTagsString(contact).includes(searchTermContacts.toLowerCase()) || getRolesString(contact).includes(searchTermContacts.toLowerCase()))
+          return arr.filter(contact=>getContactString(contact)?.includes(searchTermContacts.toLowerCase()))
+        default:
+          return arr
+      }
+  
+    }
+  
+    const contactResults = sortResultsContacts(ascDescContacts(searchResultsContacts(contacts)))
+
     // page story / contacts
     const [page, setPage] = useState('stories');
-
-    const pageType = (page) => {
-      switch (page){
-        case 'stories':
-          console.log('story');
-          break;
-        case 'contacts':
-          console.log('contacts')
-          break;
-        default:
-          console.log('stories');
-      }
-    }
 
   return (
       <div>
@@ -229,7 +284,6 @@ export default function ThemeModal(props) {
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <AddStoryToTheme theme={theme} options={storyOptions}/>
               </Box>
-              
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
                 <SortFilterSearch
                   sortOptions={sortOptions}
@@ -267,21 +321,21 @@ export default function ThemeModal(props) {
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
                 <SortFilterSearch
-                  sortOptions={sortOptions}
-                  sortMethod={sortMethod}
-                  setSortMethod={setSortMethod}
-                  sortDirection={sortDirection}
-                  setSortDirection={setSortDirection}
-                  searchByOptions={searchByOptions}
-                  searchBy={searchBy}
-                  setSearchBy={setSearchBy}
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
+                  sortOptions={sortOptionsContacts}
+                  sortMethod={sortMethodContacts}
+                  setSortMethod={setSortMethodContacts}
+                  sortDirection={sortDirectionContacts}
+                  setSortDirection={setSortDirectionContacts}
+                  searchByOptions={searchByOptionsContacts}
+                  searchBy={searchByContacts}
+                  setSearchBy={setSearchByContacts}
+                  searchTerm={searchTermContacts}
+                  setSearchTerm={setSearchTermContacts}
                 />
               </Box>
             </Box>
             <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
-            {contacts.map((contact, index) => {
+            {contactResults.map((contact, index) => {
               return (
                 <ThemeContactListItem contact={contact} key={index} />
               )

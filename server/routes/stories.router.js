@@ -1,3 +1,4 @@
+const { query } = require('express');
 const express = require('express');
 const {
   rejectUnauthenticated,
@@ -141,18 +142,18 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
       for (let invoiceDetail of contactInvoiceDetails) {
         // if contact id for story contacts array and contact invoice match, add invoice info to currentStoryDetails array
 
-          if (invoiceDetail.contact_id === storyContact.id) {
-            const { story_association, invoice_amount, invoice_paid } =
-              invoiceDetail;
-            storyContact.story_association = story_association;
-            storyContact.invoice_paid = invoice_paid;
-            storyContact.invoice_amount = invoice_amount;
-          }
+        if (invoiceDetail.contact_id === storyContact.id) {
+          const { story_association, invoice_amount, invoice_paid } =
+            invoiceDetail;
+          storyContact.story_association = story_association;
+          storyContact.invoice_paid = invoice_paid;
+          storyContact.invoice_amount = invoice_amount;
         }
       }
+    }
 
       //5. Send modified array as response
-      console.log('Response for individual story:', currentStoryDetails);
+      // console.log('Response for individual story:', currentStoryDetails);
       res.send(currentStoryDetails);
     } catch (err) {
       console.log(err);
@@ -287,19 +288,26 @@ router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => 
       ("contact_id","story_id","invoice_paid", "invoice_amount", "story_association") 
       VALUES 
       ($1, $2, $3, $4, $5);`;
-
       return connection.query(postContactsQuery, [
         contact.id,
         storyId,
         contact.invoice_paid,
-
         contact.invoice_amount,
         contact.story_association,
       ]);
     });
 
+    const themePromises = theme.map((theme) => {
+      const attachThemeQuery = `
+      INSERT INTO "theme_story"
+      ("story_id", "theme_id")
+      VALUES
+      ($1, $2);`
+      return connection.query(attachThemeQuery, [storyId, theme.id])
+    })
+
     //Querying database to add contacts and tags to joiner tables
-    await Promise.all([...tagPromises, ...contactPromises]);
+    await Promise.all([...tagPromises, ...contactPromises, ...themePromises]);
     await connection.query('COMMIT;');
     res.sendStatus(200);
   } catch (err) {
@@ -358,6 +366,7 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     copies_required,
     tags,
     contacts,
+    theme,
     number_of_copies,
     copies_destination,
   } = req.body;
@@ -384,11 +393,12 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
 
     //**Step 1: delete all current tags and contacts associations
     let deleteTagsQuery = `DELETE FROM "story_tag" WHERE "story_id" = $1;`;
-
     let deleteContactsQuery = `DELETE FROM "story_contact" WHERE "story_id" = $1;`;
+    const deleteThemeQuery = `DELETE FROM "theme_story" WHERE "story_id" = $1;`;
 
     const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
     const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
+    const deleteThemePromise= connection.query(deleteThemeQuery, [id])
 
     await Promise.all([deleteTagsPromise, deleteContactsPromise]);
 
@@ -457,7 +467,16 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
       ]);
     });
 
-    await Promise.all([...attachContactsPromise, ...attachTagsPromise]);
+    const attachThemePromises = theme.map((theme) => {
+      const attachThemeQuery = `
+      INSERT INTO "theme_story"
+      ("story_id", "theme_id")
+      VALUES
+      ($1, $2);`
+      return connection.query(attachThemeQuery, [id, theme.id])
+    })
+
+    await Promise.all([...attachContactsPromise, ...attachTagsPromise,...attachThemePromises]);
 
     await connection.query('COMMIT');
     res.sendStatus(200);
@@ -528,12 +547,16 @@ router.put('/notes/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =
 //Router put for updating the status of checked box on the DOM
 router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const statusToChange = req.body.statusToChange;
-  const queryText = `UPDATE "story" SET ${statusToChange}=$1 WHERE "id"=$2;`;
+  const queryText = `UPDATE "story" SET "${statusToChange}"=$1 WHERE "id"=$2 RETURNING "${statusToChange}";`;
   const queryParams = [req.body.statusValue, req.body.story_id];
+
+  console.log(queryText);
+  console.log('$1=' +  queryParams[0], ', $2='+queryParams[1]);
 
   pool
     .query(queryText, queryParams)
-    .then(() => {
+    .then((response) => {
+      console.log('response from /status/:id query: ', response)
       res.sendStatus(200);
     })
     .catch((err) => {

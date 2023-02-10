@@ -6,9 +6,14 @@ import { useHistory } from 'react-router-dom';
 import { DateTime } from 'luxon';
 
 // components
-import { Box, Typography, TextField } from '@mui/material';
+import { Box, Typography, TextField, Modal } from '@mui/material';
 import StoryListItem from '../StoryListItem/StoryListItem';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
+import StoryCreateEditModal from '../StoryCreateEditModal/StoryCreateEditModal';
+
+// internal
+import { largeModal, mainContentBox } from '../../__style'
+
 
 export default function StoryArchive() {
 
@@ -19,6 +24,18 @@ export default function StoryArchive() {
 
   // console.log('archiveStories[0].publication_date', archiveStories[0]?.publication_date);
   // console.log('archiveStories[0].publication_date past?', DateTime.fromISO(archiveStories[0]?.publication_date)< DateTime.now())
+
+
+  const [step, setStep] = useState('general')
+  const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [createMode,setCreateMode] = useState(false)
+
+  const handleClose = () => {
+    setModalOpen(false)
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
+  }
 
   //* ================= SORT/FILTER/SEARCH STUFF ===============
 
@@ -92,7 +109,6 @@ export default function StoryArchive() {
       {/* sort direction: {sortDirection} */}
       {/* asc/desc of stories: {ascDesc(archiveStories).map(story => story.title)} */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant='h4'>Stories </Typography>
         <SortFilterSearch
           sortOptions={sortOptions}
           sortMethod={sortMethod}
@@ -108,9 +124,22 @@ export default function StoryArchive() {
       </Box>
       {storyResults.map(story => {
         return (
-          <StoryListItem key={story.id} story={story} />
+          <StoryListItem 
+          key={story.id} 
+          story={story} 
+          createMode = {createMode}
+          setCreateMode={setCreateMode}
+          setModalOpen={setModalOpen}
+          />
         )
       })}
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}>
+        <Box sx={{ ...largeModal, height: modalDimensions.height, width: modalDimensions.width }}>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step={step} setStep={setStep} />
+        </Box>
+      </Modal>
     </Box>
   )
 }

@@ -34,13 +34,7 @@ export default function BasicCard(props) {
 
   return (
     <>
-    <Button
-      size='small'
-      onClick={() => setModalOpen(true)}
-      sx={{ textTransform: 'none', width: '100%' }}
-      disableRipple
-    >
-      <Card sx={{ width: '100%', height: 200 }}>
+      <Card sx={{ width: '100%', height: 200, cursor: 'pointer' }} onClick={() => setModalOpen(true)}>
         <CardContent>
           <Box sx={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll' }}>
             <Box>
@@ -59,7 +53,6 @@ export default function BasicCard(props) {
           </Box>
         </CardContent>
       </Card>
-    </Button>
     <CardActions>
       <Modal
         open={modalOpen}

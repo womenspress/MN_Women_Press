@@ -166,17 +166,17 @@ export default function ThemeModal(props) {
 
   return (
       <div>
-        <Box sx={{  marginX: 2, display: 'flex', justifyContent: 'space-between'}}>
+        <Box sx={{height: 64,  mt: 2,   display: 'flex', justifyContent: 'space-between'}}>
           {/* {JSON.stringify(theme)} */}
           {edit ? <TextField
-            sx={{ mt: 2, width: 1 }}
+            sx={{ width: .75 }}
             id="outlined-basic"
             label="Theme Name"
             variant="outlined"
             onChange={(event) => setEditValues({ ...editValues, name: event.target.value })}
             value={editValues.name}
           /> :
-            <Typography id="modal-modal-title" variant="h3" component="h2">
+            <Typography id="modal-modal-title" variant="h3" component="h1">
               {name}
             </Typography>
           }
@@ -187,7 +187,7 @@ export default function ThemeModal(props) {
         </Box>
           {edit ?
             <TextField
-              sx={{ mt: 2, width: 1 }}
+              sx={{width: 1 }}
               id="outlined-textarea"
               label="Theme Description"
               placeholder="Description"

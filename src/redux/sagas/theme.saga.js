@@ -50,8 +50,15 @@ function* editTheme(action) {
 
 function* themeStoryAdd(action) {
   console.log('in theme story add',action);
-  const addThemeStory = yield axios.post(`/api/themes/themestoryadd`, action.payload);
-}
+  try{
+    yield axios.post(`/api/themes/themestoryadd`, action.payload);
+    console.log('addThemeStory');
+  } catch (error){
+    console.log('error in themeStoryAdd saga:', error);
+
+  }
+  }
+  
 
 
 export default themeSaga;

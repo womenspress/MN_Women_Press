@@ -13,7 +13,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import Box from '@mui/material/Box';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
-export default function AddStoryToTheme({theme, options}) {
+export default function AddStoryToTheme({theme, options})  {
     const [open, setOpen] = React.useState(false);
     const [storyChoice, setStoryChoice] = React.useState('');
 
@@ -36,7 +36,8 @@ export default function AddStoryToTheme({theme, options}) {
 
     const addStoryToTheme = () => {
         console.log(`Convert to DISPATCH. story_id:${storyChoice}, theme_id:${theme.id}`);
-        dispatch({ type: 'THEME_STORY_ADD', payload: {story_id: storyChoice, theme_id: theme.id} })
+        dispatch({ type: 'THEME_STORY_ADD', payload: {story_id: storyChoice, theme_id: theme.id} });
+        //();
         setOpen(false);
     };
 

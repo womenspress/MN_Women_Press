@@ -336,9 +336,12 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     article_text,
     article_link,
     notes,
+    photo,
     type,
-    copies_sent,
+    copies_required,
+    number_of_copies,
     photo_uploaded,
+    fact_check_required,
     fact_check_completed, // same as fact_checked, different naming conventions in data
     graphic_image_required,
     external_link,
@@ -347,17 +350,14 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     rough_draft_deadline,
     final_draft_deadline,
     publication_date,
-    photo_required,
-    fact_check_required,
-    graphic_image_completed,
+    copies_destination,
+    socials_required,
+    underwriter_required,
+    photo_submitted,
+    photo_comments,
     payment_required,
-    payment_completed,
-    photo,
-    copies_required,
     tags,
     contacts,
-    number_of_copies,
-    copies_destination,
   } = req.body;
 
   const contactsRequiringPayment = contacts.filter(
@@ -396,9 +396,9 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     SET
     "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
     "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
-    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $17,"graphic_image_completed"= $18, "payment_required" = $19, 
-    "payment_completed" = $20, "photo" = $21, "copies_required" = $22
-    WHERE "id" = $23;`;
+    "final_draft_deadline"= $14, "publication_date"= $15, "photo_required"= $16, "fact_check_required"= $16,"graphic_image_completed"= $17, "payment_required" = $18, 
+    "payment_completed" = $19, "photo" = $20, "copies_required" = $21
+    WHERE "id" = $22;`;
 
     let updateStoryData = [
       title, //1
@@ -417,14 +417,19 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
       rough_draft_deadline, //13
       final_draft_deadline, //14
       publication_date, //15
-      photo_required, //16
-      fact_check_required, //17
-      graphic_image_completed, //18
-      payment_required, // 19
-      payment_completed, //20
-      photo, // 21
-      copies_required, //22
-      id, //23
+      fact_check_required, //16
+      graphic_image_completed, //17
+      payment_required, // 18
+      payment_completed, //19
+      photo, // 20
+      copies_required, //21
+      number_of_copies, //22
+      copies_destination, //23
+      socials_required, //24
+      underwriter_required, //25
+      photo_submitted, //26
+      photo_comments, //27
+      id, //22
     ];
 
     await connection.query(updateStoryQueryText, updateStoryData);

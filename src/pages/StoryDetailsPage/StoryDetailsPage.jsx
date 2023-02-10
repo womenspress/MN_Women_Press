@@ -26,16 +26,6 @@ export default function StoriesPage() {
   const currentStory = useSelector(store => store.stories.currentStory);
 
 
-  //------------- tracks status of todo list items-----------------//
-  const [photoStatus, setPhotoStatus] = useState(false);
-  const [graphicPhotoStatus, setGraphicPhotoStatus] = useState(false);
-  const [copiesStatus, setCopiesStatus] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(false);
-  const [factChecked, setFactChecked] = useState(false);
-  const [underwriterStatus, setUnderwriterStatus] = useState(false);
-  const [socialsStatus, setSocialsStatus] = useState(false);
-
-
   const [notes, setNotes] = useState(currentStory?.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
   // const [statusColor, setStatusColor] = useState({});
@@ -49,7 +39,7 @@ export default function StoriesPage() {
   const [step, setStep] = useState('general')
   const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
 
-  const [showTodo, setShowTodo ] = useState(false);
+  const [showTodo, setShowTodo] = useState(false);
 
 
   // gets current story on page load (page persists on refresh)
@@ -62,15 +52,7 @@ export default function StoriesPage() {
   useEffect(() => {
     // setStatusColor(makeStatusColor(currentStory))
     setNotes(currentStory.notes);
-    setPhotoStatus(currentStory.photo_uploaded);
 
-    setFactChecked(currentStory.fact_check_completed);
-    setGraphicPhotoStatus(currentStory.graphic_image_completed);
-    setCopiesStatus(currentStory.copies_sent);
-    setPaymentStatus(currentStory.payment_completed);
-    setSocialsStatus(currentStory.socials_completed);
-    setUnderwriterStatus(currentStory.underwriter_completed);
-    
     dispatch({ type: 'SET_TEMP_STORY', payload: currentStory });
     setGeneralInfoHeight(document.getElementById("storiesGeneralSection").offsetHeight)
     setShowTodo(true);
@@ -114,38 +96,31 @@ export default function StoriesPage() {
     switch (event.target.id) {
       case 'copies sent':
         statusToChange = 'copies_sent';
-        statusValue = !copiesStatus;
-        setCopiesStatus(!copiesStatus);
+        statusValue = currentStory?.copies_sent ? false : true;
         break;
       case 'upload photo':
         statusToChange = 'photo_uploaded';
-        statusValue = !photoStatus;
-        setPhotoStatus(!photoStatus)
+        statusValue = currentStory?.photo_uploaded ? false : true;
         break;
       case 'fact-check story':
         statusToChange = 'fact_check_completed';
-        statusValue = !factChecked;
-        setFactChecked(!factChecked)
+        statusValue = currentStory?.fact_check_completed ? false : true;
         break;
       case 'upload graphic':
         statusToChange = 'graphic_image_completed';
-        statusValue = !graphicPhotoStatus;
-        setGraphicPhotoStatus(!graphicPhotoStatus)
+        statusValue = currentStory?.graphic_image_completed ? false : true;
         break;
       case 'make payments':
         statusToChange = 'payment_completed';
-        statusValue = !paymentStatus;
-        setPaymentStatus(!paymentStatus)
+        statusValue = currentStory?.payment_completed ? false : true;
         break;
       case 'underwriting complete':
         statusToChange = 'underwriter_completed';
-        statusValue = !underwriterStatus;
-        setUnderwriterStatus(!underwriterStatus)
+        statusValue = currentStory?.underwriter_completed ? false : true;
         break;
       case 'socials posted':
         statusToChange = 'socials_completed';
-        statusValue = !socialsStatus;
-        setSocialsStatus(!socialsStatus);
+        statusValue = currentStory?.socials_completed ? false : true;
         break;
     }
     dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })

@@ -35,7 +35,8 @@ export default function BasicCard(props) {
   return (
     <Button
       size='small'
-      onClick={() => setModalOpen(true)}
+      onClick={() => setModalOpen(!modalOpen)}
+
       sx={{ textTransform: 'none', width: '100%' }}
       disableRipple
     >

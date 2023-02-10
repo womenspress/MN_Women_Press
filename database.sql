@@ -59,9 +59,8 @@ CREATE TABLE "story" (
     "copies_required" BOOLEAN DEFAULT FALSE,
     "number_of_copies" INT, 
     "copies_sent" BOOLEAN DEFAULT FALSE,
-    "photo_required" BOOLEAN DEFAULT FALSE , 
     "photo_uploaded" BOOLEAN DEFAULT FALSE,
-    "fact_check_required" BOOLEAN DEFAULT FALSE, 
+    "fact_check_required" BOOLEAN DEFAULT TRUE, 
     "fact_check_completed" BOOLEAN DEFAULT FALSE,
     "graphic_image_required" BOOLEAN DEFAULT FALSE,
     "graphic_image_completed" BOOLEAN DEFAULT FALSE,
@@ -226,21 +225,3 @@ VALUES
 (2,1), 
 (1, 3); 
 
-ALTER TABLE story
-ADD COLUMN copies_destination VARCHAR
-; 
-
-ALTER TABLE "story"
-ADD socials_required boolean, 
-ADD socials_completed boolean, 
-ADD underwriter_required boolean, 
-ADD underwriter_completed boolean,
-ADD photo_submitted boolean, 
-ADD photo_comments VARCHAR; 
-
-ALTER TABLE "story"
-DROP COLUMN "photo_required";
-
-ALTER TABLE "story"
-DROP COLUMN "fact_check_required", 
-ADD "fact_check_required" BOOLEAN DEFAULT TRUE; 

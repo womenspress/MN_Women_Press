@@ -16,6 +16,7 @@ export default function ContactsPage() {
 
   useEffect(() => {
     dispatch({ type: 'GET_ALL_CONTACTS' });
+    dispatch({type: "GET_ALL_TAGS"});
   }, [])
 
 

@@ -92,7 +92,6 @@ export default function ThemeArchive() {
       <p>{Date.now()}</p>
       <p>{Date.parse(allThemes[0].month_year)}</p> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant='h4'>Themes</Typography>
         <SortFilterSearch
           sortOptions={sortOptions}
           sortMethod={sortMethod}

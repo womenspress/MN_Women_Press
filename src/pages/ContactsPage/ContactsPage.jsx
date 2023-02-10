@@ -47,35 +47,35 @@ export default function ContactsPage() {
   const searchResults = (arr) => {
 
     function getContactString(contact) {
-      return contact.name.toLowerCase()+contact.expertise?.toLowerCase()+contact.bio?.toLowerCase()+contact.note?.toLowerCase()
+      return contact.name.toLowerCase() + contact.expertise?.toLowerCase() + contact.bio?.toLowerCase() + contact.note?.toLowerCase()
     }
 
     function getTagsString(contact) {
-      const tagsNameString = contact.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
-      const tagsDescString = contact.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
-      return tagsNameString+tagsDescString
+      const tagsNameString = contact.tags?.map(tag => tag?.name?.toLowerCase()).join('');
+      const tagsDescString = contact.tags?.map(tag => tag?.description?.toLowerCase()).join('')
+      return tagsNameString + tagsDescString
     }
 
     function getRolesString(contact) {
-      return contact.roles?.map(role=>role.name?.toLowerCase()).join('');
+      return contact.roles?.map(role => role.name?.toLowerCase()).join('');
     }
 
     function getStoryString(contact) {
-      return contact.stories?.map(story=>story.title?.toLowerCase()).join('');
-    
+      return contact.stories?.map(story => story.title?.toLowerCase()).join('');
+
     }
 
     switch (searchBy) {
       case 'contact info':
-        return arr.filter(contact=>getContactString(contact).includes(searchTerm.toLowerCase()))
+        return arr.filter(contact => getContactString(contact).includes(searchTerm.toLowerCase()))
       case 'tag':
-        return arr.filter(contact=>getTagsString(contact).includes(searchTerm.toLowerCase()))
+        return arr.filter(contact => getTagsString(contact).includes(searchTerm.toLowerCase()))
       case 'role':
-        return arr.filter(contact=>getRolesString(contact).includes(searchTerm.toLowerCase()))
+        return arr.filter(contact => getRolesString(contact).includes(searchTerm.toLowerCase()))
       case 'story':
-        return arr.filter(contact=>getStoryString(contact).includes(searchTerm.toLowerCase()))
+        return arr.filter(contact => getStoryString(contact).includes(searchTerm.toLowerCase()))
       case 'all':
-        return arr.filter(contact=>getContactString(contact).includes(searchTerm.toLowerCase()) || getTagsString(contact).includes(searchTerm.toLowerCase()) || getRolesString(contact).includes(searchTerm.toLowerCase()) || getStoryString(contact).includes(searchTerm.toLowerCase()))
+        return arr.filter(contact => getContactString(contact).includes(searchTerm.toLowerCase()) || getTagsString(contact).includes(searchTerm.toLowerCase()) || getRolesString(contact).includes(searchTerm.toLowerCase()) || getStoryString(contact).includes(searchTerm.toLowerCase()))
       default:
         return arr
     }
@@ -89,14 +89,13 @@ export default function ContactsPage() {
 
   return (
     <>
-      <Box sx={{ display: 'flex' }}>
-        <Typography variant="h3" component="h1">
-          Contacts
-        </Typography>
-        <CreateNewContactModal />
-      </Box>
-      <Box sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginX: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="h3" component="h1">
+            Contacts
+          </Typography>
+          <CreateNewContactModal />
+        </Box>
           <SortFilterSearch
             sortOptions={sortOptions}
             sortMethod={sortMethod}
@@ -109,6 +108,9 @@ export default function ContactsPage() {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
           />
+      </Box>
+      <Box sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         </Box>
         <Grid container space={1}>
           {contactResults.map((contact) => {

@@ -44,7 +44,7 @@ export default function StoriesPage() {
 
   // passed into modal; used to determine dimensions
   const [step, setStep] = useState('general')
-  const modalDimensions = step ==='general' ? {height: 600, width: 700} : {height: 600, width: 900}
+  const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
 
   const handleClickPlus = () => {
     setCreateMode(true);
@@ -128,15 +128,14 @@ export default function StoriesPage() {
   return (
     <Box>
       {/* {JSON.stringify(currentStories)} */}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Typography variant='h3'>Stories</Typography>
-        <IconButton onClick={handleClickPlus}>
-          <ControlPointIcon />
-        </IconButton>
-      </Box>
-      <Box
-        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginX: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant='h3'>Stories</Typography>
+          <IconButton onClick={handleClickPlus}>
+            <ControlPointIcon />
+          </IconButton>
+        </Box>
+        <Box>
           <SortFilterSearch
             sortOptions={sortOptions}
             sortMethod={sortMethod}
@@ -150,6 +149,9 @@ export default function StoriesPage() {
             setSearchTerm={setSearchTerm}
           />
         </Box>
+      </Box>
+      <Box
+        sx={{ ...mainContentBox, height: 700, overflow: 'hidden', overflowY: 'scroll' }}>
         <Box>
           {storyResults.length ? storyResults.map((story, index) => {
             return (
@@ -171,7 +173,7 @@ export default function StoriesPage() {
         open={modalOpen}
         onClose={handleClose}>
         <Box sx={{ ...largeModal, height: modalDimensions.height, width: modalDimensions.width }}>
-          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step = {step} setStep = {setStep}/>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step={step} setStep={setStep} />
         </Box>
       </Modal>
 

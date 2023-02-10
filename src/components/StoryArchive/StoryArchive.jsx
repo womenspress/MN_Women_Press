@@ -92,7 +92,6 @@ export default function StoryArchive() {
       {/* sort direction: {sortDirection} */}
       {/* asc/desc of stories: {ascDesc(archiveStories).map(story => story.title)} */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant='h4'>Stories </Typography>
         <SortFilterSearch
           sortOptions={sortOptions}
           sortMethod={sortMethod}

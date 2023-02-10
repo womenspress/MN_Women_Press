@@ -105,7 +105,7 @@ export default function StoryListItem(props) {
   const handleEditClose = () => {
     setCreateMode(true);
     console.log('in handleEditClose')
-    dispatch({type: 'CLEAR_TEMP_STORY'});
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
     setModalOpen(false);
   }
 
@@ -118,7 +118,7 @@ export default function StoryListItem(props) {
   const removeTag = (tagID) => {
     console.log('remove tag', tagID, 'from story: ', story.id);
     const story_id = story.id;
-    dispatch({type: 'DELETE_STORY_TAG', payload: {tag_id: tagID, story_id: story_id}})
+    dispatch({ type: 'DELETE_STORY_TAG', payload: { tag_id: tagID, story_id: story_id } })
   }
 
   return (
@@ -139,8 +139,10 @@ export default function StoryListItem(props) {
             </Box>
           </Grid>
           <Grid item xs={2}>
-            {/*  */}
-            <Typography>{story.theme[0] !== undefined && `Theme: ${story.theme[0]?.name}`}</Typography>
+            {story.theme ?
+              <Typography> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
+              :
+              <></>}
           </Grid>
           <Grid item xs={2}>
             <Typography>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>

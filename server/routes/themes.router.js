@@ -64,6 +64,12 @@ router.put('/edit/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =>
 });
 
 
+router.post('/themestoryadd', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
+  console.log('/themestoryadd req.body:', req.body);
+
+
+})
+
 
 // router.get('/archive', (req, res) => {
 //   // GET route code here

@@ -16,6 +16,7 @@ function* themeSaga() {
   yield takeEvery('GET_ALL_THEMES', getAllThemes);
   yield takeEvery('GET_CURRENT_THEME', getCurrentTheme);
   yield takeEvery('EDIT_THEME', editTheme);
+  yield takeEvery('THEME_STORY_ADD', themeStoryAdd);
 };
 
 function* getAllThemes(action) {
@@ -45,6 +46,11 @@ function* editTheme(action) {
   } catch (error) {
     console.log('error in editTheme saga:', error);
   }
+}
+
+function* themeStoryAdd(action) {
+  console.log('in theme story add',action);
+  const addThemeStory = yield axios.post(`/api/themes/themestoryadd`, action.payload);
 }
 
 

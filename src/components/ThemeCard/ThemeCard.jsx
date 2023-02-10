@@ -33,13 +33,8 @@ export default function BasicCard(props) {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
-    <Button
-      size='small'
-      onClick={() => setModalOpen(true)}
-      sx={{ textTransform: 'none', width: '100%' }}
-      disableRipple
-    >
-      <Card sx={{ width: '100%', height: 200 }}>
+    <>
+      <Card sx={{ width: '100%', height: 200, cursor: 'pointer' }} onClick={() => setModalOpen(true)}>
         <CardContent>
           <Box sx={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll' }}>
             <Box>
@@ -57,29 +52,27 @@ export default function BasicCard(props) {
             </Box>
           </Box>
         </CardContent>
-        <CardActions>
-          <Modal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-          >
-            <Box sx={{...largeModal, padding: 4}}>
-              <ThemeModal
-                theme={theme}
-                id={id}
-                name={name}
-                description={description}
-                month={month}
-                year={year}
-                stories={stories}
-                contacts={contacts}
-              />
-            </Box>
-          </Modal>
-
-        </CardActions>
-
-
       </Card>
-    </Button>
+    <CardActions>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      >
+        <Box sx={{...largeModal, padding: 4}}>
+          <ThemeModal
+            theme={theme}
+            id={id}
+            name={name}
+            description={description}
+            month={month}
+            year={year}
+            stories={stories}
+            contacts={contacts}
+          />
+        </Box>
+      </Modal>
+
+    </CardActions>
+    </>
   );
 }

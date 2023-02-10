@@ -28,7 +28,7 @@ export default function StoriesPage() {
 
   const [notes, setNotes] = useState(currentStory?.notes);
   const [editNotesMode, setEditNotesMode] = useState(false);
-  const [statusColor, setStatusColor] = useState({});
+  // const [statusColor, setStatusColor] = useState({});
   const [generalInfoHeight, setGeneralInfoHeight] = useState(0);
 
   // createMode: will the big story modal be in create or edit mode?
@@ -50,7 +50,7 @@ export default function StoriesPage() {
 
   // updates notes on DOM, checks status color, and refreshes task item states when current story changes
   useEffect(() => {
-    setStatusColor(makeStatusColor(currentStory))
+    // setStatusColor(makeStatusColor(currentStory))
     setNotes(currentStory.notes);
 
     dispatch({ type: 'SET_TEMP_STORY', payload: currentStory });
@@ -62,7 +62,7 @@ export default function StoriesPage() {
 
 
   const statusStyle = {
-    bgcolor: statusColor.color,
+    bgcolor: currentStory.statusColor.color,
     width: 20,
     height: 20,
     borderRadius: '50%'
@@ -173,7 +173,7 @@ export default function StoriesPage() {
         {/*------- This grid row contains story header and tags---------- */}
         <Grid item xs={8}>
           <Box display='flex' flexDirection='row' alignItems='center'>
-            <Tooltip title={statusColor.notes}>
+            <Tooltip title={currentStory.statusColor.notes}>
               <Box sx={statusStyle}></Box>
             </Tooltip>
             <Typography variant='h4' sx={{ ml: 1 }}>{currentStory?.title}</Typography>

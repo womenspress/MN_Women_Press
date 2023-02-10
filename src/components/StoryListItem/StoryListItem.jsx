@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
 
-// libraries
 
 // libraries
 import { useHistory } from 'react-router-dom';
@@ -65,10 +64,10 @@ export default function StoryListItem(props) {
 
   // console.log('story list item, story:', story)
 
-  const statusColor = makeStatusColor(story)
+  // const statusColor = makeStatusColor(story)
 
   const statusStyle = {
-    bgcolor: statusColor.color,
+    bgcolor: story.statusColor.color,
     width: 16,
     height: 16,
     minWidth: 16,
@@ -105,7 +104,7 @@ export default function StoryListItem(props) {
   const handleEditClose = () => {
     setCreateMode(true);
     console.log('in handleEditClose')
-    dispatch({type: 'CLEAR_TEMP_STORY'});
+    dispatch({ type: 'CLEAR_TEMP_STORY' });
     setModalOpen(false);
   }
 
@@ -118,16 +117,17 @@ export default function StoryListItem(props) {
   const removeTag = (tagID) => {
     console.log('remove tag', tagID, 'from story: ', story.id);
     const story_id = story.id;
-    dispatch({type: 'DELETE_STORY_TAG', payload: {tag_id: tagID, story_id: story_id}})
+    dispatch({ type: 'DELETE_STORY_TAG', payload: { tag_id: tagID, story_id: story_id } })
   }
 
   return (
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
+      {/* <pre>{JSON.stringify(story, null, 2)}</pre> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
           <Grid item xs={5}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Tooltip title={statusColor.notes}>
+              <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
               <IconButton
@@ -139,8 +139,10 @@ export default function StoryListItem(props) {
             </Box>
           </Grid>
           <Grid item xs={2}>
-            {/*  */}
-            <Typography>{story.theme[0] !== undefined && `Theme: ${story.theme[0]?.name}`}</Typography>
+            {story.theme ?
+              <Typography> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
+              :
+              <></>}
           </Grid>
           <Grid item xs={2}>
             <Typography>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
@@ -197,10 +199,13 @@ export default function StoryListItem(props) {
         onClose={() => setDeleteOpen(false)}
       >
         <Box
-          sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete
-
-          <Button onClick={handleDelete}>delete</Button>
-          <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+          sx={{ ...smallModal, height: 70, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>
+          <Typography variant = 'h6' sx = {{fontSize: 16}}>delete this story?</Typography>
+          <Typography variant = 'body2' sx = {{fontSize: 13}}>this action can't be undone</Typography>
+          <Box sx = {{display: 'flex', justifyContent: 'center'}}>
+            <Button onClick={handleDelete}>delete</Button>
+            <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+          </Box>
         </Box>
       </Modal>
     </Paper>

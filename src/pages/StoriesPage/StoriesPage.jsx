@@ -69,6 +69,7 @@ export default function StoriesPage() {
 
   const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
 
+
   const sortResults = (arr) => {
     switch (sortMethod) {
       case 'date added':
@@ -131,7 +132,7 @@ export default function StoriesPage() {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginX: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant='h3'>Stories</Typography>
-          <IconButton onClick={handleClickPlus}>
+          <IconButton onClick={handleClickPlus} color='primary'>
             <ControlPointIcon />
           </IconButton>
         </Box>

@@ -123,7 +123,7 @@ export default function StoryListItem(props) {
 
   return (
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
-      <pre>{JSON.stringify(story,null, 2)}</pre>
+      {/* <pre>{JSON.stringify(story, null, 2)}</pre> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
           <Grid item xs={5}>
@@ -200,10 +200,13 @@ export default function StoryListItem(props) {
         onClose={() => setDeleteOpen(false)}
       >
         <Box
-          sx={{ ...smallModal, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>delete
-
-          <Button onClick={handleDelete}>delete</Button>
-          <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+          sx={{ ...smallModal, height: 70, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>
+          <Typography variant = 'h6' sx = {{fontSize: 16}}>delete this story?</Typography>
+          <Typography variant = 'body2' sx = {{fontSize: 13}}>this action can't be undone</Typography>
+          <Box sx = {{display: 'flex', justifyContent: 'center'}}>
+            <Button onClick={handleDelete}>delete</Button>
+            <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
+          </Box>
         </Box>
       </Modal>
     </Paper>

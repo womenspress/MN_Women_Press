@@ -102,12 +102,20 @@ export default function ContactListItem({ contact }) {
           <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
           <Typography>{contact.pronouns}</Typography>
         </Box>
-        <Box sx={{width: .3 }}>
+        <Box sx={{ width: .3 }}>
           <ListTags numOfDisplay={contact?.tags.length} tags={contact?.tags} removeTag={removeTag} />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
-          <Typography sx={{ ml: 1 }}>{contact.roles[0]?.name}</Typography>
-          {contact.roles[1] && <><Typography>•</Typography><Typography sx={{ mr: 1 }}>{contact.roles[1].name}</Typography></>}
+          <Typography sx={{ ml: 1 }}>
+            {contact.roles[0]?.name}
+          </Typography>
+          {contact.roles[1] &&
+            <>
+              <Typography>•</Typography>
+              <Typography sx={{ mr: 1 }}>
+                {contact.roles[1].name}
+              </Typography>
+            </>}
         </Box>
       </Box>
 
@@ -115,15 +123,17 @@ export default function ContactListItem({ contact }) {
       <Collapse
         in={detailsOpen}
       >
-        <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{borderTop: '1px solid lightgrey', m: 1 }}>
+        <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{ borderTop: '1px solid lightgrey', m: 1 }}>
           <Box sx={{ display: 'flex', mb: 2 }}>
             <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
-            <Typography sx={{ width: .40, mr: 5, ml: 5 }} variant='body2'>
-              <Typography fontSize={22}>Bio:</Typography>
-              <Box sx={{ maxHeight: '60px', overflow: 'auto' }}>{contact.bio}</Box>
-            </Typography>
+            <Box sx={{ width: .40, mr: 5, ml: 5 }}>
+              <Typography variant='body2' fontSize={18}>Bio:</Typography>
+              <Typography variant = 'body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize = {14}>
+                {contact.bio}
+              </Typography>
+            </Box>
             <Box sx={{ width: .45 }} >
-              <Typography fontSize={22}>Recent contribution:</Typography>
+              <Typography fontSize={18}>Recent contribution:</Typography>
               <StoryCard story={contact.stories[0]} />
             </Box>
           </Box>

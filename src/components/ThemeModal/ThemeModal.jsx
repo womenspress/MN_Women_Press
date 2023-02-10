@@ -9,14 +9,11 @@ import { Box, Button, Typography, TextField, Modal} from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
 //components
-//import ThemeStoryListItem from '../ThemeStoryListItem/ThemeStoryListItem';
-import StoryListItem from '../../components/StoryListItem/StoryListItem'
-//import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
-import ContactListItem from '../../components/ContactListItem/ContactListItem';
+import ThemeStoryListItem from '../ThemeStoryListItem/ThemeStoryListItem';
+import ThemeContactListItem from '../ThemeContactListItem/ThemeContactListItem';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 import AddStoryToTheme from '../../assets/AddStoryToTheme/AddStoryToTheme';
 import AddContactToTheme from '../../assets/AddContactToTheme/AddContactToTheme';
-import StoryCreateEditModal from '../StoryCreateEditModal/StoryCreateEditModal';
 
 
 // styling
@@ -67,27 +64,6 @@ export default function ThemeModal(props) {
     setEdit(false);
     // dispatch {id: id, name: name, month: month, year: year, description: description}
   }
-  // Story edit modal
-  // createMode: will the big story modal be in create or edit mode?
-  // passed into modal; used to determine dimensions
-  const [step, setStep] = useState('general')
-  const [createMode, setCreateMode] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const modalDimensions = step ==='general' ? {height: 600, width: 700} : {height: 600, width: 900}
-  
-    const handleClickPlus = () => {
-      setCreateMode(true);
-      setModalOpen(true);
-    }
-  
-    const handleClose = () => {
-      setModalOpen(false)
-      dispatch({ type: 'CLEAR_TEMP_STORY' })
-    }
-
-
-
 
   /* 
       SEARCH STORY FUNCTION: 
@@ -112,7 +88,7 @@ export default function ThemeModal(props) {
   
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('all');
-    const searchByOptions = ['all', 'story info', 'theme', 'tag', 'contact']
+    const searchByOptions = ['all', 'story info'] //['all', 'story info', 'theme', 'tag', 'contact']
   
   
     const ascDesc = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
@@ -155,68 +131,43 @@ export default function ThemeModal(props) {
       }
   
       switch (searchBy) {
-        case 'contact':
-          return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
+        // case 'contact':
+        //   return arr.filter(story => getContactsString(story).includes(searchTerm.toLowerCase()))
         case 'story info':
           return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
-        case 'theme':
-          return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
-        case 'tag':
-          return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
+        // case 'theme':
+        //   return arr.filter(story => getThemesString(story).includes(searchTerm.toLowerCase()))
+        // case 'tag':
+        //   return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
         case 'all':
-          return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+          return arr.filter(story => story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.subtitle?.toLowerCase().includes(searchTerm.toLowerCase())|| story.notes?.toLowerCase().includes(searchTerm.toLowerCase()))
         default:
           return arr
       }
     }
 
-      const zipStoryArray = themeStoriesArray.map(story => {
-        for(let newStory of allStories){
-          if(story.id === newStory.id){
-            return newStory;
-          }
-        }
-      }
-    )
-
-    const storyResults = ascDesc(sortResults(searchResults(zipStoryArray)))
+    const storyResults = ascDesc(sortResults(searchResults(themeStoriesArray)))
 
     //* ============ Contact: SORT/FILTER/SEARCH STUFF ===============
 
-    const sortOptionsContacts = ['date added', 'name', 'most recent contribution'];
+    const sortOptionsContacts = ['date added', 'name', 'last contribution']
     const [sortMethodContacts, setSortMethodContacts] = useState('date added');
-    const [sortDirectionContacts, setSortDirectionContacts] = useState('ascending');
+    const [sortDirectionContacts, setSortDirectionContacts] = useState('ascending')
   
     const [searchTermContacts, setSearchTermContacts] = useState('');
     const [searchByContacts, setSearchByContacts] = useState('all');
-    const searchByOptionsContacts = ['all', 'contact info', 'tag', 'role', 'story'];
+    const searchByOptionsContacts = ['all', 'contact info'] //['all', 'contact info', 'tag', 'role', 'story']
   
-    const ascDescContacts = (arr) => {return ( sortDirectionContacts === 'ascending' ? arr: arr.reverse() )};
+    const ascDescContacts = (arr) => sortDirection === 'ascending' ? arr : arr.reverse()
   
     const sortResultsContacts = (arr) => {
       switch (sortMethodContacts) {
         case 'date added':
-          return arr.sort((a, b) => {
-            if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
-            if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
-            else return 0
-          })
+          return arr
         case 'name':
-          return arr.sort(function (a, b) {
-            if (a.name < b.name) {
-              return -1;
-            }
-            if (a.name > b.name) {
-              return 1;
-            }
-            return 0;
-          });
-        case 'most recent contribtuion':
-          return arr.sort((a, b) => {
-            if (DateTime.fromISO(a.stories[0].date_added) > DateTime.fromISO(b.stories[0].date_added)) return 1
-            if (DateTime.fromISO(a.stories[0].date_added) < DateTime.fromISO(b.stories[0].date_added)) return -1
-            else return 0
-          })
+          return arr
+        case 'last contribution':
+          return arr
         default:
           return arr
       }
@@ -228,14 +179,15 @@ export default function ThemeModal(props) {
       function getContactString(contact) {
         return contact.name.toLowerCase()+contact?.expertise?.toLowerCase()+contact?.bio?.toLowerCase()+contact.note?.toLowerCase()
       }
+      
   
-      function getContactTagString(contact) {
+      function getTagsString(contact) {
         const tagsNameString = contact.tags?.map(tag=>tag?.name?.toLowerCase()).join('');
         const tagsDescString = contact.tags?.map(tag=>tag?.description?.toLowerCase()).join('')
         return tagsNameString+tagsDescString
       }
   
-      function getContactRolesString(contact) {
+      function getRolesString(contact) {
         return contact.roles?.map(role=>role.name?.toLowerCase()).join('');
       }
   
@@ -248,32 +200,21 @@ export default function ThemeModal(props) {
         case 'contact info':
           return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()))
         case 'tag':
-          return arr.filter(contact=>getContactTagString(contact).includes(searchTermContacts.toLowerCase()))
+          return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()))
         case 'role':
-          return arr.filter(contact=>getContactRolesString(contact).includes(searchTermContacts.toLowerCase()))
+          return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()))
         case 'story':
           return arr.filter(contact=>getContactStoriesString(contact).includes(searchTermContacts.toLowerCase()))
         case 'all':
-          return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()) || getContactTagString(contact).includes(searchTermContacts.toLowerCase()) || getContactRoleString(contact).includes(searchTermContacts.toLowerCase()) || getContactStoriesString(contact).includes(searchTermContacts.toLowerCase()))
+          //return arr.filter(contact=>getContactString(contact).includes(searchTermContacts.toLowerCase()) || getTagsString(contact).includes(searchTermContacts.toLowerCase()) || getRolesString(contact).includes(searchTermContacts.toLowerCase()))
+          return arr.filter(contact=>getContactString(contact)?.includes(searchTermContacts.toLowerCase()))
         default:
           return arr
       }
   
     }
-
-    // compares the theme contacts and allContacts; return allContact with same contact.id
-    const zipContactArray = contacts.map(contact => {
-        for(let newContact of allContacts){
-          if(contact.id === newContact.id){
-            return newContact;
-          }
-        }
-      }
-    )
-
   
-    const contactResults = ascDescContacts(sortResultsContacts(searchResultsContacts(zipContactArray)))
-    
+    const contactResults = sortResultsContacts(ascDescContacts(searchResultsContacts(contacts)))
 
     // page story / contacts
     const [page, setPage] = useState('stories');
@@ -358,31 +299,16 @@ export default function ThemeModal(props) {
                 />
               </Box>
             </Box>
-            <Box sx={{height: "430px",alignItems: 'center', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll' }}>
-              <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
-                {storyResults.length ? storyResults.map((story,index) => {
-                  return (
-                    <StoryListItem
-                    key={index}
-                    story={story}
-                    createMode={createMode}
-                    setCreateMode={setCreateMode}
-                    setModalOpen={setModalOpen}
-                  />
-                  )
-                })
-                  :
-                  <></>
-                }
-              </Box>
+            <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
+              {storyResults.length ? storyResults.map((story,index) => {
+                return (
+                  <ThemeStoryListItem story={story} key={index} />
+                )
+              })
+                :
+                <></>
+              }
             </Box>
-            <Modal
-              open={modalOpen}
-              onClose={handleClose}>
-              <Box sx={{ ...largeModal, height: modalDimensions.height, width: modalDimensions.width }}>
-                <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step = {step} setStep = {setStep}/>
-              </Box>
-            </Modal>
           </Box>
         }
         {/* //* ================ contacts ============== */}
@@ -390,8 +316,8 @@ export default function ThemeModal(props) {
           
           <Box sx={{bgcolor: 'grey.100', borderRadius: 2, px: 2, py: 1 }}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', width: 1}}>
-              <Box sx={{ display: 'flex' }}>
-                <AddContactToTheme  theme={theme} options={storyOptions}/>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AddContactToTheme theme={theme} options={storyOptions}/>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: .5 }}>
                 <SortFilterSearch
@@ -408,14 +334,12 @@ export default function ThemeModal(props) {
                 />
               </Box>
             </Box>
-            <Box sx={{height: "430px",alignItems: 'center', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll' }}>
-              <Box sx={{alignItems: 'center', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll' }}>
-              {contactResults.map((contact, index) => {
-                return (
-                  <ContactListItem contact={contact} key={index} numOfDisplay={2} />
-                )
-              })}
-              </Box>
+            <Box sx={{overflow: 'hidden', overflowY: 'scroll' }}>
+            {contactResults.map((contact, index) => {
+              return (
+                <ThemeContactListItem contact={contact} key={index} />
+              )
+            })}
             </Box>
           </Box>
         }

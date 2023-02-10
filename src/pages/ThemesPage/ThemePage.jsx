@@ -11,11 +11,7 @@ export default function ThemesPage() {
     dispatch({ type: 'GET_ALL_THEMES' });
     dispatch({ type: 'GET_ALL_CONTACTS' });
     dispatch({ type: 'GET_ALL_STORIES' });
-    dispatch({type:'GET_ALL_TAGS'});
   }, [])
-
-
-
 
   const mainContentBox = {
     bgcolor: 'grey.100',

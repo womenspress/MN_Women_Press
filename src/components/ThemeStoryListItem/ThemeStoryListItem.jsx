@@ -24,7 +24,7 @@ elements to display in the
 
 */
 
-export default function ThemeStoryListItem({story}) {
+export default function ThemeStoryListItem({ story}) {
     const history = useHistory();
 
     const [collapseOpen, setCollapseOpen] = useState(false);

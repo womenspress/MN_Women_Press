@@ -20,19 +20,25 @@ export default function StatusDropdown({ story }) {
 
   const handleCheck = (event) => {
     // console.log(event.target.id)
-    let statusToChange
+    let statusToChange;
     switch (event.target.id) {
-      case 'copies sent':
-        statusToChange = 'copies_sent';
-        break;
       case 'upload photo':
         statusToChange = 'photo_uploaded';
+        break;
+      case 'upload graphic':
+        statusToChange = 'graphic_image_completed';
         break;
       case 'fact-check story':
         statusToChange = 'fact_check_completed';
         break;
-      case 'upload graphic':
-        statusToChange = 'graphic_image_completed';
+      case 'underwriting complete':
+        statusToChange = 'underwriter_completed';
+        break;
+      case 'socials posted':
+        statusToChange = 'socials_completed';
+        break;
+      case 'copies sent':
+        statusToChange = 'copies_sent';
         break;
       case 'make payments':
         statusToChange = 'payment_completed';
@@ -60,7 +66,7 @@ export default function StatusDropdown({ story }) {
     {
       name: 'upload photo',
       name_db: 'photo_uploaded',
-      status: story.photo_required,
+      status: true,
       complete: story.photo_uploaded,
     },
     {
@@ -78,10 +84,22 @@ export default function StatusDropdown({ story }) {
     {
       name: 'make payments',
       name_db: 'payment_completed',
-      status: payment_required,
+      status: story.payment_required,
       complete: story.payment_completed,
     },
-  ].filter(piece => piece.status)
+    {
+      name: 'socials posted',
+      name_db: 'socials_completed',
+      status: story.socials_required,
+      complete: story.socials_completed,
+    },
+    {
+      name: 'underwriting complete',
+      name_db: 'underwriter_required',
+      status: story.underwriter_required,
+      complete: story.underwriter_completed,
+    },
+  ].filter(piece => piece.status);
 
 
   /* 
@@ -118,7 +136,7 @@ export default function StatusDropdown({ story }) {
             >
               <FormControlLabel
                 label={piece.name}
-                control={<Checkbox id={piece.name} />}
+                control={<Checkbox id={piece.name} checked={piece.complete} />}
                 onChange={handleCheck}
               />
             </MenuItem>

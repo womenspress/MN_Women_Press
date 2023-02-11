@@ -22,7 +22,7 @@ export default function StoriesPage() {
   const history = useHistory();
 
   // redux variables
-  const allStories = useSelector(store => store.stories.allStories)
+  // const allStories = useSelector(store => store.stories.allStories)
   const currentStory = useSelector(store => store.stories.currentStory);
 
 
@@ -45,7 +45,7 @@ export default function StoriesPage() {
   // gets current story on page load (page persists on refresh)
   useEffect(() => {
     dispatch({ type: 'GET_CURRENT_STORY', payload: id })
-    dispatch({ type: 'GET_ALL_STORIES' })
+    // dispatch({ type: 'GET_ALL_STORIES' })
   }, [])
 
   // updates notes on DOM, checks status color, and refreshes task item states when current story changes
@@ -92,38 +92,30 @@ export default function StoriesPage() {
   const handleCheck = (event) => {
     // console.log(event.target.id)
     let statusToChange;
-    let statusValue;
     switch (event.target.id) {
       case 'copies sent':
         statusToChange = 'copies_sent';
-        statusValue = currentStory?.copies_sent ? false : true;
         break;
       case 'upload photo':
         statusToChange = 'photo_uploaded';
-        statusValue = currentStory?.photo_uploaded ? false : true;
         break;
       case 'fact-check story':
         statusToChange = 'fact_check_completed';
-        statusValue = currentStory?.fact_check_completed ? false : true;
         break;
       case 'upload graphic':
         statusToChange = 'graphic_image_completed';
-        statusValue = currentStory?.graphic_image_completed ? false : true;
         break;
       case 'make payments':
         statusToChange = 'payment_completed';
-        statusValue = currentStory?.payment_completed ? false : true;
         break;
       case 'underwriting complete':
         statusToChange = 'underwriter_completed';
-        statusValue = currentStory?.underwriter_completed ? false : true;
         break;
       case 'socials posted':
         statusToChange = 'socials_completed';
-        statusValue = currentStory?.socials_completed ? false : true;
         break;
     }
-    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })
+    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, story_id: currentStory.id } })
   }
 
   const displayFlex = {
@@ -147,7 +139,7 @@ export default function StoriesPage() {
           <Box component={Paper} p={1} m={1} sx={{ '&:hover': { cursor: 'pointer', backgroundColor: 'grey.200' } }}>
             <Typography fontWeight='bold'>{contact.name}</Typography>
             <Typography>{contact.email}</Typography>
-            <Typography>{contact.invoice_amount ? <>${contact.invoice_amount}, {contact.invoice_paid ? 'paid' : 'not paid'}</> : <Typography variant='body2'>payment not required</Typography>}</Typography>
+            <Typography>{contact.invoice_amount ? <>Payment Required: ${contact.invoice_amount}</> : <Typography variant='body2'>payment not required</Typography>}</Typography>
           </Box>
         </Grid>
       </Grid>
@@ -325,113 +317,124 @@ export default function StoriesPage() {
             {/* using the below grid to space the to-do list one item over */}
             <Grid item xs={1}><></></Grid>
 
-            {showTodo ?
+
+            <Grid item xs={11}>
+
+              <FormGroup>
+                <FormControlLabel
+                  label={`Photo Uploaded (${currentStory?.photo_submitted ? 'Submitted' : 'Assigned'})`}
+                  control={<Checkbox id={'upload photo'} checked={currentStory?.photo_uploaded} />}
+                  onChange={handleCheck}
+                />
+              </FormGroup>
+            </Grid>
+            {/* graphic image required? */}
+            {currentStory?.graphic_image_required ?
               <>
+                <Grid item xs={1}><></></Grid>
                 <Grid item xs={11}>
 
                   <FormGroup>
                     <FormControlLabel
-                      label={`Photo Uploaded (${currentStory?.photo_submitted ? 'Submitted' : 'Assigned'})`}
-                      control={<Checkbox id={'upload photo'} checked={currentStory?.photo_uploaded} />}
+                      label={'Graphic Image Uploaded'}
+                      control={<Checkbox id={'upload graphic'} checked={currentStory?.graphic_image_completed} />}
                       onChange={handleCheck}
                     />
                   </FormGroup>
                 </Grid>
+              </>
+              :
+              null
+            }
+            {/* fact check required? */}
+            {currentStory?.fact_check_required ?
+              <>
                 <Grid item xs={1}><></></Grid>
                 <Grid item xs={11}>
-                  {/* graphic image required? */}
-                  {currentStory?.graphic_image_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Graphic Image Uploaded'}
-                        control={<Checkbox id={'upload graphic'} checked={currentStory?.graphic_image_completed} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* fact check required? */}
-                  {currentStory?.fact_check_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Fact Checked'}
-                        control={<Checkbox id={'fact-check story'} checked={currentStory?.fact_check_completed} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* underwriter required? */}
-                  {currentStory?.underwriter_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Underwritten'}
-                        control={<Checkbox id={'underwriting complete'} checked={currentStory?.underwriter_completed} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* socials required? */}
-                  {currentStory?.socials_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Socials Posted'}
-                        control={<Checkbox id={'socials posted'} checked={currentStory?.socials_completed} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* payments required? */}
-                  {currentStory?.payment_required ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Payment(s) Sent'}
-                        control={<Checkbox id={'make payments'} checked={currentStory?.payment_completed} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
-                </Grid>
-                <Grid item xs={1}><></></Grid>
-                <Grid item xs={11}>
-                  {/* copies sent? */}
-                  {currentStory?.copies_required > 0 ?
-                    <FormGroup>
-                      <FormControlLabel
-                        label={'Copies sent, required: ' + (currentStory?.number_of_copies !== null ? currentStory?.number_of_copies : '')}
-                        control={<Checkbox id={'copies sent'} checked={currentStory?.copies_sent === undefined ? false : currentStory.copies_sent} />}
-                        onChange={handleCheck}
-                      />
-                    </FormGroup>
-                    :
-                    null
-                  }
+                  <FormGroup>
+                    <FormControlLabel
+                      label={'Fact Checked'}
+                      control={<Checkbox id={'fact-check story'} checked={currentStory?.fact_check_completed} />}
+                      onChange={handleCheck}
+                    />
+                  </FormGroup>
                 </Grid>
               </>
               :
-              <></>
+              null
             }
+            {/* underwriter required? */}
+            {currentStory?.underwriter_required ?
+              <>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
 
+                  <FormGroup>
+                    <FormControlLabel
+                      label={'Underwritten'}
+                      control={<Checkbox id={'underwriting complete'} checked={currentStory?.underwriter_completed} />}
+                      onChange={handleCheck}
+                    />
+                  </FormGroup>
+                </Grid>
+              </>
+              :
+              null
+            }
+            {/* socials required? */}
+            {currentStory?.socials_required ?
+              <>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+
+                  <FormGroup>
+                    <FormControlLabel
+                      label={'Socials Posted'}
+                      control={<Checkbox id={'socials posted'} checked={currentStory?.socials_completed} />}
+                      onChange={handleCheck}
+                    />
+                  </FormGroup>
+                </Grid>
+              </>
+              :
+              null
+            }
+            {/* payments required? */}
+            {currentStory?.payment_required ?
+              <>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+
+                  <FormGroup>
+                    <FormControlLabel
+                      label={'Payment(s) Sent'}
+                      control={<Checkbox id={'make payments'} checked={currentStory?.payment_completed} />}
+                      onChange={handleCheck}
+                    />
+                  </FormGroup>
+                </Grid>
+              </>
+              :
+              null
+            }
+            {/* copies sent? */}
+            {currentStory?.copies_required > 0 ?
+              <>
+                <Grid item xs={1}><></></Grid>
+                <Grid item xs={11}>
+
+                  <FormGroup>
+                    <FormControlLabel
+                      label={'Copies sent, required: ' + (currentStory?.number_of_copies !== null ? currentStory?.number_of_copies : '')}
+                      control={<Checkbox id={'copies sent'} checked={currentStory?.copies_sent === undefined ? false : currentStory.copies_sent} />}
+                      onChange={handleCheck}
+                    />
+                  </FormGroup>
+                </Grid>
+              </>
+              :
+              null
+            }
 
 
             {/* end to-do items */}

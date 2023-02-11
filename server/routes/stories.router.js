@@ -119,7 +119,7 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
 
   const connection = await pool.connect();
   try {
-    await connection.query('BEGIN;');
+    // await connection.query('BEGIN;');
     //**Step 1: get all details related to the current story
     let response = await connection.query(getDetailsQueryText, [id]);
     // set story response to a variable
@@ -152,16 +152,16 @@ router.get('/current/:id', rejectUnauthenticated, rejectUnauthorized, async (req
       }
     }
 
-      //5. Send modified array as response
-      // console.log('Response for individual story:', currentStoryDetails);
-      res.send(currentStoryDetails);
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    } finally {
-      connection.release();
-    }
+    //5. Send modified array as response
+    // console.log('Response for individual story:', currentStoryDetails);
+    res.send(currentStoryDetails);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  } finally {
+    connection.release();
   }
+}
 );
 
 /**
@@ -181,6 +181,9 @@ router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => 
     copies_sent,
     photo_uploaded,
     fact_check_completed,
+    fact_check_required,
+    graphic_image_completed,
+    graphic_image_required,
     payment_required,
     payment_completed,
     socials_required,
@@ -227,9 +230,10 @@ router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => 
   "socials_required","socials_completed","underwriter_required",
   "underwriter_completed","photo_submitted","photo_comments",
   "external_link","word_count",
-  "rough_draft_deadline","final_draft_deadline","publication_date", "copies_destination" )
+  "rough_draft_deadline","final_draft_deadline","publication_date", "copies_destination",
+  "fact_check_required", "graphic_image_completed", "graphic_image_required" )
   VALUES 
-  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)
+  ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29)
   RETURNING "id";`; //Return id of story
 
   //Database Query below
@@ -265,6 +269,9 @@ router.post('/', rejectUnauthenticated, rejectUnauthorized, async (req, res) => 
       final_draft_deadline, //24
       publication_date, //25
       copies_destination, //26
+      fact_check_required, //27
+      graphic_image_completed, // 28
+      graphic_image_required, // 29
     ]);
 
     //**Step 2: Set returning id to storyId variable
@@ -364,6 +371,10 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     payment_completed,
     photo,
     copies_required,
+    socials_required,
+    socials_completed,
+    underwriter_required,
+    underwriter_completed,
     tags,
     contacts,
     theme,
@@ -398,7 +409,7 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
 
     const deleteTagsPromise = connection.query(deleteTagsQuery, [id]);
     const deleteContactsPromise = connection.query(deleteContactsQuery, [id]);
-    const deleteThemePromise= connection.query(deleteThemeQuery, [id])
+    const deleteThemePromise = connection.query(deleteThemeQuery, [id])
 
     await Promise.all([deleteTagsPromise, deleteContactsPromise]);
 
@@ -409,8 +420,8 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
     "title" = $1, "subtitle"= $2, "article_text"= $3, "article_link"= $4, "notes"= $5, "type"= $6, "copies_sent"= $7, "photo_uploaded"= $8, 
     "fact_check_completed"= $9, "graphic_image_required"= $10, "external_link"= $11, "word_count"= $12, "rough_draft_deadline"= $13,
     "final_draft_deadline"= $14, "publication_date"= $15, "fact_check_required"= $16,"graphic_image_completed"= $17, "payment_required" = $18, 
-    "payment_completed" = $19, "photo" = $20, "copies_required" = $21
-    WHERE "id" = $22;`;
+    "payment_completed" = $19, "photo" = $20, "copies_required" = $21, "socials_required"= $22, "socials_completed"=$23, "underwriter_required" = $24, "underwriter_completed" = $25
+    WHERE "id" = $26;`;
 
     let updateStoryData = [
       title, //1
@@ -436,7 +447,11 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
       payment_completed, //19
       photo, // 20
       copies_required, //21
-      id, //22
+      socials_required,// 22
+      socials_completed, // 23
+      underwriter_required, //24
+      underwriter_completed, //25
+      id, //26
     ];
 
     await connection.query(updateStoryQueryText, updateStoryData);
@@ -476,7 +491,7 @@ router.put('/:id', rejectUnauthenticated, rejectUnauthorized, async (req, res) =
       return connection.query(attachThemeQuery, [id, theme.id])
     })
 
-    await Promise.all([...attachContactsPromise, ...attachTagsPromise,...attachThemePromises]);
+    await Promise.all([...attachContactsPromise, ...attachTagsPromise, ...attachThemePromises]);
 
     await connection.query('COMMIT');
     res.sendStatus(200);
@@ -547,16 +562,12 @@ router.put('/notes/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =
 //Router put for updating the status of checked box on the DOM
 router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
   const statusToChange = req.body.statusToChange;
-  const queryText = `UPDATE "story" SET "${statusToChange}"=$1 WHERE "id"=$2 RETURNING "${statusToChange}";`;
-  const queryParams = [req.body.statusValue, req.body.story_id];
-
-  console.log(queryText);
-  console.log('$1=' +  queryParams[0], ', $2='+queryParams[1]);
+  const queryText = `UPDATE "story" SET ${statusToChange} = NOT ${statusToChange} WHERE "id"=$1 RETURNING "${statusToChange}";`;
+  const queryParams = [req.body.story_id];
 
   pool
     .query(queryText, queryParams)
     .then((response) => {
-      console.log('response from /status/:id query: ', response)
       res.sendStatus(200);
     })
     .catch((err) => {

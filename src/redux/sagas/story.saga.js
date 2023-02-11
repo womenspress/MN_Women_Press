@@ -45,6 +45,13 @@ function* getCurrentStory(action) {
 // this function expects a contact object as action.payload
 function* createNewStory(action) {
   try {
+
+    if (action.payload.contacts[0]){
+      action.payload.payment_required = !!action.payload.contacts.filter(e => e.invoice_amount > 0);
+    } else {
+      action.payload.payment_required = false;
+    }
+
     yield axios.post('/api/stories', action.payload);
     yield put({ type: 'GET_ALL_STORIES' });
   } catch (error) {
@@ -55,6 +62,13 @@ function* createNewStory(action) {
 // receives entire story object
 function* editStory(action) {
   try {
+
+    if (action.payload.contacts[0]){
+      action.payload.payment_required = !!action.payload.contacts.filter(e => e.invoice_amount > 0);
+    } else {
+      action.payload.payment_required = false;
+    }
+
     yield axios.put(`/api/stories/${action.payload.id}`, action.payload);
     yield put({ type: 'GET_ALL_STORIES' });
     yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.id})

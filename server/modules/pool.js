@@ -29,6 +29,10 @@ else {
         host: 'localhost',
         port: 5432,
         database: 'mn_women_press_app',   // 	💥 Change this to the name of your database!
+        max: 5, // set pool max size to 20
+        idleTimeoutMillis: 1000, // close idle clients after 1 second
+        connectionTimeoutMillis: 1000, // return an error after 1 second if connection could not be established
+
     });
 }
 

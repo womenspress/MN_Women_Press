@@ -64,6 +64,20 @@ router.put('/edit/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) =>
 });
 
 
+router.post('/themestoryadd', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
+  console.log('/themestoryadd req.body:', req.body);
+  const {story_id, theme_id} = req.body;
+  const addThemeStoryQuery = 'INSERT INTO "theme_story" ("theme_id", "story_id") VALUES ($1,$2);'
+  pool.query(addThemeStoryQuery,[ theme_id,story_id]).then(() =>{
+    res.sendStatus(200);
+  }).catch((err) => {
+    console.log('error in add story_theme query: ', err)
+    res.sendStatus(500);
+  })
+
+
+})
+
 
 // router.get('/archive', (req, res) => {
 //   // GET route code here

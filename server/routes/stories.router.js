@@ -557,7 +557,7 @@ router.put('/status/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) 
   pool
     .query(queryText, queryParams)
     .then((response) => {
-      console.log('response from /status/:id query: ', response)
+      // console.log('response from /status/:id query: ', response)
       res.sendStatus(200);
     })
     .catch((err) => {

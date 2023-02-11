@@ -92,38 +92,30 @@ export default function StoriesPage() {
   const handleCheck = (event) => {
     // console.log(event.target.id)
     let statusToChange;
-    let statusValue;
     switch (event.target.id) {
       case 'copies sent':
         statusToChange = 'copies_sent';
-        statusValue = currentStory?.copies_sent ? false : true;
         break;
       case 'upload photo':
         statusToChange = 'photo_uploaded';
-        statusValue = currentStory?.photo_uploaded ? false : true;
         break;
       case 'fact-check story':
         statusToChange = 'fact_check_completed';
-        statusValue = currentStory?.fact_check_completed ? false : true;
         break;
       case 'upload graphic':
         statusToChange = 'graphic_image_completed';
-        statusValue = currentStory?.graphic_image_completed ? false : true;
         break;
       case 'make payments':
         statusToChange = 'payment_completed';
-        statusValue = currentStory?.payment_completed ? false : true;
         break;
       case 'underwriting complete':
         statusToChange = 'underwriter_completed';
-        statusValue = currentStory?.underwriter_completed ? false : true;
         break;
       case 'socials posted':
         statusToChange = 'socials_completed';
-        statusValue = currentStory?.socials_completed ? false : true;
         break;
     }
-    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, statusValue: statusValue, story_id: currentStory.id } })
+    dispatch({ type: 'UPDATE_STORY_STATUS', payload: { statusToChange: statusToChange, story_id: currentStory.id } })
   }
 
   const displayFlex = {

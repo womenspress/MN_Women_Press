@@ -81,6 +81,7 @@ function* updateStoryStatus(action) {
   try{
     yield axios.put(`/api/stories/status/${action.payload.story_id}`, action.payload);
     yield put({type: 'GET_CURRENT_STORY', payload: action.payload.story_id});
+    yield put({ type: 'GET_ALL_STORIES'});
   }
   catch(error){
     console.log('error in updateStoryStatus saga:', error)

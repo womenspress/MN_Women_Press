@@ -11,7 +11,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import Box from '@mui/material/Box';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Autocomplete, TextField } from '@mui/material';
 import { useEffect } from 'react';
 
 export default function AddStoryToTheme({theme, options})  {
@@ -35,8 +35,8 @@ export default function AddStoryToTheme({theme, options})  {
     };
 
     const addStoryToTheme = () => {
-        console.log(`Convert to DISPATCH. story_id:${storyChoice}, theme_id:${theme.id}`);
-        dispatch({ type: 'THEME_STORY_ADD', payload: {story_id: storyChoice, theme_id: theme.id} });
+        console.log(`Convert to DISPATCH. story_id:${storyChoice.id}, theme_id:${theme.id}`);
+        dispatch({ type: 'THEME_STORY_ADD', payload: {story_id: storyChoice.id, theme_id: theme.id} });
         dispatch({ type: 'GET_ALL_THEMES' });
         dispatch({ type: 'GET_ALL_CONTACTS' });
         dispatch({ type: 'GET_ALL_STORIES' });
@@ -58,48 +58,46 @@ export default function AddStoryToTheme({theme, options})  {
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-            {`Do you want to add a story to ${theme.name}`}
+            {`Add a story to ${theme.name}`}
             </DialogTitle>
-            <DialogTitle id="alert-dialog-title">
-            {`ID: ${theme.id}`}{`story to add:${storyChoice}`}
-            </DialogTitle>
+            {/* <DialogTitle id="alert-dialog-title">
+            {`ID: ${theme.id}`}{`story to add:${storyChoice.id}`}
+            </DialogTitle> */}
             {/* <DialogTitle id="alert-dialog-title">
             {JSON.stringify(options)}
             </DialogTitle> */}
-            <DialogContent>
+            {/* <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                     Search using title, subtitle, author, ...
                 </DialogContentText>
-            </DialogContent>
-            <FormControl fullWidth>
-                <InputLabel placeholder="theme-story-select">Find a Story</InputLabel>
+            </DialogContent> */}
+            {/* <FormControl fullWidth>
+                <InputLabel style={{maxHeight: 50}} placeholder="theme-story-select">Find a Story</InputLabel>
                 <Select
                     id="theme-story-select"
-                    value={storyChoice.id}
+                    //value={storyChoice.id}
                     //label=""
                     onChange={handleStoryChange}
                 >
-                    {/* <MenuItem>Placeholder</MenuItem> */}
+                    <MenuItem>Placeholder</MenuItem>
                     {options.map((option) => (
                         <MenuItem value={option.id}>
                             {option.label}
                         </MenuItem>
 
                     ))}
-                    
+
                 </Select>
-            </FormControl>
-            <Box>
-                <Box sx={{ display: 'flex' }}>
-                    {/* <Autocomplete
-                    size='small'
-                    sx={{ width: 200 }}
-                    options={storyOptions}
-                    renderInput={(params) => <TextField {...params} size='small' label='story' />}
-                    value={contactToAdd}
-                    /> */}
-                </Box>
-            </Box>
+            </FormControl> */}
+            <Autocomplete
+                        //disablePortal
+                        onChange={(event, newValue) => { setStoryChoice(newValue)}}
+                        //id="valuebox"
+                        value={storyChoice}
+                        options={options}
+                        sx={{ width: 600 }}
+                        renderInput={(params) => <TextField {...params} label="Stories" />}
+                    />
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
                 <Button onClick={addStoryToTheme} autoFocus>

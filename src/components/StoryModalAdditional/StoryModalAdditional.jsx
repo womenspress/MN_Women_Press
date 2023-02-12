@@ -11,7 +11,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
+// internal
+import { autofill2 } from '../../autofill'
 
 export default function StoryModalAdditional(props) {
   const { setModalOpen, setStep, createMode } = props;
@@ -138,7 +139,8 @@ export default function StoryModalAdditional(props) {
         {/* <pre> {JSON.stringify(inputValues, null, 2)}</pre> */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }} >
           <Box></Box>
-          <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
+          {/* //! ---------------- autofill 2 -------------------------- */}
+          <Typography variant='h4' onClick = {()=>setInputValues(autofill2)}>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
           <CloseIcon
             onClick={handleClose}
             sx={{
@@ -261,7 +263,7 @@ export default function StoryModalAdditional(props) {
 
           </Grid>
 
-          <Divider variant = 'middle' />
+          <Divider variant='middle' />
           {/* more options */}
           <Grid item xs={2}>
             <Typography sx={{ textAlign: 'right', marginRight: 3 }}>additional</Typography>

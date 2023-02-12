@@ -22,9 +22,11 @@ import ContactSearchCard from '../../assets/ContactSearchCard/ContactSearchCard'
 import TagSearchCard from '../../assets/TagSearchCard/TagSearchCard';
 import ThemeSearchCard from '../../assets/ThemeSearchCard/ThemeSearchCard';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Modal from '@mui/material/Modal';
+
+// internal
+import {autofill1, autofill2} from '../../autofill'
 
 const style = {
   position: 'absolute',
@@ -207,6 +209,10 @@ export default function StoryModalGeneral(props) {
     setStep('additional');
   };
 
+//* =========================== autofill data for presentation ============================
+
+
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
       <Box>
@@ -222,7 +228,10 @@ export default function StoryModalGeneral(props) {
         {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }} >
           <Box></Box>
-          <Typography variant="h4">
+          {/* //! --------------- autofill 1 ------------------ */}
+          <Typography 
+          variant="h4"
+          onClick = {()=>setInputValues(autofill1)}>
             {createMode ? 'New Story - general' : 'Edit Story - general'}
           </Typography>
           <CloseIcon

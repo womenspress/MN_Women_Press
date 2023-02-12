@@ -3,71 +3,39 @@ import { useHistory, } from 'react-router-dom';
 import './LandingPage.css';
 
 
-// temporary for Paolo testing
-// import ContactListItem from '../../components/ContactListItem/ContactListItem';
-// import {contact} from '../../sampleData'
-
 // CUSTOM COMPONENTS
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
-import {Box, Typography} from '@mui/material'
+import { Box, Typography, Button, Paper } from '@mui/material'
 
 function LandingPage() {
-  const [heading, setHeading] = useState('Welcome');
   const history = useHistory();
 
-  const onLogin = (event) => {
-    history.push('/login');
-  };
+  const toRegister = () =>{
+    history.push('/register')
+  }
 
   return (
-    <Box className="container">
+    <Box className="container" bgcolor = 'grey.100' sx = {{width: 550, margin: 'auto'}}>
       {/* <ContactListItem contact={contact}/> */}
-      <Typography variant = 'h2'>heading</Typography>
-      <div className="grid">
-        <div className="grid-col grid-col_8">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            id felis metus. Vestibulum et pulvinar tortor. Morbi pharetra lacus
-            ut ex molestie blandit. Etiam et turpis sit amet risus mollis
-            interdum. Suspendisse et justo vitae metus bibendum fringilla sed
-            sed justo. Aliquam sollicitudin dapibus lectus, vitae consequat odio
-            elementum eget. Praesent efficitur eros vitae nunc interdum, eu
-            interdum justo facilisis. Sed pulvinar nulla ac dignissim efficitur.
-            Quisque eget eros metus. Vestibulum bibendum fringilla nibh a
-            luctus. Duis a sapien metus.
-          </p>
-
-          <p>
-            Praesent consectetur orci dui, id elementum eros facilisis id. Sed
-            id dolor in augue porttitor faucibus eget sit amet ante. Nunc
-            consectetur placerat pharetra. Aenean gravida ex ut erat commodo, ut
-            finibus metus facilisis. Nullam eget lectus non urna rhoncus
-            accumsan quis id massa. Curabitur sit amet dolor nisl. Proin
-            euismod, augue at condimentum rhoncus, massa lorem semper lacus, sed
-            lobortis augue mi vel felis. Duis ultrices sapien at est convallis
-            congue.
-          </p>
-
-          <p>
-            Fusce porta diam ac tortor elementum, ut imperdiet metus volutpat.
-            Suspendisse posuere dapibus maximus. Aliquam vitae felis libero. In
-            vehicula sapien at semper ultrices. Vivamus sed feugiat libero. Sed
-            sagittis neque id diam euismod, ut egestas felis ultricies. Nullam
-            non fermentum mauris. Sed in enim ac turpis faucibus pretium in sit
-            amet nisi.
-          </p>
-        </div>
-        <div className="grid-col grid-col_4">
-          {/* <RegisterForm /> */}
-
-          <center>
-            <h4>Already a Member?</h4>
-            <button className="btn btn_sizeSm" onClick={onLogin}>
-              Login
-            </button>
-          </center>
-        </div>
-      </div>
+      <Paper sx={{ width: 450, margin: 'auto', paddingY: 3, paddingX: 5 }}>
+        <Typography variant='h2' sx={{ textAlign: 'center', marginBottom: 3 }}>Welcome!</Typography>
+        <Typography variant='body1'><b>MN Women's Press Content Manager</b> is a full-stack desktop web application designed to streamline the pipeline of stories from ideation to publication and serve as a repository for contacts, themes, and archived stories for the MN Women's Press.
+        </Typography>
+        <br />
+        <Typography>To start, create a profile by <b>registering</b> below. You will have to wait for permission from an existing user before you can then access the database.</Typography>
+        <br />
+        <Typography>Application designed and written by Josh Clemons, Anthony Dampier, Paolo Debuque, Brett Gebbie, and Victoria Mertens of Prime Digital Academy's Shawl cohort.</Typography>
+        <br />
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Button
+            sx={{ textTransform: 'none' }}
+            size='large'
+            variant='contained'
+            onClick= {toRegister}
+          >register</Button>
+        </Box>
+      </Paper>
+      
     </Box>
   );
 }

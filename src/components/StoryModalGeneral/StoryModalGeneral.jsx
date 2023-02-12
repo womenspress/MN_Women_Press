@@ -183,11 +183,15 @@ export default function StoryModalGeneral(props) {
         type: 'CREATE_NEW_STORY',
         payload: { ...currentStory, ...inputValues },
       });
-    else
+    else{
       dispatch({
         type: 'EDIT_STORY',
         payload: { ...currentStory, ...inputValues },
       });
+      dispatch({ type: 'GET_ALL_THEMES' });
+      dispatch({ type: 'GET_ALL_CONTACTS' });
+      dispatch({ type: 'GET_ALL_STORIES' });
+    }
     setModalOpen(false);
   };
 

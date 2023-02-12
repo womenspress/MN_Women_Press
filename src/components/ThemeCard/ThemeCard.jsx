@@ -27,9 +27,18 @@ export default function BasicCard(props) {
   let description = props.theme.description;
   let month = props.theme.month;
   let year = props.theme.year;
-  let stories = props.theme.stories
-  let contacts = props.theme.contacts
+  let stories = filterNullStories(props.theme.stories);
+  let contacts = filterNullContacts(props.theme.contacts);
 
+  // filter null values from stories & story contact, and story contact object information
+  function filterNullContacts(contacts){
+    return contacts.filter(x => x != null && x.id != null);
+  }
+
+  function filterNullStories(stories){
+    return stories.filter(x => x != null && x.id != null);
+  }
+    
   const [modalOpen, setModalOpen] = useState(false)
 
   return (

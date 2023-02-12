@@ -21,6 +21,7 @@ import StoryCreateEditModal from '../StoryCreateEditModal/StoryCreateEditModal';
 
 // styling
 import { largeModal, mainContentBox } from '../../__style'
+import { FolderZip } from '@mui/icons-material';
 
 
 export default function ThemeModal(props) {
@@ -34,8 +35,18 @@ export default function ThemeModal(props) {
   const storiesIds = stories ? stories?.map(story => story?.id) : [];
   const allContacts = useSelector(store => store.contacts.allContacts);
   const allStories = useSelector(store => store.stories.allStories);
-  const [contactToAdd, setContactToAdd] = useState({ id: 0, label: '' });
   const themeStoriesArray = stories || [];
+
+  const zipStoryArray = themeStoriesArray.map(story => {
+    console.log(story);
+    if(!story || story === null){ return }
+    for(let newStory of allStories){
+      if(story?.id === newStory.id){
+        return newStory;
+      }
+    }
+  })
+
 
 
   // story options: all available stories that are not already in the theme, bundled up for rendering in the autocomplete
@@ -170,15 +181,6 @@ export default function ThemeModal(props) {
           return arr
       }
     }
-
-      const zipStoryArray = themeStoriesArray.map(story => {
-        for(let newStory of allStories){
-          if(story.id === newStory.id){
-            return newStory;
-          }
-        }
-      }
-    )
 
     const storyResults = ascDesc(sortResults(searchResults(zipStoryArray)))
 

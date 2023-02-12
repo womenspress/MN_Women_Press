@@ -96,6 +96,7 @@ export default function StoryModalAdditional(props) {
   const handleSubmit = () => {
     console.log('saved and submitted');
     dispatch({ type: 'CLEAR_TEMP_STORY' });
+    setStep('general');
     if (createMode)
       dispatch({
         type: 'CREATE_NEW_STORY',

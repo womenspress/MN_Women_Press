@@ -136,9 +136,9 @@ export default function StoryModalAdditional(props) {
 
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%', overflowY: 'scroll', overflowX: 'scroll'}}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%',}}>
       <Box>
-       {JSON.stringify(inputValues)}
+       {/* {JSON.stringify(inputValues)} */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }} >
           <Box></Box>
           {/* //! ---------------- autofill 2 -------------------------- */}

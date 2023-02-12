@@ -1,4 +1,4 @@
-import {DateTime} from 'luxon';
+import { DateTime } from 'luxon';
 
 
 //* step 1: initial ideation. just title, notes, and tag
@@ -36,7 +36,7 @@ export const autofill1 = {
   publication_date: DateTime.now().toISO(),
   contacts: [],
   theme: [],
-  tags: [{id: 7, name: 'Technology', description: ''}],
+  tags: [{ id: 7, name: 'Technology', description: '' }],
 };
 
 //* step 2: go ahead with story. assign theme and dates
@@ -70,9 +70,9 @@ export const autofill2 = {
   external_link: '',
   word_count: 500,
   date_added: '',
-  rough_draft_deadline: DateTime.fromObject({day: 1, month: 8, year: 2023}).toISO(),
-  final_draft_deadline: DateTime.fromObject({day: 15, month: 8, year: 2023}).toISO(),
-  publication_date: DateTime.fromObject({day: 1, month: 9, year: 2023}).toISO(),
+  rough_draft_deadline: DateTime.fromObject({ day: 1, month: 8, year: 2023 }).toISO(),
+  final_draft_deadline: DateTime.fromObject({ day: 15, month: 8, year: 2023 }).toISO(),
+  publication_date: DateTime.fromObject({ day: 1, month: 9, year: 2023 }).toISO(),
   contacts: [],
   theme: [{
     id: 9,
@@ -80,10 +80,28 @@ export const autofill2 = {
     month_year: DateTime.fromISO('2023-09-01T05:00:00.000Z'),
     description: 'The ways our work lives are shifting — including the role of labor unions, anti-racist movements in the workplace, and changing family leave practices. Special sections: Directory, Elder, Travel & Adventure'
   }],
-  tags: [{id: 7, name: 'Technology', description: ''}],
+  tags: [{ id: 7, name: 'Technology', description: '' }],
 };
 
-//* step 3: story is set. assign contacts. no autofill here.
+//* step 3: story is set. assign contacts. 
+
+export const autofillContact = {
+  "name": "Victoria Mertens",
+  "pronouns": "she/her",
+  "expertise": "Full-stack software engineer, Prime Digital Academy graduate",
+  "email": "victoria.mertens44@gmail.com",
+  "phone": "",
+  "billing_address": "",
+  "mailing_address": "",
+  "bio": "",
+  "note": "",
+  "linkedIn": "",
+  "twitter": "",
+  "instagram": "",
+  "facebook": "",
+  "tags": [],
+  "roles": []
+}
 
 export const autofill3 = {
   id: '',
@@ -98,6 +116,8 @@ export const autofill3 = {
   number_of_copies: null,
   copies_sent: false,
   photo_uploaded: false,
+  graphic_image_required: false,
+  graphic_image_completed: false,
   fact_check_required: true,
   fact_check_completed: false,
   payment_required: false,
@@ -111,13 +131,9 @@ export const autofill3 = {
   external_link: '',
   word_count: 500,
   date_added: '',
-  socials_required: false,
-  socials_completed: false,
-  underwriter_required: false,
-  underwriter_completed: false,
-  rough_draft_deadline: DateTime.fromObject({day: 1, month: 8, year: 2023}).toISO(),
-  final_draft_deadline: DateTime.fromObject({day: 15, month: 8, year: 2023}).toISO(),
-  publication_date: DateTime.fromObject({day: 1, month: 9, year: 2023}).toISO(),
+  rough_draft_deadline: DateTime.fromObject({ day: 1, month: 8, year: 2023 }).toISO(),
+  final_draft_deadline: DateTime.fromObject({ day: 15, month: 8, year: 2023 }).toISO(),
+  publication_date: DateTime.fromObject({ day: 1, month: 9, year: 2023 }).toISO(),
   contacts: [],
   theme: [{
     id: 9,
@@ -125,7 +141,7 @@ export const autofill3 = {
     month_year: DateTime.fromISO('2023-09-01T05:00:00.000Z'),
     description: 'The ways our work lives are shifting — including the role of labor unions, anti-racist movements in the workplace, and changing family leave practices. Special sections: Directory, Elder, Travel & Adventure'
   }],
-  tags: [{id: 7, name: 'Technology', description: ''}],
+  tags: [{ id: 7, name: 'Technology', description: '' }],
 };
 
 //* step 4: 

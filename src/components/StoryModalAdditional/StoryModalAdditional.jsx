@@ -15,7 +15,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { autofill2 } from '../../autofill'
 
 export default function StoryModalAdditional(props) {
-  const { setModalOpen, setStep, createMode } = props;
+  const { setModalOpen, setStep, createMode, setCreateMode } = props;
 
   const dispatch = useDispatch();
 
@@ -96,6 +96,7 @@ export default function StoryModalAdditional(props) {
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
+    setStep('general')
     dispatch({ type: 'CLEAR_TEMP_STORY' });
     if (createMode)
       dispatch({

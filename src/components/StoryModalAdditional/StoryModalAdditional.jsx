@@ -14,7 +14,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 export default function StoryModalAdditional(props) {
-  const { setModalOpen, setStep, createMode } = props;
+  const { setModalOpen, setStep, createMode, setCreateMode } = props;
 
   const dispatch = useDispatch();
 
@@ -96,6 +96,7 @@ export default function StoryModalAdditional(props) {
   const handleSubmit = () => {
     console.log('saved and submitted');
     dispatch({ type: 'CLEAR_TEMP_STORY' });
+    setStep('general');
     if (createMode)
       dispatch({
         type: 'CREATE_NEW_STORY',

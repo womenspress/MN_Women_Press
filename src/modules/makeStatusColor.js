@@ -11,7 +11,7 @@ export function makeStatusColor(story) {
   // console.log('publication date', story)
 
   const hasAuthor = !!story.contacts?.filter(contact => contact?.story_association === 'author').length
-  // console.log('author?', hasAuthor, story.contacts)
+  console.log('author?', hasAuthor, story.contacts)
 
   const paymentRequired = !!story.contacts?.filter(contact => contact?.invoice_amount > 0).length
   // console.log('payment required?', paymentRequired)
@@ -83,9 +83,9 @@ export function makeStatusColor(story) {
 
   // need to add deadlines and author to progress from red to yellow
   if ((story.final_draft_deadline === story.rough_draft_deadline) && (story.final_draft_deadline === story.publication_date) && !piecesReady) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
-  if (story.publication_date < DateTime.now().toISO()) return { color: 'grey', notes: 'story is complete and past' }
-  if (!story.rough_draft_deadline || !story.final_draft_deadline || !story.publication_date || !hasAuthor) return { color: 'red', notes: 'story is missing deadlines or an author' }
+  if (story.rough_draft_deadline=== story.date_added || story.final_draft_deadline === story.date_added || story.publication_date === story.date_added || !hasAuthor) return { color: 'red', notes: 'story is missing deadlines or an author' }
   if (!piecesReady) return { color: 'yellow', notes: 'story has key info ready but is missing some to-do tasks' }
+  if (story.publication_date < DateTime.now().toISO() && piecesReady) return { color: 'grey', notes: 'story is complete and past' }
   if (piecesReady) return { color: 'green', notes: 'story is ready to publish!' }
 
   return { color: 'purple', notes: 'ummm something went wrong...' }

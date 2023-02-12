@@ -114,6 +114,7 @@ export default function StoryModalAdditional(props) {
   const handleClose = () => {
     setModalOpen(false);
     setCreateMode(true);
+    setStep('general')
     dispatch({ type: 'CLEAR_TEMP_STORY' });
   };
 
@@ -135,9 +136,9 @@ export default function StoryModalAdditional(props) {
 
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%', overflowY: 'scroll', overflowX: 'scroll'}}>
       <Box>
-        {/* <pre> {JSON.stringify(inputValues, null, 2)}</pre> */}
+       {JSON.stringify(inputValues)}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }} >
           <Box></Box>
           {/* //! ---------------- autofill 2 -------------------------- */}

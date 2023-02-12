@@ -25,8 +25,8 @@ function RegisterForm() {
   const formStyle = {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent:'center',
-    alignItems:'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 
   const loginStyle = {
@@ -43,48 +43,46 @@ function RegisterForm() {
   };
 
   return (
-<Container>
-      <Paper sx={loginStyle}>
-        <Box
-          component='form'
-          sx={formStyle}
-          className="formPanel"
-          onSubmit={registerUser}>
-          <Typography variant='h3'>Welcome!</Typography>
-          <Typography textAlign='center' variant='body1'>enter a username and password to create your account</Typography>
-          {errors.registrationMessage && (
-            <h3 className="alert" role="alert">
-              {errors.registrationMessage}
-            </h3>
-          )}
-          <Box>
-            <TextField
-              type="text"
-              name="username"
-              size='small'
-              label='username'
-              value={username}
-              sx={{ width: 150, marginX: 'auto', marginY: 1 }}
-              required
-              onChange={(event) => setUsername(event.target.value)}
+    <Container>
+      <Box
+        component='form'
+        sx={{ ...formStyle, bgcolor: 'white', marginTop: 4 }}
+        className="formPanel"
+        onSubmit={registerUser}>
+        <Typography variant='h4' gutterBottom>register</Typography>
+        <Typography textAlign='center' variant='body1' gutterBottom sx = {{marginX: 6}}>enter a username and password to create your account</Typography>
+        {errors.registrationMessage && (
+          <h3 className="alert" role="alert">
+            {errors.registrationMessage}
+          </h3>
+        )}
+        <Box>
+          <TextField
+            type="text"
+            name="username"
+            size='small'
+            label='username'
+            value={username}
+            sx={{ width: 150, marginX: 'auto', marginY: 1 }}
+            required
+            onChange={(event) => setUsername(event.target.value)}
 
-            />
-          </Box>
-          <Box>
-            <TextField
-              type="password"
-              label='password'
-              name="password"
-              size='small'
-              value={password}
-              sx={{ width: 150, marginX: 'auto', marginY: 1 }}
-              required
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </Box>
-          <Button type='submit'>Register</Button>
+          />
         </Box>
-      </Paper>
+        <Box>
+          <TextField
+            type="password"
+            label='password'
+            name="password"
+            size='small'
+            value={password}
+            sx={{ width: 150, marginX: 'auto', marginY: 1 }}
+            required
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </Box>
+        <Button type='submit'>Register</Button>
+      </Box>
     </Container>
 
 

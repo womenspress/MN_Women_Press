@@ -14,7 +14,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 export default function StoryModalAdditional(props) {
-  const { setModalOpen, setStep, createMode } = props;
+  const { setModalOpen, setStep, createMode, setCreateMode } = props;
 
   const dispatch = useDispatch();
 

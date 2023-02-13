@@ -18,7 +18,7 @@ import ListTags from '../ListTags/ListTags';
 import { largeModal, smallModal } from '../../__style';
 
 
-export default function ContactListItem({contact, numOfTagsToDisplay}) {
+export default function ContactListItem({ contact, numOfTagsToDisplay }) {
 
   const history = useHistory()
   const dispatch = useDispatch();
@@ -90,7 +90,7 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
   }
 
   return (
-    <Paper sx={{ paddingX: 1, marginY: .5, height: "fit-content"}}>
+    <Paper sx={{ paddingX: 1, marginY: .5, height: "fit-content" }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: .35 }}>
           <IconButton
@@ -98,20 +98,20 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
             onClick={() => setDetailsOpen(!detailsOpen)}>
             {detailsOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
           </IconButton>
-          <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
-          <Typography>{contact.pronouns}</Typography>
+          <Typography sx={{ marginRight: 1, fontWeight: '500' }}>{contact.name}</Typography>
+          <Typography sx = {{fontSize: 14, color: 'grey.800' }}>{contact.pronouns}</Typography>
         </Box>
-        <Box sx={{width: .3, height: .50 }}>
+        <Box sx={{ width: .3, height: .50 }}>
           <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
-          <Typography sx={{ ml: 1 }}>
+          <Typography sx={{ ml: 1, fontSize: 14, color: 'grey.800' }}>
             {contact.roles[0]?.name}
           </Typography>
           {contact.roles[1] &&
             <>
-              <Typography>•</Typography>
-              <Typography sx={{ mr: 1 }}>
+              <Typography sx={{ fontSize: 14, color: 'grey.800' }}>•</Typography>
+              <Typography sx={{ mr: 1, fontSize: 14, color: 'grey.800' }}>
                 {contact.roles[1].name}
               </Typography>
             </>}
@@ -179,7 +179,7 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
       >
         <Box
           sx={{ ...smallModal, height: 70, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>
-          <Typography variant='h6' sx={{ fontSize: 16 }}>delete this story?</Typography>
+          <Typography variant='h6' sx={{ fontSize: 16 }}>delete this contact?</Typography>
           <Typography variant='body2' sx={{ fontSize: 13 }}>this action can't be undone</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button onClick={handleDelete}>delete</Button>

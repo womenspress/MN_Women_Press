@@ -21,8 +21,8 @@ export default function ContactsPage() {
 
 
   //* ===================== SORT/FILTER/SEARCH ===============================
-  const sortOptions = ['date added', 'name', 'last contribution']
-  const [sortMethod, setSortMethod] = useState('date added');
+  const sortOptions = ['name','date added',  'last contribution']
+  const [sortMethod, setSortMethod] = useState('name');
   const [sortDirection, setSortDirection] = useState('ascending')
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -90,9 +90,6 @@ export default function ContactsPage() {
     }
 
   }
-
-
-
 
   const contactResults = sortResults(ascDesc(searchResults(contacts)))
 

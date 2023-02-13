@@ -10,6 +10,7 @@ import { DateTime } from 'luxon'
 export function makeStatusColor(story) {
   // console.log('publication date', story)
 
+
   const hasAuthor = !!story.contacts?.filter(contact => contact?.story_association === 'author').length
   // console.log('author?', hasAuthor, story.contacts)
 

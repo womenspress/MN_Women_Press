@@ -24,7 +24,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // internal
 import { largeModal, smallModal } from '../../__style';
-import { makeStatusColor } from '../../modules/makeStatusColor';
 import ListTags from '../ListTags/ListTags';
 
 /* 
@@ -63,10 +62,8 @@ export default function StoryListItem(props) {
 
   // console.log('story list item, story:', story)
 
-  const statusColor = makeStatusColor(story)
-
   const statusStyle = {
-    bgcolor: story.statusColor.color,
+    bgcolor: story.statusColor?.color || 'black',
     width: 16,
     height: 16,
     minWidth: 16,
@@ -126,9 +123,12 @@ export default function StoryListItem(props) {
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
           <Grid item xs={7}>
             <Box sx={{ display: 'flex', alignItems: 'center', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {story.statusColor?
               <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
+              :
+              <></>}
               <IconButton
                 size='small'
                 onClick={() => setCollapseOpen(!collapseOpen)}>

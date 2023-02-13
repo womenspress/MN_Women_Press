@@ -15,7 +15,7 @@ import ContactListItem from '../ThemeContactListItem/ThemeContactListItem';
 
 export default function ThemeArchive() {
 
-  const [selectedTheme, setSelectedTheme] = useState({})
+
 
   const sortOptions = ['date published', 'title',]
   const [sortMethod, setSortMethod] = useState('date published');
@@ -26,7 +26,24 @@ export default function ThemeArchive() {
   const searchByOptions = ['all', 'theme name', 'contact name', 'story title', 'description']
 
   const allThemes = useSelector(store => store.themes.allThemes).filter(theme => theme.name != ' ');
+  const [selectedTheme, setSelectedTheme] = useState({stories: []})
+  console.log(allThemes[0]);
   const archiveThemes = Array.isArray(allThemes) && allThemes.length ? allThemes.filter(theme => Date.parse(theme.month_year) < DateTime.now()) : [];
+  const allStories = useSelector(store => store.stories.allStories);
+  console.log('allStories', allStories);
+  const selectedThemeStories = allStories;
+  console.log(selectedThemeStories);
+
+  const zipStoryArraysOfSelectedTheme = selectedTheme.stories.map(story => {
+    console.log(story);
+    if(!story || story === null){return}
+    for(let newStory of allStories){
+      if(story?.id === newStory.id){
+        console.log(newStory);
+        return newStory
+      }
+    }
+  })
 
 
   const sortResults = (arr) => {
@@ -118,7 +135,7 @@ export default function ThemeArchive() {
           {selectedTheme &&
             <Box>
               <Typography variant='h6'>stories</Typography>
-              {selectedTheme.stories?.map(story => {
+              {selectedTheme != {} && zipStoryArraysOfSelectedTheme.map(story => {
                 return (
                   <StoryListItem key={story.title} story={story} />
                 )

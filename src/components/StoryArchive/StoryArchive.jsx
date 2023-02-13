@@ -21,7 +21,7 @@ export default function StoryArchive() {
   const allStories = useSelector(store => store.stories.allStories)
   // console.log('all stories: ', allStories)
 
-  const archiveStories = allStories.length ? allStories.filter(story => DateTime.fromISO(story.publication_date) < DateTime.now() && DateTime.fromISO(story.publication_date) > DateTime.fromISO(story.rough_draft_deadline)) : [];
+  const archiveStories = allStories.length ? allStories.filter(story => story.statusColor.color === 'grey') : [];
 
   // console.log('archiveStories[0].publication_date', archiveStories[0]?.publication_date);
   // console.log('archiveStories[0].publication_date past?', DateTime.fromISO(archiveStories[0]?.publication_date)< DateTime.now())

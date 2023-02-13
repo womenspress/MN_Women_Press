@@ -108,9 +108,9 @@ export default function ThemeArchive() {
       </Box>
       <Grid container spacing={1}>
         <Grid item xs={4} sx={{ height: 600, overflow: 'hidden', overflowY: 'scroll' }}>
-          {themeResults?.map(theme => {
+          {themeResults?.map((theme, index) => {
             return (
-              <ArchiveThemeCard key={theme.name} theme={theme} setSelectedTheme={setSelectedTheme} />
+              <ArchiveThemeCard key={index} theme={theme} setSelectedTheme={setSelectedTheme} />
             )
           })}
         </Grid>

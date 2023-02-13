@@ -109,7 +109,10 @@ export default function StoryListItem(props) {
   }
 
   const handleDelete = () => {
-    dispatch({ type: 'DELETE_STORY', payload: story.id })
+    dispatch({ type: 'DELETE_STORY', payload: story.id });
+    dispatch({ type: 'GET_ALL_THEMES' });
+    dispatch({ type: 'GET_ALL_CONTACTS' });
+    dispatch({ type: 'GET_ALL_STORIES' });
     setDeleteOpen(false)
   }
 

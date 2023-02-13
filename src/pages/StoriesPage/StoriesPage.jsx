@@ -59,7 +59,7 @@ export default function StoriesPage() {
   //* ============ SORT/FILTER/SEARCH STUFF ===============
 
   const sortOptions = ['date added', 'title', 'status']
-  const [sortMethod, setSortMethod] = useState('date added');
+  const [sortMethod, setSortMethod] = useState('status');
   const [sortDirection, setSortDirection] = useState('ascending')
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -87,8 +87,8 @@ export default function StoriesPage() {
       case 'status':
         const statusArr = ['grey.100', 'red', 'yellow', 'green', 'grey']
         return arr.sort((a, b) => {
-          if (statusArr.indexOf(a.statusColor.color) > statusArr.indexOf(b.statusColor.color)) return 1
-          if (statusArr.indexOf(a.statusColor.color) < statusArr.indexOf(b.statusColor.color)) return -1
+          if (statusArr.indexOf(a.statusColor.color) > statusArr.indexOf(b.statusColor.color)) return -1
+          if (statusArr.indexOf(a.statusColor.color) < statusArr.indexOf(b.statusColor.color)) return 1
           return 0
         })
       default:
@@ -125,7 +125,10 @@ export default function StoriesPage() {
       case 'tag':
         return allStories.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()))
       case 'all':
-        return arr.filter(story => getTagsString(story).includes(searchTerm?.toLowerCase()) || story.theme[0]?.name?.toLowerCase().includes(searchTerm?.toLowerCase()) || story.theme[0]?.description?.toLowerCase().includes(searchTerm?.toLowerCase()) || story.title?.toLowerCase().includes(searchTerm?.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm?.toLowerCase()) || getContactsString(story).includes(searchTerm?.toLowerCase()))
+        return allStories.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+      case 'default':
+        return arr.filter(story => getTagsString(story).includes(searchTerm.toLowerCase()) || story.theme[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) || story.theme[0]?.description.toLowerCase().includes(searchTerm.toLowerCase()) || story.title?.toLowerCase().includes(searchTerm.toLowerCase()) || story.notes?.toLowerCase().includes(searchTerm.toLowerCase()) || getContactsString(story).includes(searchTerm.toLowerCase()))
+        break;
       default:
         return arr
     }

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 
 // components
-import { Box, Typography, Grid, Button } from '@mui/material'
 import StoryModalGeneral from '../StoryModalGeneral/StoryModalGeneral';
 import StoryModalAdditional from '../StoryModalAdditional/StoryModalAdditional';
 

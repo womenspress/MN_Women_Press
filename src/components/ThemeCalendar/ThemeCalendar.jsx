@@ -30,7 +30,6 @@ export default function ThemeCalendar(props) {
   // }
 
   const themesInYear = allThemes?.filter(theme => DateTime.fromISO(theme.month_year).toFormat('yyyy') == year)
-  console.log(themesInYear)
 
   return (
 

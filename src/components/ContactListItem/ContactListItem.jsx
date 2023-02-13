@@ -23,7 +23,7 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
   const history = useHistory()
   const dispatch = useDispatch();
 
-  const [numOfTagsDisplay, setNumOfTagsDisplayed] = useState(numOfTagsToDisplay || 3);
+  const numOfTagsDisplay = numOfTagsToDisplay || 3;
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -42,7 +42,10 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
 
   const handleDelete = () => {
     console.log('delete contact id:');
-    dispatch({ type: "DELETE_CONTACT", payload: contact.id })
+    dispatch({ type: "DELETE_CONTACT", payload: contact.id });
+    dispatch({ type: 'GET_ALL_THEMES' });
+    dispatch({ type: 'GET_ALL_CONTACTS' });
+    dispatch({ type: 'GET_ALL_STORIES' });
     handleDeleteClose();
   }
 

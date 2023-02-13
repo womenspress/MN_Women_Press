@@ -62,7 +62,7 @@ function* createNewStory(action) {
 // receives entire story object
 function* editStory(action) {
   try {
-
+    console.log('in edit story with payload: ', action.payload)
     if (action.payload.contacts[0]){
       action.payload.payment_required = !!action.payload.contacts.filter(e => e.invoice_amount > 0);
     } else {

@@ -30,10 +30,7 @@ export default function StoriesPage() {
 
   const allStories = useSelector(story => story.stories.allStories)
   // added other date fields into current stories, as well as use photo_uploaded as a check to make sure story ideas do not drop off the story page (otherwise if there are no tasks assigned and with a default publication_date of today() it will not show on the page)
-  const currentStories = allStories.filter(story =>
-    (DateTime.fromISO(story.publication_date) > DateTime.now() || DateTime.fromISO(story.final_draft_deadline) > DateTime.now() || DateTime.fromISO(story.rough_draft_deadline) > DateTime.now())
-    ||
-    story.photo_uploaded === false
+  const currentStories = allStories.filter(story => story.statusColor.color !== 'grey'
   )
 
   //! temporary fix. const allStories = useSelector(store => store.stories.allStories);

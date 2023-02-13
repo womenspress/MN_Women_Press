@@ -51,6 +51,27 @@ const allStories = (state = [], action) => {
     for (let story of allStories) {
       story.statusColor = makeStatusColor(story)
       // console.log('status color of story ', story.id, story.statusColor)
+      //! FOR PRESENTATION ONLY
+      if (story.id === 53) story.contacts.push({
+        "name": "Victoria Mertens",
+        "pronouns": "she/her",
+        "expertise": "",
+        "photo": null,
+        "email": "",
+        "phone": "",
+        "billing_address": "",
+        "mailing_address": "",
+        "bio": "",
+        "note": "",
+        "linkedIn": null,
+        "twitter": "",
+        "instagram": "",
+        "facebook": "",
+        "date_added": "2023-02-13",
+        "story_association": "photo subject",
+        "invoice_paid": null,
+        "invoice_amount": null
+    })
     }
     return allStories
   }

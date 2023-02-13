@@ -26,7 +26,8 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    padding: 2,
+    paddingY: 2,
+    paddingX: 5
 };
 
 const smallStyle = {
@@ -216,15 +217,15 @@ export default function EditContactModal({contact}){
         switch(createContactPage){
             case 1:
                 return(
-                    <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h4" component="h2">
+                    <Box sx={{...style, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                        <Typography id="modal-modal-title" variant="h4" component="h2" gutterBottom>
                             New Contact
                         </Typography>
-                        <TextField sx={{width: .70}} id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event)=> setName(event.target.value)} />
-                        <TextField sx={{ width: .30}} id="outlined-basic" label="Pronouns" variant="outlined" value={pronouns} onChange={(event)=> setPronouns(event.target.value)}/>
-                        <TextField sx={{ width: 1}} id="outlined-basic" label="Email" variant="outlined" value={email} onChange={(event)=> setEmail(event.target.value)}/>
-                        <TextField sx={{ width: 1}} id="outlined-basic" label="Phone" variant="outlined" value={phone} onChange={(event)=> setPhone(event.target.value)}/>
-                        <TextField sx={{ width: 1 }} id="outlined-basic" label="Expertise" variant="outlined" value={expertise} onChange={(event)=> setExpertise(event.target.value)}/>
+                        <TextField size = 'small' sx={{width: .6, margin: .5}} id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event)=> setName(event.target.value)} />
+                        <TextField size = 'small' sx={{ width: .30, margin: .5}} id="outlined-basic" label="Pronouns" variant="outlined" value={pronouns} onChange={(event)=> setPronouns(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: 1, margin: .5}} id="outlined-basic" label="Email" variant="outlined" value={email} onChange={(event)=> setEmail(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: 1, margin: .5}} id="outlined-basic" label="Phone" variant="outlined" value={phone} onChange={(event)=> setPhone(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: 1 , margin: .5}} id="outlined-basic" label="Expertise" variant="outlined" value={expertise} onChange={(event)=> setExpertise(event.target.value)}/>
                         <Box sx={{display: 'flex', width: 1, padding: 1,  justifyContent: 'space-evenly'  }}>
                             <Typography sx={{}} id="modal-modal-title" variant="p" component="p">
                                 {availableRoles[0].name}
@@ -319,7 +320,7 @@ export default function EditContactModal({contact}){
                         </Box>
                         <Box sx={{ display: 'flex' }}>
                             <Box sx={{ width: .75}}>
-                                <TextField sx={{ width: .75}}  autoComplete='off' id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
+                                <TextField size = 'small' sx={{ width: .75}}  autoComplete='off' id="outlined-basic" label="Search For Tag" variant="outlined" value={searchTag} onChange={(event) => setSearchTagValue(event.target.value)} />
                                 <Button onClick={handleOpenCreateTag}>
                                     <AddCircleOutlineIcon/>
                                 </Button>
@@ -356,7 +357,7 @@ export default function EditContactModal({contact}){
                         </Box>
                         <ListTags tags={tagsArray} numOfDisplay={tagsArray?.length} removeTag={removeTag}/>
                         {/* <TextField sx={{ width: 1}} id="outlined-basic" label="City, St." variant="outlined" value={location} onChange={(event)=> setLocation(event.target.value)}/> */}
-                        <TextField sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: 1 }} id="outlined-basic" label="Notes" variant="outlined" value={notes} onChange={(event)=> setNotes(event.target.value)}/>
                         <Box>
                             <Button onClick={() => handleClose()}>
                                 Cancel
@@ -373,17 +374,17 @@ export default function EditContactModal({contact}){
             case 2:
                 return(
                     <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h4" component="h2">
+                        <Typography id="modal-modal-title" variant="h4" component="h2" gutterBottom>
                             New Contact - additional
                         </Typography>
-                        <TextField sx={{width: 1}} id="outlined-basic" label="Billing Address" variant="outlined" value={billingAddress} onChange={(event)=> setBillingAddress(event.target.value)}/>
-                        <TextField sx={{width: 1}} id="outlined-basic" label="Mailing Address" variant="outlined" value={mailingAddress} onChange={(event)=> setMailingAddress(event.target.value)}/>
-                        <TextField sx={{ width: 1}} id="outlined-basic" label="Bio" variant="outlined" value={bio} onChange={(event)=> setBio(event.target.value)}/>
-                        <TextField sx={{ width: 1 }} id="outlined-basic" label="Website" variant="outlined" value={website} onChange={(event)=> setWebsite(event.target.value)}/>
-                        <TextField sx={{ width: .5}} id="outlined-basic" label="Twitter" variant="outlined" value={twitter} onChange={(event)=> setTwitter(event.target.value)}/>
-                        <TextField sx={{ width: .5}} id="outlined-basic" label="Instagram" variant="outlined" value={instagram} onChange={(event)=> setInstagram(event.target.value)}/>
-                        <TextField sx={{ width: .5}} id="outlined-basic" label="Facebook" variant="outlined" value={facebook} onChange={(event)=> setFacebook(event.target.value)}/>
-                        <TextField sx={{ width: .5}} id="outlined-basic" label="LinkedIn" variant="outlined" value={linkedIn} onChange={(event)=> setLinkedIn(event.target.value)}/>
+                        <TextField size = 'small' sx={{width: 1, margin: .5}} id="outlined-basic" label="Billing Address" variant="outlined" value={billingAddress} onChange={(event)=> setBillingAddress(event.target.value)}/>
+                        <TextField size = 'small' sx={{width: 1, margin: .5}} id="outlined-basic" label="Mailing Address" variant="outlined" value={mailingAddress} onChange={(event)=> setMailingAddress(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: 1, margin: .5}} id="outlined-basic" label="Bio" variant="outlined" value={bio} onChange={(event)=> setBio(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: 1, margin: .5 }} id="outlined-basic" label="Website" variant="outlined" value={website} onChange={(event)=> setWebsite(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: .45, margin: .5}} id="outlined-basic" label="Twitter" variant="outlined" value={twitter} onChange={(event)=> setTwitter(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: .45, margin: .5}} id="outlined-basic" label="Instagram" variant="outlined" value={instagram} onChange={(event)=> setInstagram(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: .45, margin: .5}} id="outlined-basic" label="Facebook" variant="outlined" value={facebook} onChange={(event)=> setFacebook(event.target.value)}/>
+                        <TextField size = 'small' sx={{ width: .45, margin: .5}} id="outlined-basic" label="LinkedIn" variant="outlined" value={linkedIn} onChange={(event)=> setLinkedIn(event.target.value)}/>
                         <Box>
                             <Button onClick={() => setCreateContactPage(1)}>
                                 <ArrowBackIcon/> general info 

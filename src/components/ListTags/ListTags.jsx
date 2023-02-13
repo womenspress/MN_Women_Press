@@ -22,7 +22,7 @@ export default function ListTags(props) {
 
     // props
     let tagsArray = props.tags || defaultTags;
-    let numToDisplay = props.numOfDisplay || 3;
+    let numToDisplay = props.numOfDisplay || 2;
 
 
 

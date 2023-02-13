@@ -23,7 +23,7 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
   const history = useHistory()
   const dispatch = useDispatch();
 
-  const numOfTagsDisplay = numOfTagsToDisplay || 3;
+  const numOfTagsDisplay = 2;
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 

@@ -34,7 +34,6 @@ elements to display in the
 */
 
 export default function StoryListItem(props) {
-
   const {
     story,
     createMode,
@@ -42,7 +41,7 @@ export default function StoryListItem(props) {
     setModalOpen
   } = props
 
-  // console.log(story)
+  console.log(story);
 
   const dispatch = useDispatch();
 
@@ -64,7 +63,7 @@ export default function StoryListItem(props) {
 
   // console.log('story list item, story:', story)
 
-  // const statusColor = makeStatusColor(story)
+  const statusColor = makeStatusColor(story)
 
   const statusStyle = {
     bgcolor: story.statusColor.color,
@@ -109,10 +108,7 @@ export default function StoryListItem(props) {
   }
 
   const handleDelete = () => {
-    dispatch({ type: 'DELETE_STORY', payload: story.id });
-    dispatch({ type: 'GET_ALL_THEMES' });
-    dispatch({ type: 'GET_ALL_CONTACTS' });
-    dispatch({ type: 'GET_ALL_STORIES' });
+    dispatch({ type: 'DELETE_STORY', payload: story.id })
     setDeleteOpen(false)
   }
 

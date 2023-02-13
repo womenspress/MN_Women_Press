@@ -72,6 +72,7 @@ function* editStory(action) {
     yield axios.put(`/api/stories/${action.payload.id}`, action.payload);
     yield put({ type: 'GET_ALL_STORIES' });
     yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.id})
+    yield put({type: 'GET_ALL_THEMES'});
   } catch (error) {
     console.log('error in editStory saga:', error)
   }

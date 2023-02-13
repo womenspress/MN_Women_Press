@@ -11,7 +11,7 @@ export function makeStatusColor(story) {
   // console.log('publication date', story)
 
   const hasAuthor = !!story.contacts?.filter(contact => contact?.story_association === 'author').length
-  console.log('author?', hasAuthor, story.contacts)
+  // console.log('author?', hasAuthor, story.contacts)
 
   const paymentRequired = !!story.contacts?.filter(contact => contact?.invoice_amount > 0).length
   // console.log('payment required?', paymentRequired)

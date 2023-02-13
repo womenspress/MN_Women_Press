@@ -11,7 +11,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
+// internal
+import { autofill2 } from '../../autofill'
 
 export default function StoryModalAdditional(props) {
   const { setModalOpen, setStep, createMode, setCreateMode } = props;
@@ -95,6 +96,7 @@ export default function StoryModalAdditional(props) {
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
+    setStep('general')
     dispatch({ type: 'CLEAR_TEMP_STORY' });
     setStep('general');
     if (createMode)
@@ -117,6 +119,7 @@ export default function StoryModalAdditional(props) {
   const handleClose = () => {
     setModalOpen(false);
     setCreateMode(true);
+    setStep('general')
     dispatch({ type: 'CLEAR_TEMP_STORY' });
   };
 
@@ -138,12 +141,13 @@ export default function StoryModalAdditional(props) {
 
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%',}}>
       <Box>
-        {/* <pre> {JSON.stringify(inputValues, null, 2)}</pre> */}
+       {/* {JSON.stringify(inputValues)} */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }} >
           <Box></Box>
-          <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
+          {/* //! ---------------- autofill 2 -------------------------- */}
+          <Typography variant='h4' onClick = {()=>setInputValues(autofill2)}>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
           <CloseIcon
             onClick={handleClose}
             sx={{
@@ -266,7 +270,7 @@ export default function StoryModalAdditional(props) {
 
           </Grid>
 
-          <Divider variant = 'middle' />
+          <Divider variant='middle' />
           {/* more options */}
           <Grid item xs={2}>
             <Typography sx={{ textAlign: 'right', marginRight: 3 }}>additional</Typography>

@@ -169,9 +169,8 @@ router.get(
   }
 );
 
-/**
- * POST story route
- */
+//* ===================================== POST POST POST ===================================
+
 router.post(
   '/',
   rejectUnauthenticated,
@@ -352,9 +351,8 @@ router.delete('/:id', rejectUnauthenticated, rejectUnauthorized, (req, res) => {
     });
 });
 
-/**
- * EDIT route for story by id
- */
+//* ======================================= PUT PUT PUT =========================================
+
 router.put(
   '/:id',
   rejectUnauthenticated,

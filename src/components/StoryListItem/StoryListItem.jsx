@@ -66,7 +66,7 @@ export default function StoryListItem(props) {
   const statusColor = makeStatusColor(story)
 
   const statusStyle = {
-    bgcolor: story.statusColor,
+    bgcolor: story.statusColor.color,
     width: 16,
     height: 16,
     minWidth: 16,

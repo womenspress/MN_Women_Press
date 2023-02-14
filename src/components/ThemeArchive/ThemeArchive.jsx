@@ -156,7 +156,7 @@ export default function ThemeArchive() {
               <Typography variant='h6'>stories</Typography>
               {selectedTheme != {} && zipStoryArraysOfSelectedTheme.map(story => {
                 return (
-                  <StoryListItem key={story?.title} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen}  removeDelete={true}/>
+                  <StoryListItem key={story?.title} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen}  removeDelete={true} compactMode={true}/>
                 )
               })}
             </Box>

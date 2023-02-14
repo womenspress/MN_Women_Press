@@ -119,9 +119,8 @@ export default function StoryListItem(props) {
       {/* <pre>{JSON.stringify(story, null, 2)}</pre> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
-          <Grid item xs={7}>
-            <Box sx={{ display: 'flex', alignItems: 'center', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {story.statusColor?
+          <Grid item xs={props.compactMode ? 10 : 6}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
@@ -135,16 +134,23 @@ export default function StoryListItem(props) {
               <Typography sx = {{fontWeight: '500'}}>{story.title}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={2}>
-            {story.theme ?
-              <Typography sx = {{color: 'grey.800', fontSize: 14}}> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
-              :
-              <></>}
-          </Grid>
-          <Grid item xs={2}>
-            <Typography sx = {{color: 'grey.800', fontSize: 14}}>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
-          </Grid>
-          <Grid item xs={1} display='flex' flexDirection='row-reverse'>
+          {props.compactMode ?
+            null
+            :
+            <>
+              <Grid item xs={2}>
+                {story.theme ?
+                  <Typography> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
+                  :
+                  <></>}
+              </Grid>
+              <Grid item xs={2}>
+                <Typography>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
+              </Grid>
+            </>
+          }
+
+          <Grid item xs={2} display='flex' flexDirection='row-reverse'>
             <StatusDropdown story={story} />
           </Grid>
         </Grid>

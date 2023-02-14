@@ -194,12 +194,12 @@ export const autofill1 = {
 //   tags: [{ id: 7, name: 'Technology', description: '' }],
 // };
 
-export const autofill2 = {
-  "title": "women in tech bootcamps (working title)",
+export const autofill3 = {
+  "title": "Accelerated: Women in Tech",
   "subtitle": "",
   "article_text": "",
   "article_link": "",
-  "notes": "had a great conversation with some people at Prime Digital Academy. potential feature?",
+  "notes": "had a great conversation with some people at Prime Digital Academy. potential feature? \t\ interviews with graduates, current students, alums'",
   "photo": "",
   "type": "",
   "copies_required": false,
@@ -209,22 +209,22 @@ export const autofill2 = {
   "photo_uploaded": false,
   "graphic_image_required": false,
   "graphic_image_completed": false,
-  "fact_check_required": true,
+  "fact_check_required": false,
   "fact_check_completed": false,
   "payment_required": false,
   "payment_completed": false,
-  "socials_required": true,
+  "socials_required": false,
   "socials_completed": false,
   "underwriter_required": false,
   "underwriter_completed": false,
   "photo_submitted": false,
-  "photo_comments": "picture of a student from prime",
+  "photo_comments": "",
   "external_link": "",
-  "word_count": "500",
+  "word_count": 0,
   "date_added": "2023-02-12T06:00:00.000Z",
-  "rough_draft_deadline": "2023-08-01T00:00:00.000-05:00",
-  "final_draft_deadline": "2023-08-15T00:00:00.000-05:00",
-  "publication_date": "2023-09-01T00:00:00.000-05:00",
+  "rough_draft_deadline": DateTime.now(),
+  "final_draft_deadline": DateTime.now(),
+  "publication_date": DateTime.now(),
   "contacts": [],
   "theme": [
       {
@@ -376,7 +376,7 @@ export const autofillContact = {
   "roles": []
 }
 
-export const autofill3 = {
+export const autofill2 = {
   title: 'Accelerated: Women in Tech',
   subtitle: '',
   article_text: '',

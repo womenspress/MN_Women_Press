@@ -26,7 +26,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Modal from '@mui/material/Modal';
 
 // internal
-import {autofill1, autofill2, autofill3} from '../../autofill'
+import {autofill1, autofill3} from '../../autofill'
 
 const style = {
   position: 'absolute',
@@ -248,6 +248,8 @@ export default function StoryModalGeneral(props) {
         <Grid container spacing={1} sx={{ paddingX: '5%', maxHeight: 480, overflow: 'hidden', overflowY: 'scroll' }}>
           {/* title */}
           <Grid item xs={4}>
+
+            {/* //! ------------------------ autofill 3 ------------------------------ */}
             <Typography sx={{ textAlign: 'right', marginRight: 3 }} onClick = {()=>setInputValues(autofill3)}>
               title *
             </Typography>

@@ -82,9 +82,7 @@ export default function StoryListItem(props) {
     return 'translate(-5%,5%)'
   }
 
-  const author = story.contacts?.filter(contact => contact.story_association === 'author');
-
-
+  const author = story.contacts?.filter(contact => contact?.story_association === 'author');
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -162,9 +160,13 @@ export default function StoryListItem(props) {
               {upcomingDeadlines[0] ? <>Upcoming: {upcomingDeadlines[0]?.name}-{upcomingDeadlines[0]?.date.toFormat('MMMM dd, yyyy')}</> : <></>}
             </Typography>
           </Box>
+          {story.tags?
           <Box>
             <ListTags numOfDisplay={3} tags={story.tags} removeTag={removeTag} />
           </Box>
+        :
+        <></>  
+        }
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />

@@ -171,9 +171,13 @@ export default function StoryListItem(props) {
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />
             </IconButton>
-            <IconButton size='small' onClick={handleDeleteOpen}>
-              <DeleteIcon />
-            </IconButton>
+            {props.removeDelete ?
+              null
+              :
+              <IconButton size='small' onClick={handleDeleteOpen}>
+                <DeleteIcon />
+              </IconButton>
+            }
             <Button
               onClick={() => history.push(`/storydetails/${story.id}`)}
               size='small'
@@ -201,9 +205,9 @@ export default function StoryListItem(props) {
       >
         <Box
           sx={{ ...smallModal, height: 70, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>
-          <Typography variant = 'h6' sx = {{fontSize: 16}}>delete this story?</Typography>
-          <Typography variant = 'body2' sx = {{fontSize: 13}}>this action can't be undone</Typography>
-          <Box sx = {{display: 'flex', justifyContent: 'center'}}>
+          <Typography variant='h6' sx={{ fontSize: 16 }}>delete this story?</Typography>
+          <Typography variant='body2' sx={{ fontSize: 13 }}>this action can't be undone</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button onClick={handleDelete}>delete</Button>
             <Button onClick={() => setDeleteOpen(false)}>cancel</Button>
           </Box>

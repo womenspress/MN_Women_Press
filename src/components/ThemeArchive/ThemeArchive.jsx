@@ -7,15 +7,18 @@ import { DateTime } from 'luxon';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 
 // components
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Grid, Modal } from '@mui/material';
 import ThemeCard from '../ThemeCard/ThemeCard';
 import ArchiveThemeCard from '../../assets/ArchiveThemeCard/ArchiveThemeCard';
 import StoryListItem from '../StoryListItem/StoryListItem';
 import ContactListItem from '../ThemeContactListItem/ThemeContactListItem';
+import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
+import { largeModal } from '../../__style'
+
 
 export default function ThemeArchive() {
 
-  const [selectedTheme, setSelectedTheme] = useState({})
+
 
   const sortOptions = ['date published', 'title',]
   const [sortMethod, setSortMethod] = useState('date published');
@@ -26,7 +29,24 @@ export default function ThemeArchive() {
   const searchByOptions = ['all', 'theme name', 'contact name', 'story title', 'description']
 
   const allThemes = useSelector(store => store.themes.allThemes).filter(theme => theme.name != ' ');
+  const [selectedTheme, setSelectedTheme] = useState({stories: []})
+  // console.log(allThemes[0]);
   const archiveThemes = Array.isArray(allThemes) && allThemes.length ? allThemes.filter(theme => Date.parse(theme.month_year) < DateTime.now()) : [];
+  const allStories = useSelector(store => store.stories.allStories);
+  // console.log('allStories', allStories);
+  const selectedThemeStories = allStories;
+  // console.log(selectedThemeStories);
+
+  const zipStoryArraysOfSelectedTheme = selectedTheme.stories.map(story => {
+    // console.log(story);
+    if(!story || story === null){return}
+    for(let newStory of allStories){
+      if(story?.id === newStory.id){
+        // console.log(newStory);
+        return newStory
+      }
+    }
+  })
 
 
   const sortResults = (arr) => {
@@ -86,6 +106,22 @@ export default function ThemeArchive() {
   //! set to all themes temporarily. eventually, set to archiveThemes
   const themeResults = sortResults(searchResults(allThemes))
 
+
+  // edit and delete function/variables here:
+  const [step, setStep] = useState('general')
+  const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
+  const [createMode, setCreateMode] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
+
+  const handleClose = () => {
+    setModalOpen(false)
+    dispatch({ type: 'CLEAR_TEMP_STORY' })
+  }
+
   return (
     <Box>
       {/* <p>{JSON.stringify(archiveThemes)}</p>
@@ -118,9 +154,9 @@ export default function ThemeArchive() {
           {selectedTheme &&
             <Box>
               <Typography variant='h6'>stories</Typography>
-              {selectedTheme.stories?.map(story => {
+              {selectedTheme != {} && zipStoryArraysOfSelectedTheme.map(story => {
                 return (
-                  <StoryListItem key={story.title} story={story} />
+                  <StoryListItem key={story?.title} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen}  removeDelete={true}/>
                 )
               })}
             </Box>
@@ -134,13 +170,21 @@ export default function ThemeArchive() {
               {selectedTheme.contacts?.map(contact => {
 
                 return (
-                  contact && <ContactListItem key={contact.name} contact={contact} />
+                  contact && <ContactListItem key={contact.name} contact={contact}/>
                 )
               })}
             </Box>
           }
         </Grid>
       </Grid>
+
+      <Modal
+        open={modalOpen}
+        onClose={handleClose}>
+        <Box sx={{ ...largeModal, height: modalDimensions.height, width: modalDimensions.width }}>
+          <StoryCreateEditModal setModalOpen={setModalOpen} createMode={createMode} setCreateMode={setCreateMode} step={step} setStep={setStep} />
+        </Box>
+      </Modal>
     </Box>
   )
 }

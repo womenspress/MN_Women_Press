@@ -83,9 +83,8 @@ export function makeStatusColor(story) {
 
 
   // need to add deadlines and author to progress from red to yellow
-  if ((story.final_draft_deadline === story.publication_date) && !piecesReady) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
+  if ((story.publication_date === story.rough_draft_deadline) && (story.final_draft_deadline === story.publication_date) && !piecesReady) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
 
-  // red: no publication date entered, or no author
   if (story.publication_date === story.date_added || !hasAuthor) return { color: 'red', notes: 'story is missing deadlines or an author' }
 
   if (!piecesReady) return { color: 'yellow', notes: 'story has key info ready but is missing some to-do tasks' }

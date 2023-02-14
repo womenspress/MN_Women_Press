@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { Box, Paper, Typography, Avatar, Collapse, IconButton, Button } from '@mui/material'
 import StoryCard from '../StoryCard/StoryCard'
@@ -10,6 +10,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function ThemeContactListItem(props){
+    const history = useHistory();
 
     const contact = props.contact;
     console.log(contact);

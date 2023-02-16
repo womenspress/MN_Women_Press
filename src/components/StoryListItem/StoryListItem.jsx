@@ -40,8 +40,6 @@ export default function StoryListItem(props) {
     setModalOpen
   } = props
 
-  console.log(story);
-
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -116,7 +114,6 @@ export default function StoryListItem(props) {
 
   return (
     <Paper sx={{ paddingX: 1, marginY: 1 }}>
-      {/* <pre>{JSON.stringify(story, null, 2)}</pre> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Grid container space={1} display='flex' flexDirection='row' alignItems='center'>
           <Grid item xs={props.compactMode ? 10 : 6}>
@@ -131,10 +128,11 @@ export default function StoryListItem(props) {
                 {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
               <Button
-                sx = {{textTransform: 'none'}}
+                sx = {{textTransform: 'none', color: 'inherit', }}
                 onClick = {()=>history.push(`/storydetails/${story.id}`)}
               >
-                <Typography sx={{ fontWeight: '500' }}>{story.title}</Typography>
+                <Typography fontWeight='500'>{story.title}</Typography>
+
               </Button>
             </Box>
           </Grid>

@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 
 // libraries
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 
 // components
 import { Box, Typography, Grid, Modal } from '@mui/material';
-import ThemeCard from '../ThemeCard/ThemeCard';
 import ArchiveThemeCard from '../../assets/ArchiveThemeCard/ArchiveThemeCard';
 import StoryListItem from '../StoryListItem/StoryListItem';
 import ContactListItem from '../ContactListItem/ContactListItem';
@@ -29,20 +27,32 @@ export default function ThemeArchive() {
   const searchByOptions = ['all', 'theme name', 'contact name', 'story title', 'description']
 
   const allThemes = useSelector(store => store.themes.allThemes).filter(theme => theme.name != ' ');
-  const [selectedTheme, setSelectedTheme] = useState({stories: []})
-  // console.log(allThemes[0]);
+  const [selectedTheme, setSelectedTheme] = useState({ stories: [] })
   const archiveThemes = Array.isArray(allThemes) && allThemes.length ? allThemes.filter(theme => Date.parse(theme.month_year) < DateTime.now()) : [];
   const allStories = useSelector(store => store.stories.allStories);
-  // console.log('allStories', allStories);
-  const selectedThemeStories = allStories;
-  // console.log(selectedThemeStories);
+
+  //grabs unique contacts, then sorts them alphabetically
+    let themeContacts = [...new Set(selectedTheme?.contacts)];
+    themeContacts.sort((a, b) => {
+      const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      return 0;
+    });
+  
+
+
 
   const zipStoryArraysOfSelectedTheme = selectedTheme.stories.map(story => {
-    // console.log(story);
-    if(!story || story === null){return}
-    for(let newStory of allStories){
-      if(story?.id === newStory.id){
-        // console.log(newStory);
+    if (!story || story === null) { return }
+    for (let newStory of allStories) {
+      if (story?.id === newStory.id) {
         return newStory
       }
     }
@@ -112,10 +122,6 @@ export default function ThemeArchive() {
   const modalDimensions = step === 'general' ? { height: 600, width: 700 } : { height: 600, width: 900 }
   const [createMode, setCreateMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
 
   const handleClose = () => {
     setModalOpen(false)
@@ -124,9 +130,6 @@ export default function ThemeArchive() {
 
   return (
     <Box>
-      {/* <p>{JSON.stringify(archiveThemes)}</p>
-      <p>{Date.now()}</p>
-      <p>{Date.parse(allThemes[0].month_year)}</p> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <SortFilterSearch
           sortOptions={sortOptions}
@@ -156,7 +159,7 @@ export default function ThemeArchive() {
               <Typography variant='h6'>stories</Typography>
               {selectedTheme != {} && zipStoryArraysOfSelectedTheme.map(story => {
                 return (
-                  <StoryListItem key={story?.title} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen}  removeDelete={true} compactMode={true}/>
+                  <StoryListItem key={story?.title} story={story} createMode={createMode} setCreateMode={setCreateMode} setModalOpen={setModalOpen} removeDelete={true} compactMode={true} />
                 )
               })}
             </Box>
@@ -164,10 +167,9 @@ export default function ThemeArchive() {
         </Grid>
         <Grid item xs={4} sx={{ height: 600, overflow: 'hidden', overflowY: 'scroll' }}>
           {selectedTheme &&
-            <Box>
+            <Box key={selectedTheme?.id}>
               <Typography variant='h6'>contacts</Typography>
-
-              {selectedTheme.contacts?.map(contact => {
+              {themeContacts.map(contact => {
 
                 return (
                   contact && <ContactListItem compact key={contact.name} contact={contact}/>

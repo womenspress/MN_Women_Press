@@ -33,8 +33,6 @@ export default function StoriesPage() {
   const currentStories = allStories.filter(story => story.statusColor.color !== 'grey'
   )
 
-  //! temporary fix. const allStories = useSelector(store => store.stories.allStories);
-
   // createMode: will the big story modal be in create or edit mode?
   const [createMode, setCreateMode] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);

@@ -1,4 +1,0 @@
-const role = {
-  id: '',
-  name: ''
-}

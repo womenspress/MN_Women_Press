@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
 // components
-import { Box, Typography, TextField, Button, Menu, MenuItem, IconButton, ButtonGroup } from '@mui/material';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { Box, TextField, Button, Menu, MenuItem, IconButton, ButtonGroup } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -24,6 +23,7 @@ export default function SortFilterSearch(props) {
   searchBy:
   setSearchBy
   */
+
   const {
     sortOptions,
     sortMethod,
@@ -37,16 +37,12 @@ export default function SortFilterSearch(props) {
     setSearchBy
   } = props
 
-  // const [searchByMenuOpen, setSearchByMenuOpen] = useState(false);
   const [searchByAnchor, setSearchByAnchor] = useState(null);
   const searchByOpen = Boolean(searchByAnchor)
 
-  // const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [sortAnchor, setSortAnchor] = useState(null);
   const sortOpen = Boolean(sortAnchor)
 
-  //3 sets sortanchor to date/title
-  //4
 
   const handleReset = () => {
     setSortMethod(sortOptions[0]);
@@ -57,13 +53,10 @@ export default function SortFilterSearch(props) {
 
 
   const openSearchByMenu = (e) => {
-    console.log('opening search by menu');
     setSearchByAnchor(e.currentTarget)
   }
 
-  //2 opens sort menu
   const openSortMenu = (e) => {
-    console.log('opening sort menu',e.currentTarget);
     setSortAnchor(e.currentTarget);
   }
 

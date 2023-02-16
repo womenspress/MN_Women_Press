@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Typography, Paper} from '@mui/material'
+import { Typography, Paper} from '@mui/material'
 
 export default function TagSearchCard({tag, addTag}) {
     const clickHandleAddTag = (tag) => {

@@ -28,7 +28,6 @@ const handleClick= () =>{
         </Typography>
 
       </Box>
-      {/* <Typography variant='body2' fontSize = {12}>{theme.description}</Typography> */}
     </Paper>
   )
 }

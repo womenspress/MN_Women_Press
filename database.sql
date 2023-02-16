@@ -273,9 +273,6 @@ VALUES
 ('Life on the Water ',E'',E'',E'',E'',E'',E'',FALSE,NULL,NULL,FALSE,TRUE,TRUE,TRUE,FALSE,FALSE,E'',0,E'2023-02-11',E'2023-02-11',E'2023-02-11',E'2023-06-30',FALSE,FALSE,FALSE,TRUE,E'',FALSE,FALSE,NULL);
 
 
-
-
-
 INSERT INTO "public"."theme_story"("story_id","theme_id")
 VALUES
 (54,9),

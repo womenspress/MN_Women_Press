@@ -16,8 +16,8 @@ import Footer from '../../components/Footer/Footer';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
-import AboutPage from '../AboutPage/AboutPage';
-import InfoPage from '../InfoPage/InfoPage';
+// import AboutPage from '../AboutPage/AboutPage';
+// import InfoPage from '../InfoPage/InfoPage';
 import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
@@ -30,8 +30,6 @@ import ArchivePage from '../ArchivePage/ArchivePage';
 import ContactsPage from '../ContactsPage/ContactsPage';
 import ThemesPage from '../ThemesPage/ThemePage';
 import AdminPage from '../AdminPage/AdminPage';
-
-
 
 import './App.css';
 
@@ -57,13 +55,13 @@ function App() {
                 <Redirect exact from="/" to="/home" />
 
                 {/* Visiting localhost:3000/about will show the about page. */}
-                <Route
+                {/* <Route
                   // shows AboutPage at all times (logged in or not)
                   exact
                   path="/about"
                 >
                   <AboutPage />
-                </Route>
+                </Route> */}
 
 
                 <ProtectedRoute
@@ -121,14 +119,14 @@ function App() {
                 >
                   <AdminPage />
                 </ProtectedRoute>
-
+{/* 
                 <ProtectedRoute
                   // logged in shows InfoPage else shows LoginPage
                   exact
                   path="/info"
                 >
                   <InfoPage />
-                </ProtectedRoute>
+                </ProtectedRoute> */}
 
                 <Route
                   exact

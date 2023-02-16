@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import Box from '@mui/material/Box';
 
-export default function AddContactToTheme({theme, options}) {
+export default function AddContactToTheme({theme}) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -44,13 +44,6 @@ export default function AddContactToTheme({theme, options}) {
             </DialogContent>
             <Box>
                 <Box sx={{ display: 'flex' }}>
-                    {/* <Autocomplete
-                    size='small'
-                    sx={{ width: 200 }}
-                    options={storyOptions}
-                    renderInput={(params) => <TextField {...params} size='small' label='story' />}
-                    value={contactToAdd}
-                    /> */}
                 </Box>
             </Box>
             <DialogActions>

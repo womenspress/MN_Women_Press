@@ -4,10 +4,8 @@ import React from 'react';
 import { Box, Typography, Paper, IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 
-
 //internal
 import { smallCard } from '../../__style'
-
 
 export default function TagSearchCard(props) {
 

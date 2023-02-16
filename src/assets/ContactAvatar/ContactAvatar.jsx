@@ -1,7 +1,4 @@
 import React from 'react';
-
-// libraries
-
 // components
 import { Avatar } from '@mui/material'
 
@@ -28,7 +25,6 @@ export default function ContactAvatar(props) {
 
   const makeRandomColor = (username) => {
     const index = Math.floor((stringToValue(username) / 500) * 16777215).toString(16);
-    // console.log('index', index)
     return '#' + index
   }
 

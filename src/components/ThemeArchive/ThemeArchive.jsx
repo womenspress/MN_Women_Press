@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 // libraries
 import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 
@@ -58,7 +59,6 @@ export default function ThemeArchive() {
     }
   })
 
-
   const sortResults = (arr) => {
     let outputArray = arr
     if (sortDirection === 'descending') outputArray = arr.reverse();
@@ -70,14 +70,12 @@ export default function ThemeArchive() {
           if (DateTime.fromObject({ month: a.month, year: a.year }) < DateTime.fromObject({ month: b.month, year: b.year })) return 1
           else return 0
         })
-        break;
       case 'title':
         return outputArray.sort((a, b) => {
           if (a.name > b.name) return -1
           if (a.name < b.name) return 1
           else return 0
         })
-        break;
       default:
         return outputArray;
     }

@@ -1,12 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux'
-import { Box, Collapse, Button, Menu, MenuItem, Grid, FormControlLabel, Checkbox, MenuList } from '@mui/material';
+import { Box, Button, Menu, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export default function StatusDropdown({ story }) {
 
-  const [statusOpen, setStatusOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const dispatch = useDispatch();
@@ -15,12 +14,11 @@ export default function StatusDropdown({ story }) {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   }
-  const handleClose = (event) => {
+  const handleClose = () => {
     setAnchorEl(null);
   }
 
   const handleCheck = (event) => {
-    // console.log(event.target.id)
     let statusToChange;
     switch (event.target.id) {
       case 'upload photo':
@@ -51,7 +49,6 @@ export default function StatusDropdown({ story }) {
   // get list of required elements to populate into the dropdown
 
   // returns boolean: true if any contact requires payment, false otherwise
-  const payment_required = !!story.contacts?.filter(contact => contact?.invoice_amount > 0).length
 
   // const payment_required = story.contacts.filter(contact=>contact.invoice_amount>0).length > 0;
 
@@ -103,24 +100,14 @@ export default function StatusDropdown({ story }) {
   ].filter(piece => piece.status);
 
 
-  /* 
-  eventually want something like
-  [
-    {
-      name: copies_required
-      status: false
-    }
-  ]
-  */
 
   return (
     <Box>
-      {/* {JSON.stringify(piecesToTrack)} */}
       <Box>
         <Button
           onClick={handleClick}
           sx={{ color: 'grey.700', textTransform: 'none' }}
-          startIcon = {<CheckCircleOutlineIcon/>}
+          startIcon={<CheckCircleOutlineIcon />}
 
         >
           update
@@ -135,7 +122,7 @@ export default function StatusDropdown({ story }) {
           return (
             <MenuItem
               key={piece.name}
-              sx = {{marginY: 0, paddingY: 0}}
+              sx={{ marginY: 0, paddingY: 0 }}
             >
               <FormControlLabel
                 label={piece.name}

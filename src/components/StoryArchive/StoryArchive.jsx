@@ -2,29 +2,25 @@ import React, { useState } from 'react'
 
 // libraries
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { DateTime } from 'luxon';
 
 // components
-import { Box, Typography, TextField, Modal } from '@mui/material';
+import { Box, Modal } from '@mui/material';
 import StoryListItem from '../StoryListItem/StoryListItem';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 import StoryCreateEditModal from '../StoryCreateEditModal/StoryCreateEditModal';
 
 // internal
-import { largeModal, mainContentBox } from '../../__style'
+import { largeModal} from '../../__style'
 
 
 export default function StoryArchive() {
   const dispatch = useDispatch();
 
   const allStories = useSelector(store => store.stories.allStories)
-  // console.log('all stories: ', allStories)
 
   const archiveStories = allStories.length ? allStories.filter(story => story.statusColor.color === 'grey') : [];
 
-  // console.log('archiveStories[0].publication_date', archiveStories[0]?.publication_date);
-  // console.log('archiveStories[0].publication_date past?', DateTime.fromISO(archiveStories[0]?.publication_date)< DateTime.now())
 
 
   const [step, setStep] = useState('general')
@@ -106,9 +102,6 @@ export default function StoryArchive() {
 
   return (
     <Box>
-      {/* sort, search, and filter methods */}
-      {/* sort direction: {sortDirection} */}
-      {/* asc/desc of stories: {ascDesc(archiveStories).map(story => story.title)} */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <SortFilterSearch
           sortOptions={sortOptions}

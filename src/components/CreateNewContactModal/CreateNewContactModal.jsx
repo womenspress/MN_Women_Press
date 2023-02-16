@@ -11,7 +11,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Switch, Divider } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Email } from '@mui/icons-material';
 import ContactTagSearchCard from '../../assets/TagSearchCard/ContactTagSearchCard';
 
 
@@ -87,7 +86,6 @@ export default function CreateNewContactModal() {
   const [foundTag, setFoundTag] = React.useState([]);
 
   // reset state on exit
-
   const resetState = () => {
     setName('');
     setPronouns('');
@@ -114,8 +112,6 @@ export default function CreateNewContactModal() {
   const setSearchTagValue = (tagName) => {
     setSearchTag(tagName);
     // search of filter method
-    console.log('db array', dbTagsArray);
-    console.log('found tag:', dbTagsArray.filter(function (dbTag) { if (dbTag.name?.includes(tagName)) { return dbTag; } })[0]);
 
     // sets found tag to a tag containing searchTagValue && is the shorted in array.
     setFoundTag([...dbTagsArray.filter(function (dbTag) { if (dbTag.name.toLowerCase().includes(tagName.toLowerCase())) { return dbTag; } })])
@@ -125,18 +121,15 @@ export default function CreateNewContactModal() {
   }
 
   const createNewTag = (tagName, tagDescription) => {
-    console.log('Create new tag{ name:', tagName, 'description: ', tagDescription, '}');
     dispatch({ type: "CREATE_NEW_TAG", payload: { name: tagName, description: tagDescription } });
     handleCloseCreateTag();
   }
 
   const addExistingTag = (tag) => {
-    console.log('Add existing tag');
     setTagsArray([...tagsArray, tag]);
   }
 
   const removeTag = (tag) => {
-    console.log('Remove existing tag');
     setTagsArray(tagsArray.filter(x => x.id !== tag.id));
   }
 
@@ -171,17 +164,11 @@ export default function CreateNewContactModal() {
   const [check10, setCheck10] = useState(false);
 
   const changeRoleStatus = (checked, id) => {
-    console.log('checked:', checked, 'id', id, 'filter res: ', availableRoles.filter(x => x.id === id));
-    // if true add to array
-    console.log(rolesArray);
     if (checked) {
       setRolesArray([...rolesArray, ...availableRoles.filter(x => x.id === id)])
-      console.log(rolesArray);
-      // setRolesArray(...rolesArray, availableRoles.filter(x => x.id === id))
     } else {
       setRolesArray(rolesArray.filter(x => x.id !== id));
     }
-    console.log('role array', rolesArray);
   }
 
   // create contact modal pages
@@ -206,7 +193,6 @@ export default function CreateNewContactModal() {
       tags: tagsArray,
       roles: rolesArray,
     }
-    console.log('Send new contact: ', newContact);
     dispatch({ type: 'CREATE_NEW_CONTACT', payload: newContact });
     handleClose()
   }

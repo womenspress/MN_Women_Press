@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory, } from 'react-router-dom';
 import './LandingPage.css';
 
 
 // CUSTOM COMPONENTS
-import RegisterForm from '../../components/RegisterForm/RegisterForm';
 import { Box, Typography, Button, Paper } from '@mui/material'
 
 function LandingPage() {

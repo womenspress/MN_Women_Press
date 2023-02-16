@@ -10,32 +10,16 @@ import { Grid, Box, Typography, IconButton } from '@mui/material';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
-// internal
-import sampleContact from '../../sampleData'
 
 export default function ThemeCalendar(props) {
   const [year, setYear] = useState(DateTime.now().toFormat('yyyy'));
   const allThemes = useSelector(store => store.themes.allThemes)
-  // console.log(allThemes)
-  // const displayPreviousYear = () => {
-  //   setYear(year - 1);
-  // }
-
-  // const displayNextYear = () => {
-  //   setYear(year + 1);
-  // }
-
-  // const byYear = (theme) => {
-  //   return theme.year === year;
-  // }
 
   const themesInYear = allThemes?.filter(theme => DateTime.fromISO(theme.month_year).toFormat('yyyy') == year)
 
   return (
 
     <Box sx={{ display: 'flex', flexDirection: 'column' }} id="theme-calender-body">
-      {/* year: {year} */}
-      {/* themes in year: {JSON.stringify(themesInYear)} */}
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <IconButton
           onClick={() => setYear(Number(year) - 1)}

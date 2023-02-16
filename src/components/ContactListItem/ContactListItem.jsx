@@ -5,18 +5,16 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 //components
-import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton, DialogActions, DialogContent, Dialog, DialogContentText, DialogTitle, Modal, Grid } from '@mui/material'
+import { Box, Button, Paper, Typography, Collapse, IconButton, Modal, Grid } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditContactModal from '../EditContactModal/EditContactModal'
 import StoryCard from '../StoryCard/StoryCard'
-//import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar';
 import ListTags from '../ListTags/ListTags';
-import { largeModal, smallModal } from '../../__style';
-import { ContactEmergencySharp } from '@mui/icons-material';
+import { smallModal } from '../../__style';
 
 
 export default function ContactListItem(props) {
@@ -25,17 +23,6 @@ export default function ContactListItem(props) {
     contact,
     compact
   } = props
-
-  /* 
-  compact:
-  name, pronouns, X tags, X roles
-  
-  avatar, bio, X edit, X delete, X contact page button
-  
-  
-  
-  */
-
 
   const history = useHistory()
   const dispatch = useDispatch();
@@ -48,17 +35,11 @@ export default function ContactListItem(props) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-
   const handleDeleteClose = () => {
     setDeleteOpen(false);
   };
 
-  const openDeleteDialog = () => {
-    handleDeleteOpen();
-  }
-
   const handleDelete = () => {
-    console.log('delete contact id:');
     dispatch({ type: "DELETE_CONTACT", payload: contact.id });
     dispatch({ type: 'GET_ALL_THEMES' });
     dispatch({ type: 'GET_ALL_CONTACTS' });
@@ -93,26 +74,13 @@ export default function ContactListItem(props) {
     fontSize: 14
   }
 
-  const [openEdit, setEditOpen] = React.useState(false);
-
-  const handleEditOpen = () => {
-    setEditOpen(true);
-  }
-
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
     setDeleteOpen(true);
   }
 
-  const editContact = (contact) => {
-    console.log('edit contact:', contact.id);
-    // dispatch({type: "", payload: contact});
-    //handleEditClose();
-  }
-
   // remove tag from contact
   const removeTag = (tagID) => {
-    // console.log('remove tag', tagID, 'from story: ', id);
     dispatch({ type: 'DELETE_CONTACT_TAG', payload: { tag_id: tagID, contact_id: contact.id } })
   }
 
@@ -142,7 +110,6 @@ export default function ContactListItem(props) {
                   {contact.roles[0]?.name}
                 </Typography>
 
-
                 {contact.roles[1] &&
                   <>
                     <Typography sx={{ fontSize: 14, color: 'grey.800' }}>•</Typography>
@@ -153,9 +120,7 @@ export default function ContactListItem(props) {
               </Box>
             </>
         }
-
       </Box>
-
 
       <Collapse
         in={detailsOpen}

@@ -8,12 +8,11 @@ import { DateTime } from 'luxon'
 import StoryListItem from '../../components/StoryListItem/StoryListItem'
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import { Box, Button, IconButton, Typography, Modal } from '@mui/material';
+import { Box, IconButton, Typography, Modal } from '@mui/material';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 
 // internal
 import { largeModal, mainContentBox } from '../../__style'
-// import { story } from '../../sampleData';
 
 export default function StoriesPage() {
 
@@ -134,7 +133,6 @@ export default function StoriesPage() {
 
   return (
     <Box>
-      {/* {JSON.stringify(currentStories)} */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginX: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant='h3'>Stories</Typography>

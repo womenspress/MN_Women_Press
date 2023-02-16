@@ -1,8 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react';
-import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 
 import Tag from '../Tag/Tag';
 
@@ -23,8 +19,6 @@ export default function ListTags(props) {
     // props
     let tagsArray = props.tags || defaultTags;
     let numToDisplay = props.numOfDisplay || 2;
-
-
 
     return (
         <div>

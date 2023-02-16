@@ -3,23 +3,10 @@ import React, { useState } from 'react';
 // libraries
 
 // components
-import {
-  Box,
-  Typography,
-  Paper,
-  Button,
-  Menu,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  InputAdornment,
-  IconButton
-} from '@mui/material';
+import { Box, Typography, Paper, Button, Menu, MenuItem, Checkbox, FormControlLabel, TextField, InputAdornment, IconButton } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
-
 
 // internal
 import { smallCard } from '../../__style'
@@ -55,9 +42,6 @@ export default function ContactSearchCard(props) {
 
   return (
     <Paper sx={{ ...smallCard, width: 300, height: 80 }}>
-      {/* {JSON.stringify([contact.name, paymentRequired,])} */}
-      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} > */}
-{/* merge issue duplicate Box */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 
         <Typography>{contact?.name}</Typography>
@@ -82,7 +66,6 @@ export default function ContactSearchCard(props) {
         >
           {roles.map(role => {
             const handleClick = () => {
-              console.log('in role handleClick. contact to add: ', { ...contact, story_association: role })
               // remove the current contact from the contacts array, then replace it with the new contact
               setInputValues({ ...inputValues, contacts: [...inputValues.contacts?.filter(el => el.id !== contact.id), { ...contact, story_association: role }] })
               handleRolesClose()

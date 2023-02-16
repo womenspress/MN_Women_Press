@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { MenuItem, Typography } from '@mui/material'
+import { MenuItem,  } from '@mui/material'
 
 export default function TagDropdownItem({ handleClose, tag, setInputValues, inputValues }) {
 

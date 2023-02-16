@@ -4,18 +4,12 @@ import { useState } from 'react';
 
 // libraries
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
-
+import { useDispatch } from 'react-redux';
 import { DateTime } from 'luxon';
 
-
+// components
 import { Box, Collapse, Button, Grid, Typography, Paper, Modal, IconButton, Tooltip } from '@mui/material';
-
 import StatusDropdown from '../../assets/StatusDropdown/StatusDropdown';
-import CreateStory from '../CreateStory/CreateStory';
-import ColorStatusHover from '../../assets/ColorStatusHover/ColorStatusHover';
-
-
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
@@ -23,14 +17,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // internal
-import { largeModal, smallModal } from '../../__style';
+import { smallModal } from '../../__style';
 import ListTags from '../ListTags/ListTags';
 
-/* 
-elements to display in the 
-
-
-*/
 
 export default function StoryListItem(props) {
   const {
@@ -40,12 +29,12 @@ export default function StoryListItem(props) {
     setModalOpen
   } = props
 
+
   const dispatch = useDispatch();
 
   const history = useHistory();
 
   const [collapseOpen, setCollapseOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
@@ -53,12 +42,6 @@ export default function StoryListItem(props) {
   const deadlines = [{ name: 'Rough draft', date: DateTime.fromISO(story?.rough_draft_deadline) }, { name: 'Final draft', date: DateTime.fromISO(story?.final_draft_deadline) }, { name: 'Publication', date: DateTime.fromISO(story?.publication_date) }];
 
   const upcomingDeadlines = deadlines.filter((date) => date.date > DateTime.now())
-
-  // function to determine color of the status circle
-  /* 
-   */
-
-  // console.log('story list item, story:', story)
 
   const statusStyle = {
     bgcolor: story.statusColor?.color || 'black',
@@ -93,13 +76,6 @@ export default function StoryListItem(props) {
     setCreateMode(false);
   }
 
-  const handleEditClose = () => {
-    setCreateMode(true);
-    console.log('in handleEditClose')
-    dispatch({ type: 'CLEAR_TEMP_STORY' });
-    setModalOpen(false);
-  }
-
   const handleDelete = () => {
     dispatch({ type: 'DELETE_STORY', payload: story.id })
     setDeleteOpen(false)
@@ -107,7 +83,6 @@ export default function StoryListItem(props) {
 
   // remove tag from story
   const removeTag = (tagID) => {
-    console.log('remove tag', tagID, 'from story: ', story.id);
     const story_id = story.id;
     dispatch({ type: 'DELETE_STORY_TAG', payload: { tag_id: tagID, story_id: story_id } })
   }
@@ -128,8 +103,8 @@ export default function StoryListItem(props) {
                 {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
               <Button
-                sx = {{textTransform: 'none', color: 'inherit', }}
-                onClick = {()=>history.push(`/storydetails/${story.id}`)}
+                sx={{ textTransform: 'none', color: 'inherit', textAlign: 'left' }}
+                onClick={() => history.push(`/storydetails/${story.id}`)}
               >
                 <Typography fontWeight='500'>{story.title}</Typography>
 
@@ -198,15 +173,6 @@ export default function StoryListItem(props) {
       </Collapse>
 
       {/* ------------------ modals -------------------- */}
-      <Modal
-        open={editOpen}
-        onClose={handleEditClose}
-      >
-        <Box
-          sx={largeModal}>
-          <CreateStory createMode={createMode} setCreateMode={setCreateMode} />
-        </Box>
-      </Modal>
       <Modal
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}

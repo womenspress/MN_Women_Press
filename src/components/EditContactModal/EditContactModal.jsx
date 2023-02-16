@@ -14,9 +14,6 @@ import { Switch, IconButton, Divider } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContactTagSearchCard from '../../assets/TagSearchCard/ContactTagSearchCard';
 
-
-
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -112,8 +109,6 @@ export default function EditContactModal({ contact }) {
   const setSearchTagValue = (tagName) => {
     setSearchTag(tagName);
     // search of filter method
-    console.log('db array', dbTagsArray);
-    console.log('found tag:', dbTagsArray.filter(function (dbTag) { if (dbTag.name?.includes(tagName)) { return dbTag; } })[0]);
 
     // sets found tag to a tag containing searchTagValue && is the shorted in array.
     setFoundTag([...dbTagsArray.filter(function (dbTag) { if (dbTag.name.toLowerCase().includes(tagName.toLowerCase())) { return dbTag; } })])
@@ -123,18 +118,15 @@ export default function EditContactModal({ contact }) {
   }
 
   const createNewTag = (tagName, tagDescription) => {
-    console.log('Create new tag{ name:', tagName, 'description: ', tagDescription, '}');
     dispatch({ type: "CREATE_NEW_TAG", payload: { name: tagName, description: tagDescription } });
     handleCloseCreateTag();
   }
 
   const addExistingTag = (tag) => {
-    console.log('Add existing tag');
     setTagsArray([...tagsArray, tag]);
   }
 
   const removeTag = (tag) => {
-    console.log('Remove existing tag');
     setTagsArray(tagsArray.filter(x => x.id !== tag.id));
   }
 
@@ -157,7 +149,6 @@ export default function EditContactModal({ contact }) {
     { id: 10, name: 'Subject', check: check10, setCheck: setCheck10 },
   ]
 
-  console.log();
   const [check1, setCheck1] = useState(contact.roles?.filter(e => e?.name == 'Photographer').length > 0);
   const [check2, setCheck2] = useState(contact.roles?.filter(e => e?.name == 'Illustrator').length > 0);
   const [check3, setCheck3] = useState(contact.roles?.filter(e => e?.name == 'Editor').length > 0);
@@ -170,16 +161,12 @@ export default function EditContactModal({ contact }) {
   const [check10, setCheck10] = useState(contact.roles?.filter(e => e?.name == 'Subject').length > 0);
 
   const changeRoleStatus = (checked, id) => {
-    console.log(checked);
     // if true add to array
     if (checked) {
       setRolesArray([...rolesArray, ...availableRoles.filter(x => x.id === id)])
-      console.log(rolesArray);
-      // setRolesArray(...rolesArray, availableRoles.filter(x => x.id === id))
     } else {
       setRolesArray(rolesArray.filter(x => x?.id !== id));
     }
-    console.log('role array', rolesArray);
   }
 
   // create contact modal pages
@@ -205,14 +192,9 @@ export default function EditContactModal({ contact }) {
       tags: tagsArray,
       roles: rolesArray,
     }
-    console.log('Send new contact: ', newContact);
     dispatch({ type: 'EDIT_CONTACT', payload: newContact });
     handleClose()
   }
-
-  // if (!contact.roles.includes(null)){
-  //     console.log(contact.name, ' ', contact?.roles.filter(e =>  e.name == availableRoles[0].name));
-  // };
 
   const ModalPages = () => {
     switch (createContactPage) {
@@ -235,29 +217,6 @@ export default function EditContactModal({ contact }) {
               </Box>
               <Box sx={{ display: 'flex', width: 1, padding: 1, justifyContent: 'space-evenly' }}>
 
-                {/* {
-                availableRoles.map(role => {
-                  const handleClick = (checked, id) => {
-                    role.setCheck(!role.check);
-                    if (checked) setRolesArray([...rolesArray, ...rolesArray.filter(role => role.id === id)])
-                    else setRolesArray(rolesArray.filter(role => role.id !== id))
-                  }
-
-                  return (
-                    <Box key = {role.id}>
-                      <Typography sx = {{fontSize: 14}}>
-                        {role.name}
-                      </Typography>
-                      <Switch
-                        sx={{ display: 'flex' }}
-                        checked={role.check}
-                        onClick={handleClick}
-
-                      />
-                    </Box>
-                  )
-                })
-              } */}
                 <Typography sx={{ fontSize: 14 }}>
                   {availableRoles[0].name}
                   <Switch

@@ -4,21 +4,13 @@ import React, { useState } from 'react';
 import { DateTime } from 'luxon'
 
 // components
-import { Box, Card, CardActions, CardContent, Button, Typography, Modal } from '@mui/material';
+import { Box, Card, CardActions, CardContent, Typography, Modal } from '@mui/material';
 import ThemeModal from '../ThemeModal/ThemeModal';
 
 // internal
-import { largeModal, smallModal } from '../../__style';
+import { largeModal} from '../../__style';
 
 
-// const bull = (
-//     <Box
-//         component="span"
-//         sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-//     >
-//         •
-//     </Box>
-// );
 
 export default function BasicCard(props) {
   let theme = props.theme;

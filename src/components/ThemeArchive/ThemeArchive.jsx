@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 
 // libraries
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 
 // components
 import { Box, Typography, Grid, Modal } from '@mui/material';
-import ThemeCard from '../ThemeCard/ThemeCard';
 import ArchiveThemeCard from '../../assets/ArchiveThemeCard/ArchiveThemeCard';
 import StoryListItem from '../StoryListItem/StoryListItem';
 import ContactListItem from '../ContactListItem/ContactListItem';
@@ -30,24 +28,18 @@ export default function ThemeArchive() {
 
   const allThemes = useSelector(store => store.themes.allThemes).filter(theme => theme.name != ' ');
   const [selectedTheme, setSelectedTheme] = useState({stories: []})
-  // console.log(allThemes[0]);
   const archiveThemes = Array.isArray(allThemes) && allThemes.length ? allThemes.filter(theme => Date.parse(theme.month_year) < DateTime.now()) : [];
   const allStories = useSelector(store => store.stories.allStories);
-  // console.log('allStories', allStories);
   const selectedThemeStories = allStories;
-  // console.log(selectedThemeStories);
 
   const zipStoryArraysOfSelectedTheme = selectedTheme.stories.map(story => {
-    // console.log(story);
     if(!story || story === null){return}
     for(let newStory of allStories){
       if(story?.id === newStory.id){
-        // console.log(newStory);
         return newStory
       }
     }
   })
-
 
   const sortResults = (arr) => {
     let outputArray = arr
@@ -60,14 +52,12 @@ export default function ThemeArchive() {
           if (DateTime.fromObject({ month: a.month, year: a.year }) < DateTime.fromObject({ month: b.month, year: b.year })) return 1
           else return 0
         })
-        break;
       case 'title':
         return outputArray.sort((a, b) => {
           if (a.name > b.name) return -1
           if (a.name < b.name) return 1
           else return 0
         })
-        break;
       default:
         return outputArray;
     }
@@ -124,9 +114,6 @@ export default function ThemeArchive() {
 
   return (
     <Box>
-      {/* <p>{JSON.stringify(archiveThemes)}</p>
-      <p>{Date.now()}</p>
-      <p>{Date.parse(allThemes[0].month_year)}</p> */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <SortFilterSearch
           sortOptions={sortOptions}

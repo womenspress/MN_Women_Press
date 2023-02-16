@@ -6,7 +6,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
 
 // components
-import { Box, Typography, Grid, Button, TextField, FormGroup, Checkbox, FormControlLabel, ToggleButtonGroup, ToggleButton, Divider } from '@mui/material'
+import { Box, Typography, Grid, Button, TextField, Checkbox, FormControlLabel, ToggleButtonGroup, ToggleButton, Divider } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -18,7 +18,6 @@ export default function StoryModalAdditional(props) {
   const dispatch = useDispatch();
 
   const currentStory = useSelector((store) => store.stories.tempStory);
-  const themes = useSelector((store) => store.themes.allThemes);
 
   const [inputValues, setInputValues] = useState(currentStory);
 
@@ -90,7 +89,6 @@ export default function StoryModalAdditional(props) {
     else setInputValues({ ...inputValues, underwriter_required: false })
   }
 
-
   // on submit: close modal. create mode true => POST data. create mode false => PUT data.
   const handleSubmit = () => {
     console.log('saved and submitted');
@@ -102,7 +100,7 @@ export default function StoryModalAdditional(props) {
         type: 'CREATE_NEW_STORY',
         payload: { ...currentStory, ...inputValues },
       });
-    else{
+    else {
       dispatch({
         type: 'EDIT_STORY',
         payload: { ...currentStory, ...inputValues },
@@ -131,17 +129,10 @@ export default function StoryModalAdditional(props) {
     setStep('general');
   };
 
-  // const navigateNeeds = () => {
-  //   console.log('navigating to needs');
-  //   dispatch({ type: 'SET_TEMP_STORY', payload: { ...currentStory, ...inputValues } })
-  //   setStep('needs')
-  // }
-
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%',}}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%', }}>
       <Box>
-       {/* {JSON.stringify(inputValues)} */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }} >
           <Box></Box>
           <Typography variant='h4'>{createMode ? 'New Story - additional' : 'Edit story - additional'}</Typography>
@@ -183,7 +174,6 @@ export default function StoryModalAdditional(props) {
               <DesktopDatePicker
                 size='small'
                 label="rough draft due"
-                // inputFormat = "MM/DD/YYYY"
                 disableMaskedInput={true}
                 value={DateTime.fromISO(inputValues.rough_draft_deadline)}
                 onChange={handleRoughDraft}
@@ -195,7 +185,6 @@ export default function StoryModalAdditional(props) {
                 size='small'
                 label="final draft due"
                 disableMaskedInput={true}
-                // inputFormat = "MM/DD/YYYY"
                 value={DateTime.fromISO(inputValues.final_draft_deadline)}
                 onChange={handleFinalDraft}
                 renderInput={(params) => <TextField {...params} />}
@@ -203,7 +192,6 @@ export default function StoryModalAdditional(props) {
             </Grid>
             <Grid item xs={3}>
               <DesktopDatePicker
-                // inputFormat = "MM/DD/YYYY"
                 label="publication"
                 disableMaskedInput={true}
                 value={DateTime.fromISO(inputValues.publication_date)}
@@ -326,9 +314,6 @@ export default function StoryModalAdditional(props) {
         <Button
           onClick={handleSubmit}
         >save and submit</Button>
-        {/* <Button
-          onClick={navigateNeeds}
-        >story needs</Button> */}
       </Box>
     </Box>
   )

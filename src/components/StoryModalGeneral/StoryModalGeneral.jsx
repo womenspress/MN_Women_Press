@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // libraries
 import { useDispatch, useSelector } from 'react-redux';
 
 // components
-import {
-  Box,
-  Typography,
-  Grid,
-  Button,
-  TextField,
-  Menu,
-  Autocomplete,
-  IconButton
-} from '@mui/material';
+import { Box, Typography, Grid, Button, TextField, Menu, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ContactDropdownItem from '../../assets/ContactDropdownItem/ContactDropdownItem';
 import TagDropdownItem from '../../assets/TagDropdownItem/TagDropdownItem';
@@ -24,20 +15,6 @@ import ThemeSearchCard from '../../assets/ThemeSearchCard/ThemeSearchCard';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Modal from '@mui/material/Modal';
-
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 900,
-  height: 700,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  padding: 2,
-};
 
 const smallStyle = {
   position: 'absolute',
@@ -51,11 +28,8 @@ const smallStyle = {
   boxShadow: 24,
   padding: 2,
 };
-//internal
-// import { tags } from '../../sampleData'
 
 export default function StoryModalGeneral(props) {
-  //! todo: make dropdown tag and contact search functionality
 
   const { setModalOpen, setStep, createMode, setCreateMode } = props;
 
@@ -70,9 +44,6 @@ export default function StoryModalGeneral(props) {
 
   console.log('current story:', currentStory);
 
-  // useEffect(() => {
-  //   setInputValues(currentStory)
-  // }, [currentStory])
 
   //* -------- CONTACT search variables and functions ---------
 
@@ -163,16 +134,6 @@ export default function StoryModalGeneral(props) {
       theme.name.toLowerCase().includes(themeSearchTerm.toLowerCase())
     );
 
-  // if contact search term exists, open the menu
-  // const handleContactSearch = (e) => {
-  //   console.log(e)
-  //   setContactSearchTerm(e.target.value);
-  //   if (contactSearchTerm) setContactAnchor(e.target)
-  // }
-
-  // need ids of contacts on the story. results to populate into map are contacts who are not in the ids list
-
-  // const contactResults = contacts.filter(contact => { !contactIds.includes(contact.id) })
 
   // on submit: close modal. create mode true => POST data, clear temp story. create mode false => PUT data.
   const handleSubmit = () => {
@@ -183,7 +144,7 @@ export default function StoryModalGeneral(props) {
         type: 'CREATE_NEW_STORY',
         payload: { ...currentStory, ...inputValues },
       });
-    else{
+    else {
       dispatch({
         type: 'EDIT_STORY',
         payload: { ...currentStory, ...inputValues },
@@ -212,20 +173,10 @@ export default function StoryModalGeneral(props) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
       <Box>
-        {/* inputValues themes: {JSON.stringify(inputValues.theme)} */}
-        {/* input values: {JSON.stringify(inputValues)}
-      contactId: {JSON.stringify(contactIds)}
-      
-      tags: {JSON.stringify(tags)} */}
-        {/* contactResults: {JSON.stringify(contactSearchResults)} */}
-        {/* tags: {JSON.stringify(inputValues.tags?.map(tag => tag.name))}
-      contacts: {JSON.stringify(inputValues.contacts?.map(contact => contact.name))} */}
-        {/* contact ids: {JSON.stringify(inputValues.contacts?.map(contact => contact.id))} */}
-        {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }} >
           <Box></Box>
-          <Typography 
-          variant="h4">
+          <Typography
+            variant="h4">
             {createMode ? 'New Story - general' : 'Edit Story - general'}
           </Typography>
           <CloseIcon
@@ -265,10 +216,6 @@ export default function StoryModalGeneral(props) {
             </Typography>
           </Grid>
           <Grid item xs={7}>
-            {/* <Autocomplete
-          disablePortal
-          options = {['hello world']}
-          /> */}
 
             <TextField
               size="small"

@@ -1,12 +1,8 @@
-import { flexbox } from '@mui/system';
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useLocation, useHistory } from 'react-router-dom';
-import LogOutButton from '../LogOutButton/LogOutButton';
-// import './Header.css';
-
 
 // libraries
+import { useDispatch } from 'react-redux';
+import { useLocation, useHistory } from 'react-router-dom';
 
 // components
 import { Typography, Button, AppBar, Box, Toolbar, } from '@mui/material'
@@ -16,7 +12,6 @@ export default function Header(props) {
   const dispatch = useDispatch()
   const history = useHistory()
   let user = props.user;
-  // console.log(user);
 
   let location = useLocation().pathname;
   const handleLogout = () => {
@@ -32,7 +27,6 @@ export default function Header(props) {
             MN Women's Press Content Manager
           </Typography>
 
-
           {user.id ?
             <>
               <Button sx={{ textTransform: 'none' }} color="inherit" onClick={() => history.push('/adminpage')}>admin</Button>
@@ -42,9 +36,6 @@ export default function Header(props) {
             <Button color="inherit" onClick={() => history.push('/login')} sx={{ textTransform: 'none' }}>login</Button>
           }
 
-
-
-          {/* <Button component = "avatar" src='images/prof-pics/Paolo-prof-pic.png' color="inherit" onClick={() => navigate('/login')}/> */}
         </Toolbar>
       </AppBar>
 

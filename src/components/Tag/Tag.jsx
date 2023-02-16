@@ -6,14 +6,12 @@ import Button from '@mui/material/Button';
 
 
 export default function tag(props){
-
-
+  
     let tag = props.tag || {name:'tag not found'}
 
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (event, tag) => {
-        console.log('tag clicked, display description', tag.description);
         if(anchorEl === null){
             setAnchorEl(event.currentTarget);
         } else {

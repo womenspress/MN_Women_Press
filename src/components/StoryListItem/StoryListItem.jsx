@@ -132,6 +132,7 @@ export default function StoryListItem(props) {
                 onClick = {()=>history.push(`/storydetails/${story.id}`)}
               >
                 <Typography fontWeight='500'>{story.title}</Typography>
+
               </Button>
             </Box>
           </Grid>

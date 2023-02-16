@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 // libraries
 import { useSelector } from 'react-redux';
-import { useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 

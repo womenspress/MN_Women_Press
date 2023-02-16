@@ -31,21 +31,25 @@ export default function BasicCard(props) {
   let contacts = filterNullContacts(props.theme.contacts);
 
   // filter null values from stories & story contact, and story contact object information
-  function filterNullContacts(contacts){
+  function filterNullContacts(contacts) {
     return contacts.filter(x => x != null && x.id != null);
   }
 
-  function filterNullStories(stories){
+  function filterNullStories(stories) {
     return stories.filter(x => x != null && x.id != null);
   }
-    
+
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
     <>
       <Card sx={{ width: '100%', height: 200, cursor: 'pointer' }} onClick={() => setModalOpen(true)}>
         <CardContent>
-          <Box sx={{ height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll' }}>
+          <Box sx={{
+            height: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden', overflowY: 'scroll', overflowX: 'scroll', '&::-webkit-scrollbar': {
+              width: 0,
+            }
+          }}>
             <Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h5" sx={{ textAlign: 'left' }}>
@@ -62,26 +66,26 @@ export default function BasicCard(props) {
           </Box>
         </CardContent>
       </Card>
-    <CardActions>
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      >
-        <Box sx={{...largeModal, padding: 4}}>
-          <ThemeModal
-            theme={theme}
-            id={id}
-            name={name}
-            description={description}
-            month={month}
-            year={year}
-            stories={stories}
-            contacts={contacts}
-          />
-        </Box>
-      </Modal>
+      <CardActions>
+        <Modal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        >
+          <Box sx={{ ...largeModal, padding: 4 }}>
+            <ThemeModal
+              theme={theme}
+              id={id}
+              name={name}
+              description={description}
+              month={month}
+              year={year}
+              stories={stories}
+              contacts={contacts}
+            />
+          </Box>
+        </Modal>
 
-    </CardActions>
+      </CardActions>
     </>
   );
 }

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 //components
-import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton, DialogActions, DialogContent, Dialog, DialogContentText, DialogTitle, Modal } from '@mui/material'
+import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton, DialogActions, DialogContent, Dialog, DialogContentText, DialogTitle, Modal, Grid } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -19,7 +19,23 @@ import { largeModal, smallModal } from '../../__style';
 import { ContactEmergencySharp } from '@mui/icons-material';
 
 
-export default function ContactListItem({contact, numOfTagsToDisplay}) {
+export default function ContactListItem(props) {
+
+  const {
+    contact,
+    compact
+  } = props
+
+  /* 
+  compact:
+  name, pronouns, X tags, X roles
+  
+  avatar, bio, X edit, X delete, X contact page button
+  
+  
+  
+  */
+
 
   const history = useHistory()
   const dispatch = useDispatch();
@@ -64,8 +80,15 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
   }
 
   const avatarStyle = {
-    height: 30,
-    width: 30,
+    height: 60,
+    width: 60,
+    margin: 1,
+    fontSize: 24
+  }
+
+  const avatarStyleCompact = {
+    height: 50,
+    width: 50,
     margin: 1,
     fontSize: 14
   }
@@ -94,88 +117,83 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
   }
 
   return (
-    <Paper sx={{ paddingX: 1, marginY: .5, height: "fit-content"}}>
+    <Paper sx={{ paddingX: 1, marginY: .5, height: "fit-content" }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: .35 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: compact ? .8 : .35 }}>
           <IconButton
             size='small'
             onClick={() => setDetailsOpen(!detailsOpen)}>
             {detailsOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
           </IconButton>
-          <Typography sx={{ marginRight: 1 }}>{contact.name}</Typography>
-          <Typography>{contact.pronouns}</Typography>
+          <Button sx={{ textTransform: 'none' }} onClick={() => history.push(`/ContactDetails/${contact.id}`)}>
+            <Typography sx={{ marginRight: 1, fontWeight: '500' }}>{contact.name}</Typography>
+          </Button>
+          <Typography sx={{ fontSize: 14, color: 'grey.800' }}>{contact.pronouns}</Typography>
+
         </Box>
-        <Box sx={{width: .3, height: .50 }}>
-          <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
-          <Typography sx={{ ml: 1 }}>
-            {contact.roles[0]?.name}
-          </Typography>
-          {contact.roles[1] &&
+        {
+          compact ? null :
             <>
-              <Typography>•</Typography>
-              <Typography sx={{ mr: 1 }}>
-                {contact.roles[1].name}
-              </Typography>
-            </>}
-        </Box>
+              <Box sx={{ width: .3, height: .50 }}>
+                <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
+                <Typography sx={{ ml: 1, fontSize: 14, color: 'grey.800' }}>
+                  {contact.roles[0]?.name}
+                </Typography>
+
+
+                {contact.roles[1] &&
+                  <>
+                    <Typography sx={{ fontSize: 14, color: 'grey.800' }}>•</Typography>
+                    <Typography sx={{ mr: 1, fontSize: 14, color: 'grey.800' }}>
+                      {contact.roles[1].name}
+                    </Typography>
+                  </>}
+              </Box>
+            </>
+        }
+
       </Box>
 
 
       <Collapse
         in={detailsOpen}
+
       >
-        <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{ borderTop: '1px solid lightgrey', m: 1 }}>
-          <Box sx={{ display: 'flex', mb: 2 }}>
-            <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
-            <Box sx={{ width: .40, mr: 5, ml: 5 }}>
-              <Typography variant='body2' fontSize={18}>Bio:</Typography>
-              <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={14}>
-                {contact.bio}
-              </Typography>
-            </Box>
-            <Box sx={{ width: .45 }} >
+        <Grid container spacing={1} sx={{ borderTop: '1px solid lightgrey', m: 1 }}>
+          <Grid item xs={compact ? 2 : 1} sx={{ textAlign: 'right' }}>
+            <Button onClick={() => history.push(`/ContactDetails/${contact.id}`)} >
+              <ContactAvatar avatarStyle={compact ? avatarStyleCompact : avatarStyle} contact={contact} />
+            </Button>
+          </Grid>
+          <Grid item xs={compact ? 9 : 5}>
+            <Typography variant='body2' fontSize={compact ? 16 : 18}>Bio:</Typography>
+            <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={compact ? 13 : 14}>
+              {contact.bio}
+            </Typography>
+          </Grid>{compact ? null : <>
+            <Grid item xs={3}>
               <Typography fontSize={18}>Recent contribution:</Typography>
               <StoryCard story={contact.stories[0]} />
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content' }}>
-            {contact !== undefined && <EditContactModal contact={contact} />}
-            <IconButton size='small' onClick={handleDeleteOpen}>
-              <DeleteIcon />
-            </IconButton>
-            {/* <Dialog
-              open={openDelete}
-              onClose={handleDeleteClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Delete contact of " + contact.name}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  Delete this contact will permanently remove this contact from the database.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleDeleteClose}>Cancel</Button>
-                <Button onClick={() => deleteContact(contact.id)} autoFocus>
-                  Delete
+            </Grid>
+            <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+              <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content', mr: 3 }}>
+                {contact !== undefined && <EditContactModal contact={contact} />}
+                <IconButton size='small' onClick={handleDeleteOpen}>
+                  <DeleteIcon />
+                </IconButton>
+                <Button
+                  onClick={() => history.push(`/ContactDetails/${contact.id}`)}
+                  size='small'
+                  color='inherit'
+                  endIcon={<ArrowForwardIcon />}>
+                  to contact page
                 </Button>
-              </DialogActions>
-            </Dialog> */}
-
-            <Button
-              onClick={() => history.push(`/ContactDetails/${contact.id}`)}
-              size='small'
-              color='inherit'
-              endIcon={<ArrowForwardIcon />}>
-              to contact page
-            </Button>
-          </Box>
-        </Box>
+              </Box>
+            </Grid>
+          </>}
+        </Grid>
       </Collapse>
       <Modal
         open={deleteOpen}
@@ -183,7 +201,7 @@ export default function ContactListItem({contact, numOfTagsToDisplay}) {
       >
         <Box
           sx={{ ...smallModal, height: 70, top: mousePos.y, left: mousePos.x, boxShadow: 5, transform: getTransform(mousePos) }}>
-          <Typography variant='h6' sx={{ fontSize: 16 }}>delete this story?</Typography>
+          <Typography variant='h6' sx={{ fontSize: 16 }}>delete this contact?</Typography>
           <Typography variant='body2' sx={{ fontSize: 13 }}>this action can't be undone</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button onClick={handleDelete}>delete</Button>

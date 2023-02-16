@@ -9,7 +9,10 @@ import { combineReducers } from 'redux';
 */
 
 const allThemes = (state = [], action) => {
-  if (action.type === 'SET_ALL_THEMES') return action.payload
+  if (action.type === 'SET_ALL_THEMES') {
+  
+    return action.payload
+  }
   return state
 }
 

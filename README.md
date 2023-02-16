@@ -71,9 +71,24 @@ Before pushing to Heroku, run `npm run build` in terminal. This will create a bu
 
 There is a video link below of an application tour. This will explain the use cases for each page
 
-- [Application Walk Through](https://www.youtube.com/watch?v=hZOw8OyA-3A)
+- [Application Walk Through Video](https://www.youtube.com/watch?v=hZOw8OyA-3A)
 
-Directory Structure:
+
+**Stories Page**
+![stories page](Readme_pictures/stories_page.png)
+
+**Contacts Page**
+![stories page](Readme_pictures/contacts_page.png)
+
+**Themes Page**
+![stories page](Readme_pictures/themes_page.png)
+
+**Archive Page**
+![archive page](Readme_pictures/archive_page.png)
+
+
+
+## Directory Structure:
 
 - `src/` contains the React application
 - `public/` contains static assets for the client-side

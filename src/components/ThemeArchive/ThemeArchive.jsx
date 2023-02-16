@@ -9,7 +9,7 @@ import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch';
 import { Box, Typography, Grid, Modal } from '@mui/material';
 import ArchiveThemeCard from '../../assets/ArchiveThemeCard/ArchiveThemeCard';
 import StoryListItem from '../StoryListItem/StoryListItem';
-import ContactListItem from '../ThemeContactListItem/ThemeContactListItem';
+import ContactListItem from '../ContactListItem/ContactListItem';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 import { largeModal } from '../../__style'
 
@@ -114,7 +114,7 @@ export default function ThemeArchive() {
   }
 
   //! set to all themes temporarily. eventually, set to archiveThemes
-  const themeResults = sortResults(searchResults(allThemes))
+  const themeResults = sortResults(searchResults(archiveThemes))
 
 
   // edit and delete function/variables here:
@@ -172,7 +172,7 @@ export default function ThemeArchive() {
               {themeContacts.map(contact => {
 
                 return (
-                  contact && <ContactListItem key={contact.id} contact={contact} />
+                  contact && <ContactListItem compact key={contact.name} contact={contact}/>
                 )
               })}
             </Box>

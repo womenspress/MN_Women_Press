@@ -1,7 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux'
-import { Box, Collapse, Button, Menu, MenuItem, Grid, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Collapse, Button, Menu, MenuItem, Grid, FormControlLabel, Checkbox, MenuList } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export default function StatusDropdown({ story }) {
 
@@ -119,9 +120,10 @@ export default function StatusDropdown({ story }) {
         <Button
           onClick={handleClick}
           sx={{ color: 'grey.700', textTransform: 'none' }}
+          startIcon = {<CheckCircleOutlineIcon/>}
 
         >
-          status
+          update
         </Button>
       </Box>
       <Menu
@@ -133,6 +135,7 @@ export default function StatusDropdown({ story }) {
           return (
             <MenuItem
               key={piece.name}
+              sx = {{marginY: 0, paddingY: 0}}
             >
               <FormControlLabel
                 label={piece.name}

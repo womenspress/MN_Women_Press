@@ -50,7 +50,6 @@ const allStories = (state = [], action) => {
     const allStories = action.payload;
     for (let story of allStories) {
       story.statusColor = makeStatusColor(story)
-      // console.log('status color of story ', story.id, story.statusColor)
     }
     return allStories
   }

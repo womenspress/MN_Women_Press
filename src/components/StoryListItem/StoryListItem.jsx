@@ -24,7 +24,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // internal
 import { largeModal, smallModal } from '../../__style';
-import { makeStatusColor } from '../../modules/makeStatusColor';
 import ListTags from '../ListTags/ListTags';
 
 /* 
@@ -61,10 +60,8 @@ export default function StoryListItem(props) {
 
   // console.log('story list item, story:', story)
 
-  const statusColor = makeStatusColor(story)
-
   const statusStyle = {
-    bgcolor: story.statusColor.color,
+    bgcolor: story.statusColor?.color || 'black',
     width: 16,
     height: 16,
     minWidth: 16,
@@ -83,9 +80,7 @@ export default function StoryListItem(props) {
     return 'translate(-5%,5%)'
   }
 
-  const author = story.contacts?.filter(contact => contact.story_association === 'author');
-
-
+  const author = story.contacts?.filter(contact => contact?.story_association === 'author');
 
   const handleDeleteOpen = (e) => {
     setMousePos({ x: e.clientX, y: e.clientY })
@@ -126,12 +121,18 @@ export default function StoryListItem(props) {
               <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
+
               <IconButton
                 size='small'
                 onClick={() => setCollapseOpen(!collapseOpen)}>
                 {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
-              <Typography>{story.title}</Typography>
+              <Button
+                sx = {{textTransform: 'none', color: 'inherit', }}
+                onClick = {()=>history.push(`/storydetails/${story.id}`)}
+              >
+                <Typography fontWeight='500'>{story.title}</Typography>
+              </Button>
             </Box>
           </Grid>
           {props.compactMode ?
@@ -140,12 +141,12 @@ export default function StoryListItem(props) {
             <>
               <Grid item xs={2}>
                 {story.theme ?
-                  <Typography> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
+                  <Typography sx={{ fontWeight: '400', color: 'grey.800', fontSize: 14 }}> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
                   :
                   <></>}
               </Grid>
               <Grid item xs={2}>
-                <Typography>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
+                <Typography sx={{ fontWeight: '400', color: 'grey.800', fontSize: 14 }}>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
               </Grid>
             </>
           }
@@ -166,9 +167,13 @@ export default function StoryListItem(props) {
               {upcomingDeadlines[0] ? <>Upcoming: {upcomingDeadlines[0]?.name}-{upcomingDeadlines[0]?.date.toFormat('MMMM dd, yyyy')}</> : <></>}
             </Typography>
           </Box>
-          <Box>
-            <ListTags numOfDisplay={3} tags={story.tags} removeTag={removeTag} />
-          </Box>
+          {story.tags ?
+            <Box>
+              <ListTags numOfDisplay={3} tags={story.tags} removeTag={removeTag} />
+            </Box>
+            :
+            <></>
+          }
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />

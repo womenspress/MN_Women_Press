@@ -46,7 +46,7 @@ function* getCurrentStory(action) {
 function* createNewStory(action) {
   try {
 
-    if (action.payload.contacts[0]){
+    if (action.payload.contacts[0]) {
       action.payload.payment_required = !!action.payload.contacts.filter(e => e.invoice_amount > 0);
     } else {
       action.payload.payment_required = false;
@@ -63,7 +63,7 @@ function* createNewStory(action) {
 function* editStory(action) {
   try {
     console.log('in edit story with payload: ', action.payload)
-    if (action.payload.contacts[0]){
+    if (action.payload.contacts[0]) {
       action.payload.payment_required = !!action.payload.contacts.filter(e => e.invoice_amount > 0);
     } else {
       action.payload.payment_required = false;
@@ -79,12 +79,12 @@ function* editStory(action) {
 }
 
 function* updateStoryStatus(action) {
-  try{
+  try {
     yield axios.put(`/api/stories/status/${action.payload.story_id}`, action.payload);
-    yield put({type: 'GET_CURRENT_STORY', payload: action.payload.story_id});
-    yield put({ type: 'GET_ALL_STORIES'});
+    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.story_id });
+    yield put({ type: 'GET_ALL_STORIES' });
   }
-  catch(error){
+  catch (error) {
     console.log('error in updateStoryStatus saga:', error)
   }
 }
@@ -94,7 +94,7 @@ function* updateStoryNotes(action) {
   //action.payload === {storyId: num, notes: 'string'}
   try {
     yield axios.put('/api/stories/notes/' + action.payload.storyId, action.payload);
-    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.storyId})
+    yield put({ type: 'GET_CURRENT_STORY', payload: action.payload.storyId })
   } catch (error) {
     console.log('error in updateStoryNotes saga:', error)
   }

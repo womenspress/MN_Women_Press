@@ -30,7 +30,8 @@ export default function StoriesPage() {
 
   const allStories = useSelector(story => story.stories.allStories)
   // added other date fields into current stories, as well as use photo_uploaded as a check to make sure story ideas do not drop off the story page (otherwise if there are no tasks assigned and with a default publication_date of today() it will not show on the page)
-  const currentStories = allStories.filter(story => story.statusColor.color !== 'grey')
+  const currentStories = allStories.filter(story => story.statusColor.color !== 'grey'
+  )
 
   // createMode: will the big story modal be in create or edit mode?
   const [createMode, setCreateMode] = useState(true);
@@ -79,7 +80,7 @@ export default function StoriesPage() {
           else return 0
         })
       case 'status':
-        const statusArr = ['grey.100', 'red', 'yellow', 'green', 'grey']
+        const statusArr = ['grey.100', '#b30000', '#fff633', '#008000', 'grey']
         return arr.sort((a, b) => {
           if (statusArr.indexOf(a.statusColor.color) > statusArr.indexOf(b.statusColor.color)) return -1
           if (statusArr.indexOf(a.statusColor.color) < statusArr.indexOf(b.statusColor.color)) return 1

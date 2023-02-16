@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 //components
-import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton, DialogActions, DialogContent, Dialog, DialogContentText, DialogTitle, Modal } from '@mui/material'
+import { Box, Button, Paper, Typography, Avatar, Collapse, IconButton, DialogActions, DialogContent, Dialog, DialogContentText, DialogTitle, Modal, Grid } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -63,8 +63,8 @@ export default function ContactListItem({ contact, numOfTagsToDisplay }) {
   }
 
   const avatarStyle = {
-    height: 30,
-    width: 30,
+    height: 60,
+    width: 60,
     margin: 1,
     fontSize: 14
   }
@@ -101,8 +101,10 @@ export default function ContactListItem({ contact, numOfTagsToDisplay }) {
             onClick={() => setDetailsOpen(!detailsOpen)}>
             {detailsOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
           </IconButton>
-          <Typography sx={{ marginRight: 1, fontWeight: '500' }}>{contact.name}</Typography>
-          <Typography sx = {{fontSize: 14, color: 'grey.800' }}>{contact.pronouns}</Typography>
+          <Button sx={{ textTransform: 'none' }} onClick={() => history.push(`/ContactDetails/${contact.id}`)}>
+            <Typography sx={{ marginRight: 1, fontWeight: '500' }}>{contact.name}</Typography>
+            <Typography sx={{ fontSize: 14, color: 'grey.800' }}>{contact.pronouns}</Typography>
+          </Button>
         </Box>
         <Box sx={{ width: .3, height: .50 }}>
           <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
@@ -124,57 +126,40 @@ export default function ContactListItem({ contact, numOfTagsToDisplay }) {
 
       <Collapse
         in={detailsOpen}
+        
       >
-        <Box display='flex' flexDirection='row' justifyContent='space-between' sx={{ borderTop: '1px solid lightgrey', m: 1 }}>
-          <Box sx={{ display: 'flex', mb: 2 }}>
-            <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
-            <Box sx={{ width: .40, mr: 5, ml: 5 }}>
-              <Typography variant='body2' fontSize={18}>Bio:</Typography>
-              <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={14}>
-                {contact.bio}
-              </Typography>
-            </Box>
-            <Box sx={{ width: .45 }} >
-              <Typography fontSize={18}>Recent contribution:</Typography>
-              <StoryCard story={contact.stories[0]} />
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content' }}>
-            {contact !== undefined && <EditContactModal contact={contact} />}
-            <IconButton size='small' onClick={handleDeleteOpen}>
-              <DeleteIcon />
-            </IconButton>
-            {/* <Dialog
-              open={openDelete}
-              onClose={handleDeleteClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Delete contact of " + contact.name}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  Delete this contact will permanently remove this contact from the database.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleDeleteClose}>Cancel</Button>
-                <Button onClick={() => deleteContact(contact.id)} autoFocus>
-                  Delete
-                </Button>
-              </DialogActions>
-            </Dialog> */}
-
-            <Button
-              onClick={() => history.push(`/ContactDetails/${contact.id}`)}
-              size='small'
-              color='inherit'
-              endIcon={<ArrowForwardIcon />}>
-              to contact page
+        <Grid container spacing={1} sx={{ borderTop: '1px solid lightgrey', m: 1 }}>
+          <Grid item xs={1} sx = {{textAlign: 'right'}}>
+            <Button onClick={() => history.push(`/ContactDetails/${contact.id}`)} >
+              <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
             </Button>
-          </Box>
-        </Box>
+          </Grid>
+          <Grid item xs={5}>
+            <Typography variant='body2' fontSize={18}>Bio:</Typography>
+            <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={14}>
+              {contact.bio}
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <Typography fontSize={18}>Recent contribution:</Typography>
+            <StoryCard story={contact.stories[0]} />
+          </Grid>
+          <Grid item xs={3} sx ={{ display: 'flex', flexDirection: 'row-reverse'}}>
+            <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content', mr: 3 }}>
+              {contact !== undefined && <EditContactModal contact={contact} />}
+              <IconButton size='small' onClick={handleDeleteOpen}>
+                <DeleteIcon />
+              </IconButton>
+              <Button
+                onClick={() => history.push(`/ContactDetails/${contact.id}`)}
+                size='small'
+                color='inherit'
+                endIcon={<ArrowForwardIcon />}>
+                to contact page
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
       </Collapse>
       <Modal
         open={deleteOpen}

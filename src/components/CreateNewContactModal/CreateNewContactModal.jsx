@@ -14,7 +14,6 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Email } from '@mui/icons-material';
 import ContactTagSearchCard from '../../assets/TagSearchCard/ContactTagSearchCard';
 
-import { autofillContact } from '../../autofill'
 
 const style = {
   position: 'absolute',
@@ -212,21 +211,13 @@ export default function CreateNewContactModal() {
     handleClose()
   }
 
-  //* ================ autofill ===================
-
-  const handleAutofill = () => {
-    setName('Victoria Mertens');
-    setPronouns('she/her');
-    setExpertise('Full-stack software engineer, Prime Digital Academy graduate');
-    setEmail('victoria.mertens44@gmail.com');
-  }
 
   const ModalPages = () => {
     switch (createContactPage) {
       case 1:
         return (
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h4" component="h2" onClick={handleAutofill}>
+            <Typography id="modal-modal-title" variant="h4" component="h2">
               New Contact
             </Typography>
             <TextField sx={{ width: .70 }} id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) => setName(event.target.value)} />

@@ -104,7 +104,7 @@ export default function ThemeArchive() {
   }
 
   //! set to all themes temporarily. eventually, set to archiveThemes
-  const themeResults = sortResults(searchResults(allThemes))
+  const themeResults = sortResults(searchResults(archiveThemes))
 
 
   // edit and delete function/variables here:

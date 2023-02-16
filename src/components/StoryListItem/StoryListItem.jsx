@@ -139,12 +139,12 @@ export default function StoryListItem(props) {
             <>
               <Grid item xs={2}>
                 {story.theme ?
-                  <Typography> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
+                  <Typography sx = {{fontWeight: '400', color: 'grey.800', fontSize: 14}}> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
                   :
                   <></>}
               </Grid>
               <Grid item xs={2}>
-                <Typography>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
+                <Typography sx = {{fontWeight: '400', color: 'grey.800', fontSize: 14}}>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
               </Grid>
             </>
           }

@@ -25,8 +25,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Modal from '@mui/material/Modal';
 
-// internal
-import {autofill1, autofill3} from '../../autofill'
 
 const style = {
   position: 'absolute',
@@ -210,9 +208,6 @@ export default function StoryModalGeneral(props) {
     setStep('additional');
   };
 
-//* =========================== autofill data for presentation ============================
-
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
@@ -229,10 +224,8 @@ export default function StoryModalGeneral(props) {
         {/* contact payment: {JSON.stringify(inputValues.contacts.map(contact=> {return {payment_required: contact.payment_required, "name": contact.name}}))} */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }} >
           <Box></Box>
-          {/* //! --------------- autofill 1 ------------------ */}
           <Typography 
-          variant="h4"
-          onClick = {()=>setInputValues(autofill1)}>
+          variant="h4">
             {createMode ? 'New Story - general' : 'Edit Story - general'}
           </Typography>
           <CloseIcon
@@ -249,8 +242,7 @@ export default function StoryModalGeneral(props) {
           {/* title */}
           <Grid item xs={4}>
 
-            {/* //! ------------------------ autofill 3 ------------------------------ */}
-            <Typography sx={{ textAlign: 'right', marginRight: 3 }} onClick = {()=>setInputValues(autofill3)}>
+            <Typography sx={{ textAlign: 'right', marginRight: 3 }}>
               title *
             </Typography>
           </Grid>

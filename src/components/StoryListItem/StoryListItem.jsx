@@ -29,7 +29,6 @@ export default function StoryListItem(props) {
     setModalOpen
   } = props
 
-  console.log(story);
 
   const dispatch = useDispatch();
 
@@ -84,7 +83,6 @@ export default function StoryListItem(props) {
 
   // remove tag from story
   const removeTag = (tagID) => {
-    console.log('remove tag', tagID, 'from story: ', story.id);
     const story_id = story.id;
     dispatch({ type: 'DELETE_STORY_TAG', payload: { tag_id: tagID, story_id: story_id } })
   }
@@ -105,7 +103,7 @@ export default function StoryListItem(props) {
                 {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
               <Button
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: 'none', textAlign: 'left' }}
                 onClick={() => history.push(`/storydetails/${story.id}`)}
               >
                 <Typography sx={{ fontWeight: '500' }}>{story.title}</Typography>

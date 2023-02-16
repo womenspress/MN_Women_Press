@@ -124,8 +124,7 @@ export default function StoryListItem(props) {
               <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
-              :
-              <></>}
+              
               <IconButton
                 size='small'
                 onClick={() => setCollapseOpen(!collapseOpen)}>

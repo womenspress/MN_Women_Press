@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, } from 'react';
 
 // libraries
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,8 +6,7 @@ import { useParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
 
 // components
-import { Box, Grid, Modal, Typography, TextField } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, Grid, Modal, Typography } from '@mui/material';
 import StoryListItem from '../../components/StoryListItem/StoryListItem';
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar'
 import EditContactModal from '../../components/EditContactModal/EditContactModal';
@@ -69,12 +68,11 @@ export default function ContactDetailsPage() {
     dispatch({ type: 'CLEAR_TEMP_STORY' })
   }
 
-    // remove tag from contact
-    const removeTag = (tagID) => {
-      // console.log('remove tag', tagID, 'from story: ', id);
-      const story_id = id;
-      dispatch({type: 'DELETE_CONTACT_TAG', payload: {tag_id: tagID, contact_id: id}})
-    }
+  // remove tag from contact
+  const removeTag = (tagID) => {
+    const story_id = id;
+    dispatch({ type: 'DELETE_CONTACT_TAG', payload: { tag_id: tagID, contact_id: id } })
+  }
 
   //* ============================= SORT/FILTER/SEARCH STUFF ===============================
 
@@ -92,7 +90,6 @@ export default function ContactDetailsPage() {
   const sortResults = (arr) => {
     switch (sortMethod) {
       case 'date published':
-        console.log('sorting by date published')
         return arr.sort((a, b) => {
           if (!a.publication_date) return 1
           if (!b.publication_date) return -1
@@ -101,7 +98,6 @@ export default function ContactDetailsPage() {
           else return 0
         })
       case 'title':
-        console.log('sorting by title')
         return arr.sort((a, b) => {
           if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
           if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
@@ -110,7 +106,6 @@ export default function ContactDetailsPage() {
           }
         })
       case 'date added':
-        console.log('sorting by date added')
         return arr.sort((a, b) => {
           if (DateTime.fromISO(a.date_added) > DateTime.fromISO(b.date_added)) return 1
           if (DateTime.fromISO(a.date_added) < DateTime.fromISO(b.date_added)) return -1
@@ -155,7 +150,6 @@ export default function ContactDetailsPage() {
     }
   }
 
-  //! set to all themes temporarily. eventually, set to archiveThemes
   const storyResults = ascDesc(sortResults(searchResults(contactStories)))
 
   return (
@@ -208,12 +202,6 @@ export default function ContactDetailsPage() {
               setSearchTerm={setSearchTerm}
             />
           </Box>
-          {/* <TextField
-            variant='outlined'
-            label='Search'
-            fullWidth
-            size='small'
-          /> */}
 
         </Grid>
       </Grid>

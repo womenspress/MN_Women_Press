@@ -1,34 +1,8 @@
-/* 
-  function to read the story object and get the corresponding color.
-
-  grey: past
-  red: missing at least one of: author, 
-
-*/
 import { DateTime } from 'luxon'
 
 export function makeStatusColor(story) {
-  // console.log('publication date', story)
-
 
   const hasAuthor = !!story.contacts?.filter(contact => contact?.story_association === 'author').length
-  // console.log('author?', hasAuthor, story.contacts)
-
-  const paymentRequired = !!story.contacts?.filter(contact => contact?.invoice_amount > 0).length
-  // console.log('payment required?', paymentRequired)
-
-
-
-
-  // console.log('publication date', story.publication_date)
-
-  // const hasAuthor = true;
-
-  // !!story.contacts?.filter(contact => contact.role === 'author').length
-  // console.log('author?', hasAuthor)
-
-  // const paymentRequired = !!story.contacts?.filter(contact=>contact.invoice_amount>0).length
-  // console.log('payment required?', paymentRequired)
 
   const piecesToTrack = [
     {
@@ -74,13 +48,8 @@ export function makeStatusColor(story) {
       complete: story.underwriter_completed,
     },
   ].filter(piece => piece.status);
-  // console.log(piecesToTrack);
 
   const piecesReady = !piecesToTrack.filter(piece => !piece.complete).length
-  // console.log('pieces ready', piecesReady, story.title);
-  // const piecesReady = !piecesToTrack.filter(piece=>!piece.complete).length
-  // console.log('pieces ready', piecesReady);
-
 
   // need to add deadlines and author to progress from red to yellow
   if ((story.publication_date === story.rough_draft_deadline) && (story.final_draft_deadline === story.publication_date) && !piecesReady) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }

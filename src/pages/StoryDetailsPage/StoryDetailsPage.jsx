@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { DateTime } from 'luxon';
-import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, FormControl, Link, Modal, styled, TextField, Tooltip } from '@mui/material';
+import { Box, Grid, Typography, Paper, FormControlLabel, Checkbox, FormGroup, Link, Modal, TextField, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import ListTags from '../../components/ListTags/ListTags';
@@ -10,10 +10,7 @@ import { useSelector } from 'react-redux';
 
 // internal
 import { largeModal, mainContentBox } from '../../__style'
-import { makeStatusColor } from '../../modules/makeStatusColor';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
-
-
 
 export default function StoriesPage() {
   // hooks
@@ -90,7 +87,6 @@ export default function StoriesPage() {
 
   //------- handle the check/uncheck of todo list items --------------//
   const handleCheck = (event) => {
-    // console.log(event.target.id)
     let statusToChange;
     switch (event.target.id) {
       case 'copies sent':
@@ -126,7 +122,6 @@ export default function StoriesPage() {
 
   // remove tag from story
   const removeTag = (tagID) => {
-    // console.log('remove tag', tagID, 'from story: ', id);
     const story_id = id;
     dispatch({ type: 'DELETE_STORY_TAG', payload: { tag_id: tagID, story_id: story_id } })
   }

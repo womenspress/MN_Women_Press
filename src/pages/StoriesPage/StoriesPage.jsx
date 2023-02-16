@@ -8,12 +8,11 @@ import { DateTime } from 'luxon'
 import StoryListItem from '../../components/StoryListItem/StoryListItem'
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import { Box, Button, IconButton, Typography, Modal } from '@mui/material';
+import { Box, IconButton, Typography, Modal } from '@mui/material';
 import SortFilterSearch from '../../assets/SortFilterSearch/SortFilterSearch'
 
 // internal
 import { largeModal, mainContentBox } from '../../__style'
-// import { story } from '../../sampleData';
 
 export default function StoriesPage() {
 
@@ -32,8 +31,6 @@ export default function StoriesPage() {
   // added other date fields into current stories, as well as use photo_uploaded as a check to make sure story ideas do not drop off the story page (otherwise if there are no tasks assigned and with a default publication_date of today() it will not show on the page)
   const currentStories = allStories.filter(story => story.statusColor.color !== 'grey'
   )
-
-  //! temporary fix. const allStories = useSelector(store => store.stories.allStories);
 
   // createMode: will the big story modal be in create or edit mode?
   const [createMode, setCreateMode] = useState(true);
@@ -136,7 +133,6 @@ export default function StoriesPage() {
 
   return (
     <Box>
-      {/* {JSON.stringify(currentStories)} */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginX: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant='h3'>Stories</Typography>

@@ -11,7 +11,7 @@ import { Box, Typography, Grid, Modal } from '@mui/material';
 import ThemeCard from '../ThemeCard/ThemeCard';
 import ArchiveThemeCard from '../../assets/ArchiveThemeCard/ArchiveThemeCard';
 import StoryListItem from '../StoryListItem/StoryListItem';
-import ContactListItem from '../ThemeContactListItem/ThemeContactListItem';
+import ContactListItem from '../ContactListItem/ContactListItem';
 import StoryCreateEditModal from '../../components/StoryCreateEditModal/StoryCreateEditModal';
 import { largeModal } from '../../__style'
 
@@ -170,7 +170,7 @@ export default function ThemeArchive() {
               {selectedTheme.contacts?.map(contact => {
 
                 return (
-                  contact && <ContactListItem key={contact.name} contact={contact}/>
+                  contact && <ContactListItem compact key={contact.name} contact={contact}/>
                 )
               })}
             </Box>

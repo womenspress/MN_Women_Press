@@ -82,7 +82,7 @@ export default function StoriesPage() {
           else return 0
         })
       case 'status':
-        const statusArr = ['grey.100', 'red', 'yellow', 'green', 'grey']
+        const statusArr = ['grey.100', '#b30000', '#fff633', '#008000', 'grey']
         return arr.sort((a, b) => {
           if (statusArr.indexOf(a.statusColor.color) > statusArr.indexOf(b.statusColor.color)) return -1
           if (statusArr.indexOf(a.statusColor.color) < statusArr.indexOf(b.statusColor.color)) return 1

@@ -27,7 +27,7 @@ export default function ThemesPage() {
 
   return (
     <div>
-      <Typography variant="h3" component="h1">
+      <Typography variant="h3" component="h1" sx = {{ml: 3}}>
         Themes
       </Typography>
       <Box sx={{bgcolor: 'grey.100',padding: 1,margin: 1,borderRadius: 2 }}>

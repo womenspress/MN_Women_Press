@@ -124,13 +124,18 @@ export default function StoryListItem(props) {
               <Tooltip title={story.statusColor.notes}>
                 <Box sx={statusStyle}></Box>
               </Tooltip>
-              
+
               <IconButton
                 size='small'
                 onClick={() => setCollapseOpen(!collapseOpen)}>
                 {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
-              <Typography sx = {{fontWeight: '500'}}>{story.title}</Typography>
+              <Button
+                sx = {{textTransform: 'none'}}
+                onClick = {()=>history.push(`/storydetails/${story.id}`)}
+              >
+                <Typography sx={{ fontWeight: '500' }}>{story.title}</Typography>
+              </Button>
             </Box>
           </Grid>
           {props.compactMode ?
@@ -139,12 +144,12 @@ export default function StoryListItem(props) {
             <>
               <Grid item xs={2}>
                 {story.theme ?
-                  <Typography sx = {{fontWeight: '400', color: 'grey.800', fontSize: 14}}> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
+                  <Typography sx={{ fontWeight: '400', color: 'grey.800', fontSize: 14 }}> {story.theme[0] && `Theme: ${story.theme[0]?.name}`}</Typography>
                   :
                   <></>}
               </Grid>
               <Grid item xs={2}>
-                <Typography sx = {{fontWeight: '400', color: 'grey.800', fontSize: 14}}>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
+                <Typography sx={{ fontWeight: '400', color: 'grey.800', fontSize: 14 }}>{author?.length ? <>by: {author[0]?.name}</> : null}</Typography>
               </Grid>
             </>
           }
@@ -165,13 +170,13 @@ export default function StoryListItem(props) {
               {upcomingDeadlines[0] ? <>Upcoming: {upcomingDeadlines[0]?.name}-{upcomingDeadlines[0]?.date.toFormat('MMMM dd, yyyy')}</> : <></>}
             </Typography>
           </Box>
-          {story.tags?
-          <Box>
-            <ListTags numOfDisplay={3} tags={story.tags} removeTag={removeTag} />
-          </Box>
-        :
-        <></>  
-        }
+          {story.tags ?
+            <Box>
+              <ListTags numOfDisplay={3} tags={story.tags} removeTag={removeTag} />
+            </Box>
+            :
+            <></>
+          }
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton size='small' onClick={handleEditOpen}>
               <EditIcon />

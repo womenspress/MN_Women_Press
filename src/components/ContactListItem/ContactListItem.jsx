@@ -18,7 +18,23 @@ import ListTags from '../ListTags/ListTags';
 import { largeModal, smallModal } from '../../__style';
 
 
-export default function ContactListItem({ contact, numOfTagsToDisplay }) {
+export default function ContactListItem(props) {
+
+  const {
+    contact,
+    compact
+  } = props
+
+  /* 
+  compact:
+  name, pronouns, X tags, X roles
+  
+  avatar, bio, X edit, X delete, X contact page button
+  
+  
+  
+  */
+
 
   const history = useHistory()
   const dispatch = useDispatch();
@@ -66,6 +82,13 @@ export default function ContactListItem({ contact, numOfTagsToDisplay }) {
     height: 60,
     width: 60,
     margin: 1,
+    fontSize: 24
+  }
+
+  const avatarStyleCompact = {
+    height: 50,
+    width: 50,
+    margin: 1,
     fontSize: 14
   }
 
@@ -95,7 +118,7 @@ export default function ContactListItem({ contact, numOfTagsToDisplay }) {
   return (
     <Paper sx={{ paddingX: 1, marginY: .5, height: "fit-content" }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: .35 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', width: compact ? .8 : .35 }}>
           <IconButton
             size='small'
             onClick={() => setDetailsOpen(!detailsOpen)}>
@@ -103,62 +126,72 @@ export default function ContactListItem({ contact, numOfTagsToDisplay }) {
           </IconButton>
           <Button sx={{ textTransform: 'none' }} onClick={() => history.push(`/ContactDetails/${contact.id}`)}>
             <Typography sx={{ marginRight: 1, fontWeight: '500' }}>{contact.name}</Typography>
-            <Typography sx={{ fontSize: 14, color: 'grey.800' }}>{contact.pronouns}</Typography>
           </Button>
+          <Typography sx={{ fontSize: 14, color: 'grey.800' }}>{contact.pronouns}</Typography>
+
         </Box>
-        <Box sx={{ width: .3, height: .50 }}>
-          <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
-          <Typography sx={{ ml: 1, fontSize: 14, color: 'grey.800' }}>
-            {contact.roles[0]?.name}
-          </Typography>
-          {contact.roles[1] &&
+        {
+          compact ? null :
             <>
-              <Typography sx={{ fontSize: 14, color: 'grey.800' }}>•</Typography>
-              <Typography sx={{ mr: 1, fontSize: 14, color: 'grey.800' }}>
-                {contact.roles[1].name}
-              </Typography>
-            </>}
-        </Box>
+              <Box sx={{ width: .3, height: .50 }}>
+                <ListTags numOfDisplay={numOfTagsDisplay} tags={contact?.tags} removeTag={removeTag} />
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', width: '30%' }}>
+                <Typography sx={{ ml: 1, fontSize: 14, color: 'grey.800' }}>
+                  {contact.roles[0]?.name}
+                </Typography>
+
+
+                {contact.roles[1] &&
+                  <>
+                    <Typography sx={{ fontSize: 14, color: 'grey.800' }}>•</Typography>
+                    <Typography sx={{ mr: 1, fontSize: 14, color: 'grey.800' }}>
+                      {contact.roles[1].name}
+                    </Typography>
+                  </>}
+              </Box>
+            </>
+        }
+
       </Box>
 
 
       <Collapse
         in={detailsOpen}
-        
+
       >
         <Grid container spacing={1} sx={{ borderTop: '1px solid lightgrey', m: 1 }}>
-          <Grid item xs={1} sx = {{textAlign: 'right'}}>
+          <Grid item xs={compact ? 2 : 1} sx={{ textAlign: 'right' }}>
             <Button onClick={() => history.push(`/ContactDetails/${contact.id}`)} >
-              <ContactAvatar avatarStyle={avatarStyle} contact={contact} />
+              <ContactAvatar avatarStyle={compact ? avatarStyleCompact : avatarStyle} contact={contact} />
             </Button>
           </Grid>
-          <Grid item xs={5}>
-            <Typography variant='body2' fontSize={18}>Bio:</Typography>
-            <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={14}>
+          <Grid item xs={compact ? 9 : 5}>
+            <Typography variant='body2' fontSize={compact ? 16 : 18}>Bio:</Typography>
+            <Typography variant='body2' sx={{ maxHeight: '60px', overflow: 'auto' }} fontSize={compact ? 13 : 14}>
               {contact.bio}
             </Typography>
-          </Grid>
-          <Grid item xs={3}>
-            <Typography fontSize={18}>Recent contribution:</Typography>
-            <StoryCard story={contact.stories[0]} />
-          </Grid>
-          <Grid item xs={3} sx ={{ display: 'flex', flexDirection: 'row-reverse'}}>
-            <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content', mr: 3 }}>
-              {contact !== undefined && <EditContactModal contact={contact} />}
-              <IconButton size='small' onClick={handleDeleteOpen}>
-                <DeleteIcon />
-              </IconButton>
-              <Button
-                onClick={() => history.push(`/ContactDetails/${contact.id}`)}
-                size='small'
-                color='inherit'
-                endIcon={<ArrowForwardIcon />}>
-                to contact page
-              </Button>
-            </Box>
-          </Grid>
+          </Grid>{compact ? null : <>
+            <Grid item xs={3}>
+              <Typography fontSize={18}>Recent contribution:</Typography>
+              <StoryCard story={contact.stories[0]} />
+            </Grid>
+            <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+              <Box sx={{ display: 'flex', alignItems: 'end', width: .25, minWidth: 'fit-content', mr: 3 }}>
+                {contact !== undefined && <EditContactModal contact={contact} />}
+                <IconButton size='small' onClick={handleDeleteOpen}>
+                  <DeleteIcon />
+                </IconButton>
+                <Button
+                  onClick={() => history.push(`/ContactDetails/${contact.id}`)}
+                  size='small'
+                  color='inherit'
+                  endIcon={<ArrowForwardIcon />}>
+                  to contact page
+                </Button>
+              </Box>
+            </Grid>
+          </>}
         </Grid>
       </Collapse>
       <Modal

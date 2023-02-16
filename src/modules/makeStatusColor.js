@@ -85,13 +85,16 @@ export function makeStatusColor(story) {
   // need to add deadlines and author to progress from red to yellow
   if ((story.publication_date === story.rough_draft_deadline) && (story.final_draft_deadline === story.publication_date) && !piecesReady) return { color: 'grey.100', notes: 'story has not been assigned deadlines' }
 
-  if (story.publication_date === story.date_added || !hasAuthor) return { color: 'red', notes: 'story is missing deadlines or an author' }
+  // red
+  if (story.publication_date === story.date_added || !hasAuthor) return { color: '#b30000', notes: 'story is missing deadlines or an author' }
 
-  if (!piecesReady) return { color: 'yellow', notes: 'story has key info ready but is missing some to-do tasks' }
+  // yellow
+  if (!piecesReady) return { color: '#fff633', notes: 'story has key info ready but is missing some to-do tasks' }
 
   if (story.publication_date < DateTime.now().toISO() && piecesReady) return { color: 'grey', notes: 'story is complete and past' }
 
-  if (piecesReady) return { color: 'green', notes: 'story is ready to publish!' }
+  // green
+  if (piecesReady) return { color: '#008000', notes: 'story is ready to publish!' }
 
   return { color: 'purple', notes: 'ummm something went wrong...' }
 }

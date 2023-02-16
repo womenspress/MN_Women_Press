@@ -27,7 +27,7 @@ export default function ArchivePage(){
 
     return (
       <Box>
-        <Typography variant = 'h3'>{tabValue === 'stories' ? 'Archive - stories' : 'Archive - themes'}</Typography>
+        <Typography variant = 'h3' sx = {{ml: 3}}>{tabValue === 'stories' ? 'Archive - stories' : 'Archive - themes'}</Typography>
         <Box>
           <Button onClick = {()=>setTabValue('stories')}>stories</Button>
           <Button onClick = {()=>setTabValue('themes')}>themes</Button>

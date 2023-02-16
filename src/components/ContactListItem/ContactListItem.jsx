@@ -14,7 +14,8 @@ import EditContactModal from '../EditContactModal/EditContactModal'
 import StoryCard from '../StoryCard/StoryCard'
 import ContactAvatar from '../../assets/ContactAvatar/ContactAvatar';
 import ListTags from '../ListTags/ListTags';
-import { smallModal } from '../../__style';
+import { largeModal, smallModal } from '../../__style';
+import { ContactEmergencySharp } from '@mui/icons-material';
 
 
 export default function ContactListItem(props) {

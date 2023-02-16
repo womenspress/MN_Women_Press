@@ -1,19 +1,15 @@
 
-# Prime Solo Project Starting Repo
+# Minnesota Women's Press Content Manager
 This version uses React, Redux, Express, Passport, and PostgreSQL (a full list of dependencies can be found in `package.json`).
 
 We **STRONGLY** recommend following these instructions carefully. It's a lot, and will take some time to set up, but your life will be much easier this way in the long run.
-
-## Use the Template for This Repository (Don't Clone)
-
-- Don't Fork or Clone. Instead, click the `Use this Template` button, and make a copy to your personal account.
 
 ## Prerequisites
 
 Before you get started, make sure you have the following software installed on your computer:
 
 - [Node.js](https://nodejs.org/en/)
-- [PostrgeSQL](https://www.postgresql.org/)
+- [PostgreSQL](https://www.postgresql.org/)
 - [Nodemon](https://nodemon.io/)
 
 ## Create database and table
@@ -75,9 +71,24 @@ Before pushing to Heroku, run `npm run build` in terminal. This will create a bu
 
 There is a video link below of an application tour. This will explain the use cases for each page
 
-- [Walk through](http://ourVideoWalkThrough)
+- [Application Walk Through Video](https://www.youtube.com/watch?v=hZOw8OyA-3A)
 
-Directory Structure:
+
+**Stories Page**
+![stories page](Readme_pictures/stories_page.png)
+
+**Contacts Page**
+![stories page](Readme_pictures/contacts_page.png)
+
+**Themes Page**
+![stories page](Readme_pictures/themes_page.png)
+
+**Archive Page**
+![archive page](Readme_pictures/archive_page.png)
+
+
+
+## Directory Structure:
 
 - `src/` contains the React application
 - `public/` contains static assets for the client-side
@@ -145,7 +156,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 2. Update the README.md with details of changes to the interface, this includes new environment 
    variables, exposed ports, useful file locations and container parameters.
 3. Increase the version numbers in any examples files and the README.md to the new version that this
-   Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
+   Pull Request would represent.
 4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
 

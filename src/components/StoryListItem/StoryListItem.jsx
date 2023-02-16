@@ -103,10 +103,11 @@ export default function StoryListItem(props) {
                 {collapseOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
               <Button
-                sx={{ textTransform: 'none', textAlign: 'left' }}
+                sx={{ textTransform: 'none', color: 'inherit', textAlign: 'left' }}
                 onClick={() => history.push(`/storydetails/${story.id}`)}
               >
-                <Typography sx={{ fontWeight: '500' }}>{story.title}</Typography>
+                <Typography fontWeight='500'>{story.title}</Typography>
+
               </Button>
             </Box>
           </Grid>
